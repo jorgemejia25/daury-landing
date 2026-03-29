@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: dark: utilities apply inside .dark */
+@variant dark (&:is(.dark, .dark *));
+
+/* ── Raw token layer ──────────────────────────────────────────────────────── */
+/* Light (default) */
+:root {
+  --t-surface:                    #f6f9ff;
+  --t-surface-dim:                #e8eeff;
+  --t-surface-bright:             #ffffff;
+  --t-surface-container-lowest:   #eef2ff;
+  --t-surface-container-low:      #e8eeff;
+  --t-surface-container:          #dde5ff;
+  --t-surface-container-high:     #cfd9ff;
+  --t-surface-container-highest:  #bfceff;
+  --t-surface-variant:            #dde5ff;
+  --t-surface-tint:               #1565a8;
+  --t-on-surface:                 #0f1c38;
+  --t-on-surface-variant:         #3c4f70;
+  --t-inverse-surface:            #0f1c38;
+  --t-inverse-on-surface:         #eef2ff;
+
+  --t-primary:                    #1565a8;
+  --t-primary-container:          #cce5ff;
+  --t-primary-fixed:              #e8f3ff;
+  --t-primary-fixed-dim:          #bdd9f5;
+  --t-on-primary:                 #ffffff;
+  --t-on-primary-fixed:           #001d31;
+  --t-on-primary-fixed-variant:   #004b73;
+  --t-on-primary-container:       #002c47;
+  --t-inverse-primary:            #92ccff;
+
+  --t-secondary:                  #6b2d9e;
+  --t-secondary-container:        #ecdcff;
+  --t-secondary-fixed:            #f5eaff;
+  --t-secondary-fixed-dim:        #d9b8f5;
+  --t-on-secondary:               #ffffff;
+  --t-on-secondary-fixed:         #320047;
+  --t-on-secondary-fixed-variant: #662e7e;
+  --t-on-secondary-container:     #3a006e;
+
+  --t-tertiary:                   #1a7a45;
+  --t-tertiary-container:         #c8f5d8;
+  --t-tertiary-fixed:             #e0fced;
+  --t-tertiary-fixed-dim:         #9de8be;
+  --t-on-tertiary:                #ffffff;
+  --t-on-tertiary-fixed:          #00210c;
+  --t-on-tertiary-fixed-variant:  #005228;
+  --t-on-tertiary-container:      #003115;
+
+  --t-error:                      #ba1a1a;
+  --t-error-container:            #ffdad6;
+  --t-on-error:                   #ffffff;
+  --t-on-error-container:         #410002;
+
+  --t-outline:                    #7a8ba6;
+  --t-outline-variant:            #c0cedf;
+  --t-background:                 #f6f9ff;
+  --t-on-background:              #0f1c38;
+}
+
+/* Dark overrides */
+.dark {
+  --t-surface:                    #0b1326;
+  --t-surface-dim:                #0b1326;
+  --t-surface-bright:             #31394d;
+  --t-surface-container-lowest:   #060e20;
+  --t-surface-container-low:      #131b2e;
+  --t-surface-container:          #171f33;
+  --t-surface-container-high:     #222a3d;
+  --t-surface-container-highest:  #2d3449;
+  --t-surface-variant:            #2d3449;
+  --t-surface-tint:               #92ccff;
+  --t-on-surface:                 #dae2fd;
+  --t-on-surface-variant:         #c0c7d1;
+  --t-inverse-surface:            #dae2fd;
+  --t-inverse-on-surface:         #283044;
+
+  --t-primary:                    #92ccff;
+  --t-primary-container:          #4497d3;
+  --t-primary-fixed:              #cce5ff;
+  --t-primary-fixed-dim:          #92ccff;
+  --t-on-primary:                 #003351;
+  --t-on-primary-fixed:           #001d31;
+  --t-on-primary-fixed-variant:   #004b73;
+  --t-on-primary-container:       #002c47;
+  --t-inverse-primary:            #006397;
+
+  --t-secondary:                  #ebb2ff;
+  --t-secondary-container:        #683080;
+  --t-secondary-fixed:            #f8d8ff;
+  --t-secondary-fixed-dim:        #ebb2ff;
+  --t-on-secondary:               #4d1365;
+  --t-on-secondary-fixed:         #320047;
+  --t-on-secondary-fixed-variant: #662e7e;
+  --t-on-secondary-container:     #e1a0f9;
+
+  --t-tertiary:                   #5cdf88;
+  --t-tertiary-container:         #0aa657;
+  --t-tertiary-fixed:             #7afca2;
+  --t-tertiary-fixed-dim:         #5cdf88;
+  --t-on-tertiary:                #003919;
+  --t-on-tertiary-fixed:          #00210c;
+  --t-on-tertiary-fixed-variant:  #005228;
+  --t-on-tertiary-container:      #003115;
+
+  --t-error:                      #ffb4ab;
+  --t-error-container:            #93000a;
+  --t-on-error:                   #690005;
+  --t-on-error-container:         #ffdad6;
+
+  --t-outline:                    #8a919b;
+  --t-outline-variant:            #404850;
+  --t-background:                 #0b1326;
+  --t-on-background:              #dae2fd;
+}
+
+/* ── Tailwind design-token wiring (inline = CSS vars in output) ───────────── */
+@theme inline {
+  --color-surface:                    var(--t-surface);
+  --color-surface-dim:                var(--t-surface-dim);
+  --color-surface-bright:             var(--t-surface-bright);
+  --color-surface-container-lowest:   var(--t-surface-container-lowest);
+  --color-surface-container-low:      var(--t-surface-container-low);
+  --color-surface-container:          var(--t-surface-container);
+  --color-surface-container-high:     var(--t-surface-container-high);
+  --color-surface-container-highest:  var(--t-surface-container-highest);
+  --color-surface-variant:            var(--t-surface-variant);
+  --color-surface-tint:               var(--t-surface-tint);
+  --color-on-surface:                 var(--t-on-surface);
+  --color-on-surface-variant:         var(--t-on-surface-variant);
+  --color-inverse-surface:            var(--t-inverse-surface);
+  --color-inverse-on-surface:         var(--t-inverse-on-surface);
+
+  --color-primary:                    var(--t-primary);
+  --color-primary-container:          var(--t-primary-container);
+  --color-primary-fixed:              var(--t-primary-fixed);
+  --color-primary-fixed-dim:          var(--t-primary-fixed-dim);
+  --color-on-primary:                 var(--t-on-primary);
+  --color-on-primary-fixed:           var(--t-on-primary-fixed);
+  --color-on-primary-fixed-variant:   var(--t-on-primary-fixed-variant);
+  --color-on-primary-container:       var(--t-on-primary-container);
+  --color-inverse-primary:            var(--t-inverse-primary);
+
+  --color-secondary:                  var(--t-secondary);
+  --color-secondary-container:        var(--t-secondary-container);
+  --color-secondary-fixed:            var(--t-secondary-fixed);
+  --color-secondary-fixed-dim:        var(--t-secondary-fixed-dim);
+  --color-on-secondary:               var(--t-on-secondary);
+  --color-on-secondary-fixed:         var(--t-on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--t-on-secondary-fixed-variant);
+  --color-on-secondary-container:     var(--t-on-secondary-container);
+
+  --color-tertiary:                   var(--t-tertiary);
+  --color-tertiary-container:         var(--t-tertiary-container);
+  --color-tertiary-fixed:             var(--t-tertiary-fixed);
+  --color-tertiary-fixed-dim:         var(--t-tertiary-fixed-dim);
+  --color-on-tertiary:                var(--t-on-tertiary);
+  --color-on-tertiary-fixed:          var(--t-on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant:  var(--t-on-tertiary-fixed-variant);
+  --color-on-tertiary-container:      var(--t-on-tertiary-container);
+
+  --color-error:                      var(--t-error);
+  --color-error-container:            var(--t-error-container);
+  --color-on-error:                   var(--t-on-error);
+  --color-on-error-container:         var(--t-on-error-container);
+
+  --color-outline:                    var(--t-outline);
+  --color-outline-variant:            var(--t-outline-variant);
+  --color-background:                 var(--t-background);
+  --color-on-background:              var(--t-on-background);
+
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body:     "Plus Jakarta Sans", sans-serif;
+  --font-label:    "Plus Jakarta Sans", sans-serif;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--t-background);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: var(--t-on-surface);
+  overflow-x: hidden;
+}
+
+/* ── Mesh gradient ────────────────────────────────────────────────────────── */
+.mesh-gradient-bg {
+  background:
+    radial-gradient(at 0% 0%,   #dbeafe 0%, transparent 55%),
+    radial-gradient(at 100% 0%, #ede9fe 0%, transparent 55%),
+    radial-gradient(at 100% 100%, #e0eaff 0%, transparent 55%),
+    radial-gradient(at 0% 100%,  #dbeafe 0%, transparent 55%),
+    #f6f9ff;
+}
+
+.dark .mesh-gradient-bg {
+  background:
+    radial-gradient(at 0% 0%,   #131b2e 0%, transparent 50%),
+    radial-gradient(at 100% 0%, #004b73 0%, transparent 50%),
+    radial-gradient(at 50% 100%, #1a0535 0%, transparent 50%),
+    radial-gradient(at 0% 100%, #001a0a 0%, transparent 50%),
+    #0b1326;
+}
+
+.mesh-gradient-overlay {
+  background:
+    radial-gradient(at 0% 0%,   #dbeafe 0%, transparent 55%),
+    radial-gradient(at 100% 0%, #ede9fe 0%, transparent 55%),
+    radial-gradient(at 100% 100%, #e0eaff 0%, transparent 55%),
+    radial-gradient(at 0% 100%,  #dbeafe 0%, transparent 55%);
+}
+
+.dark .mesh-gradient-overlay {
+  background:
+    radial-gradient(at 0% 0%,   rgba(0,75,115,0.3) 0%, transparent 55%),
+    radial-gradient(at 100% 0%, rgba(50,0,71,0.3) 0%, transparent 55%),
+    radial-gradient(at 100% 100%, rgba(0,57,25,0.3) 0%, transparent 55%),
+    radial-gradient(at 0% 100%,  rgba(19,27,46,0.3) 0%, transparent 55%);
+}
+
+/* ── Glass card ───────────────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(21, 101, 168, 0.1);
+  box-shadow: 0 4px 24px rgba(15, 28, 56, 0.06);
+}
+
+.dark .glass-card {
+  background: rgba(23, 31, 51, 0.55);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(146, 204, 255, 0.1);
+  box-shadow: none;
+}
+
+/* ── Text glow ────────────────────────────────────────────────────────────── */
+.text-glow {
+  text-shadow: 0 2px 24px rgba(21, 101, 168, 0.18);
+}
+
+.dark .text-glow {
+  text-shadow: 0 0 20px rgba(146, 204, 255, 0.3);
+}
+
+/* ── Material Symbols ─────────────────────────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+}
+
+/* ── Safari backdrop-filter fix ──────────────────────────────────────────── */
+.navbar-blur {
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+/* ── Custom Animations ────────────────────────────────────────────────────── */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float-y {
+  animation: float-y 4s ease-in-out infinite;
+}
