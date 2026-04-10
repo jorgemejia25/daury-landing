@@ -12,7 +12,7 @@ interface SocialLink {
 
 interface TeamMember {
   name: string;
-  roleKey: "techLead" | "fullstackDeveloper" | "scrumBusiness" | "productOwner";
+  roleKey: "techLead" | "fullstackDeveloper" | "scrumBusiness";
   degreeKey: "softwareEngineer" | "industrialEngineer";
   university: string;
   initials: string;
@@ -103,15 +103,6 @@ const team: TeamMember[] = [
     initials: "AC",
     accent: "secondary",
     image: "/8.jpeg",
-  },
-  {
-    name: "Isa Roca",
-    roleKey: "productOwner",
-    degreeKey: "softwareEngineer",
-    university: "Universidad San Carlos de Guatemala",
-    initials: "IR",
-    accent: "tertiary",
-    image: "/9.jpg",
   },
 ];
 
