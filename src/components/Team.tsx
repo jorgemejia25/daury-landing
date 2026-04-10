@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import FadeIn from "./motion/FadeIn";
 import { getMessages, type AppLocale } from "@/i18n/config";
 
@@ -13,6 +17,7 @@ interface TeamMember {
   university: string;
   initials: string;
   accent: "primary" | "secondary" | "tertiary";
+  image: string;
   socials?: SocialLink[];
 }
 
@@ -24,9 +29,16 @@ const team: TeamMember[] = [
     university: "Universidad San Carlos de Guatemala",
     initials: "JM",
     accent: "primary",
+    image: "/1.PNG",
     socials: [
-      { platform: "linkedin",  url: "https://www.linkedin.com/in/jorge-andrés-mejía-621596219/" },
-      { platform: "instagram", url: "https://www.instagram.com/jorgemejia___/" },
+      {
+        platform: "linkedin",
+        url: "https://www.linkedin.com/in/jorge-andrés-mejía-621596219/",
+      },
+      {
+        platform: "instagram",
+        url: "https://www.instagram.com/jorgemejia___/",
+      },
     ],
   },
   {
@@ -36,6 +48,7 @@ const team: TeamMember[] = [
     university: "Universidad San Carlos de Guatemala",
     initials: "FC",
     accent: "secondary",
+    image: "/2.jpeg",
   },
   {
     name: "Esteban Chacón",
@@ -44,6 +57,7 @@ const team: TeamMember[] = [
     university: "Universidad San Carlos de Guatemala",
     initials: "EC",
     accent: "tertiary",
+    image: "/3.jpeg",
   },
   {
     name: "Valery Alarcón",
@@ -52,6 +66,25 @@ const team: TeamMember[] = [
     university: "Universidad San Carlos de Guatemala",
     initials: "VA",
     accent: "primary",
+    image: "/4.jpeg",
+  },
+  {
+    name: "Yury Cruz",
+    roleKey: "fullstackDeveloper",
+    degreeKey: "softwareEngineer",
+    university: "Universidad San Carlos de Guatemala",
+    initials: "YC",
+    accent: "secondary",
+    image: "/6.jpeg",
+  },
+  {
+    name: "Daniel Hernandez",
+    roleKey: "fullstackDeveloper",
+    degreeKey: "softwareEngineer",
+    university: "Universidad San Carlos de Guatemala",
+    initials: "DH",
+    accent: "tertiary",
+    image: "/5.jpg",
   },
   {
     name: "Damián Orozco",
@@ -59,7 +92,8 @@ const team: TeamMember[] = [
     degreeKey: "softwareEngineer",
     university: "Universidad San Carlos de Guatemala",
     initials: "DO",
-    accent: "secondary",
+    accent: "primary",
+    image: "/7.jpeg",
   },
   {
     name: "Adriana Carías",
@@ -67,14 +101,39 @@ const team: TeamMember[] = [
     degreeKey: "industrialEngineer",
     university: "Universidad San Carlos de Guatemala",
     initials: "AC",
+    accent: "secondary",
+    image: "/8.jpeg",
+  },
+  {
+    name: "Isa Roca",
+    roleKey: "fullstackDeveloper",
+    degreeKey: "softwareEngineer",
+    university: "Universidad San Carlos de Guatemala",
+    initials: "IR",
     accent: "tertiary",
+    image: "/9.jpg",
   },
 ];
 
 const accentMap = {
-  primary:   { ring: "ring-primary/20",   bg: "bg-primary/10",   text: "text-primary",   pill: "bg-primary/10 text-primary"     },
-  secondary: { ring: "ring-secondary/20", bg: "bg-secondary/10", text: "text-secondary", pill: "bg-secondary/10 text-secondary" },
-  tertiary:  { ring: "ring-tertiary/20",  bg: "bg-tertiary/10",  text: "text-tertiary",  pill: "bg-tertiary/10 text-tertiary"   },
+  primary: {
+    ring: "ring-primary/20",
+    bg: "bg-primary/10",
+    text: "text-primary",
+    pill: "bg-primary/10 text-primary",
+  },
+  secondary: {
+    ring: "ring-secondary/20",
+    bg: "bg-secondary/10",
+    text: "text-secondary",
+    pill: "bg-secondary/10 text-secondary",
+  },
+  tertiary: {
+    ring: "ring-tertiary/20",
+    bg: "bg-tertiary/10",
+    text: "text-tertiary",
+    pill: "bg-tertiary/10 text-tertiary",
+  },
 };
 
 function LinkedInIcon() {
@@ -93,94 +152,283 @@ function InstagramIcon() {
   );
 }
 
-function MemberCard({
-  member,
-  delay,
-  role,
-  degree,
-}: {
-  member: TeamMember;
-  delay: number;
-  role: string;
-  degree: string;
-}) {
-  const { ring, bg, text, pill } = accentMap[member.accent];
-
-  return (
-    <FadeIn direction="up" delay={delay}>
-      <div className="glass-card rounded-[2rem] p-8 flex flex-col items-center text-center gap-5 h-full">
-        {/* Avatar */}
-        <div className={`w-16 h-16 rounded-full ${bg} ring-2 ${ring} flex items-center justify-center font-bold ${text} text-lg tracking-wide flex-shrink-0`}>
-          {member.initials}
-        </div>
-
-        {/* Name + role pill */}
-        <div className="space-y-2">
-          <h3 className="font-bold text-on-surface text-lg leading-tight">{member.name}</h3>
-          <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${pill}`}>
-            {role}
-          </span>
-        </div>
-
-        {/* Divider */}
-        <div className="w-8 h-px bg-outline-variant/40" />
-
-        {/* Academic info */}
-        <div className="space-y-1 flex-1">
-          <p className="text-sm font-semibold text-on-surface">{degree}</p>
-          <p className="text-xs text-on-surface-variant leading-snug">{member.university}</p>
-        </div>
-
-        {/* Social links */}
-        {member.socials && (
-          <div className="flex gap-2 pt-1">
-            {member.socials.map((s) => (
-              <a
-                key={s.platform}
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.platform}
-                className="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all duration-200"
-              >
-                {s.platform === "linkedin" ? <LinkedInIcon /> : <InstagramIcon />}
-              </a>
-            ))}
-          </div>
-        )}
-      </div>
-    </FadeIn>
-  );
-}
-
 type TeamProps = {
   locale: AppLocale;
 };
 
 export default function Team({ locale }: TeamProps) {
   const copy = getMessages(locale).team;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const pinSlotRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const [pinnedStyle, setPinnedStyle] = useState<React.CSSProperties>({});
+  const [isPinned, setIsPinned] = useState(false);
+
+  const activeMember = team[activeIndex] ?? team[0];
+  const activeAccent = activeMember
+    ? accentMap[activeMember.accent]
+    : accentMap.primary;
+
+  const computePinnedStyle = () => {
+    const sectionEl = sectionRef.current;
+    const slotEl = pinSlotRef.current;
+    const headingEl = headingRef.current;
+    if (!sectionEl || !slotEl) return;
+
+    const sectionRect = sectionEl.getBoundingClientRect();
+    const slotRect = slotEl.getBoundingClientRect();
+
+    const baseTopOffset = 96; // matches `top-24`
+    const headingRect = headingEl?.getBoundingClientRect();
+    const dynamicTopOffset =
+      headingRect && headingRect.bottom > baseTopOffset
+        ? Math.round(headingRect.bottom + 16)
+        : baseTopOffset;
+    // Pin only when the *card slot* reaches the offset (not when the section starts),
+    // otherwise the fixed card can overlap the heading.
+    const start = slotRect.top - dynamicTopOffset;
+    const end = sectionRect.bottom - dynamicTopOffset - slotRect.height;
+
+    // When section is above the top and not past its end, pin the card.
+    if (start <= 0 && end >= 0) {
+      setIsPinned(true);
+      setPinnedStyle({
+        position: "fixed",
+        top: dynamicTopOffset,
+        left: slotRect.left,
+        width: slotRect.width,
+        height: slotRect.height,
+      });
+      return;
+    }
+
+    // Before pin region: keep it in normal flow.
+    if (start > 0) {
+      setIsPinned(false);
+      setPinnedStyle({ position: "relative" });
+      return;
+    }
+
+    // After pin region: place it at the bottom of the slot.
+    setIsPinned(false);
+    setPinnedStyle({
+      position: "absolute",
+      top: "auto",
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+    });
+  };
+
+  useEffect(() => {
+    const raf = window.requestAnimationFrame(() => computePinnedStyle());
+    window.addEventListener("scroll", computePinnedStyle, { passive: true });
+    window.addEventListener("resize", computePinnedStyle);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", computePinnedStyle);
+      window.removeEventListener("resize", computePinnedStyle);
+    };
+  }, []);
 
   return (
-    <section id="team" className="py-24 px-6 max-w-7xl mx-auto">
-      <FadeIn direction="up" className="mb-16 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-          {copy.title}
-        </h2>
-        <p className="text-on-surface-variant max-w-xl mx-auto">
-          {copy.description}
-        </p>
+    <section
+      ref={sectionRef}
+      id="team"
+      className="py-24 px-6 max-w-7xl mx-auto"
+    >
+      <FadeIn
+        direction="up"
+        className="mb-20 text-center md:text-left relative z-30"
+      >
+        <div ref={headingRef}>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+            {copy.title}
+          </h2>
+          <p className="text-on-surface-variant max-w-xl text-lg">
+            {copy.description}
+          </p>
+        </div>
       </FadeIn>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {team.map((member, i) => (
-          <MemberCard
-            key={member.name}
-            member={member}
-            delay={0.06 * i}
-            role={copy.roles[member.roleKey]}
-            degree={copy.degrees[member.degreeKey]}
-          />
-        ))}
+      <div className="relative flex flex-col md:flex-row gap-8 md:gap-16 items-start">
+        {/* Pinned “Apple-style” card (image + content replaces as you scroll). */}
+        <div
+          ref={pinSlotRef}
+          className="relative w-full md:w-1/2 h-[56vh] md:h-[82vh]"
+        >
+          <div
+            style={pinnedStyle}
+            className={[
+              "glass-card rounded-4xl overflow-hidden shadow-2xl shadow-slate-900/6",
+              isPinned ? "z-20" : "z-0",
+            ].join(" ")}
+          >
+            <div className="relative h-full">
+              {/* Image layer */}
+              <div className="absolute inset-0">
+                {team.map((member, i) => (
+                  <div
+                    key={member.name}
+                    className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                      i === activeIndex ? "opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-slate-950/55 via-slate-950/10 to-transparent" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Content layer */}
+              {activeMember && (
+                <div className="relative h-full flex flex-col justify-end p-7 md:p-10 md:hidden">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={[
+                        "w-14 h-14 md:w-16 md:h-16 rounded-full ring-2",
+                        "flex items-center justify-center font-bold text-lg md:text-xl tracking-wide shrink-0",
+                        activeAccent.bg,
+                        activeAccent.ring,
+                        activeAccent.text,
+                        "bg-white/90 dark:bg-surface-container/90",
+                      ].join(" ")}
+                    >
+                      {activeMember.initials}
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-white/90 text-sm font-semibold tracking-wide uppercase">
+                        {copy.roles[activeMember.roleKey]}
+                      </p>
+                      <h3 className="text-white text-2xl md:text-3xl font-extrabold tracking-tight truncate">
+                        {activeMember.name}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 glass-card rounded-3xl p-5 md:p-6 bg-white/80 dark:bg-surface-container/80 border border-white/15">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-on-surface">
+                          {copy.degrees[activeMember.degreeKey]}
+                        </p>
+                        <p className="text-sm text-on-surface-variant leading-snug">
+                          {activeMember.university}
+                        </p>
+                      </div>
+
+                      {activeMember.socials && (
+                        <div className="flex gap-2 shrink-0">
+                          {activeMember.socials.map((s) => (
+                            <a
+                              key={s.platform}
+                              href={s.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={s.platform}
+                              className="w-11 h-11 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all duration-200"
+                            >
+                              {s.platform === "linkedin" ? (
+                                <LinkedInIcon />
+                              ) : (
+                                <InstagramIcon />
+                              )}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Scrolling Content (Invisible on mobile to drive scroll, visible glass cards on desktop) */}
+        <div className="w-full md:w-1/2 relative z-10 pb-[10vh] md:pb-[20vh] flex flex-col gap-[42vh] md:gap-[20vh] pt-[10vh] md:pt-[20vh] opacity-0 pointer-events-none select-none md:opacity-100 md:pointer-events-auto md:select-auto">
+          {team.map((member, i) => {
+            const isActive = i === activeIndex;
+            const accent = accentMap[member.accent];
+
+            return (
+              <motion.div
+                key={member.name}
+                className="md:min-h-[80vh] flex flex-col justify-center"
+                onViewportEnter={() => setActiveIndex(i)}
+                viewport={{ margin: "-40% 0px -40% 0px" }}
+              >
+                <div
+                  className={`glass-card rounded-4xl p-8 md:p-10 shadow-xl shadow-slate-900/5 backdrop-blur-2xl bg-white/85 dark:bg-surface-container/85 border border-outline-variant/30 transition-all duration-500 ${isActive ? "opacity-100 scale-100" : "opacity-40 scale-95"}`}
+                >
+                  <div className="flex items-center gap-5 mb-6">
+                    <div
+                      className={[
+                        "w-16 h-16 rounded-full ring-2 flex items-center justify-center font-bold text-xl tracking-wide shrink-0",
+                        accent.bg,
+                        accent.ring,
+                        accent.text,
+                      ].join(" ")}
+                    >
+                      {member.initials}
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-bold text-on-surface">
+                        {member.name}
+                      </h3>
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mt-1 ${accent.pill}`}
+                      >
+                        {copy.roles[member.roleKey]}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="w-12 h-px bg-outline-variant/40 mb-6" />
+
+                  <div className="space-y-2 mb-8">
+                    <p className="text-lg font-semibold text-on-surface">
+                      {copy.degrees[member.degreeKey]}
+                    </p>
+                    <p className="text-on-surface-variant leading-relaxed">
+                      {member.university}
+                    </p>
+                  </div>
+
+                  {member.socials && (
+                    <div className="flex gap-3">
+                      {member.socials.map((s) => (
+                        <a
+                          key={s.platform}
+                          href={s.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={s.platform}
+                          className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-all duration-200"
+                        >
+                          {s.platform === "linkedin" ? (
+                            <LinkedInIcon />
+                          ) : (
+                            <InstagramIcon />
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

@@ -2,8 +2,23 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { getMessages, type AppLocale } from "@/i18n/config";
+import { usePathname } from "next/navigation";
+import { getMessages, locales, type AppLocale } from "@/i18n/config";
 import Logo from "./Logo";
+
+/** Matches `/en`, `/es`, or locale at the start of a path so we can swap the active locale segment. */
+const LOCALE_PATH_PREFIX = new RegExp(`^\\/(${locales.join("|")})(?=\\/|$)`);
+
+/**
+ * Builds the target URL when switching UI language, preserving any path after the locale prefix.
+ */
+function hrefForLocale(pathname: string, target: AppLocale): string {
+  const tail = pathname.replace(LOCALE_PATH_PREFIX, "") || "/";
+  if (tail === "/") {
+    return `/${target}`;
+  }
+  return `/${target}${tail}`;
+}
 
 type NavbarProps = { locale: AppLocale };
 
@@ -31,8 +46,19 @@ function SettingsPanel({
   locale: AppLocale;
   onNavigate?: () => void;
 }) {
+  const pathname = usePathname() ?? `/${locale}`;
   const isES = locale === "es";
   const languageLabel = isES ? "Idioma" : "Language";
+
+  /**
+   * Defers closing the settings surface until after the browser processes the link navigation.
+   * Closing synchronously unmounts the `<Link>` and can cancel client-side locale changes on mobile.
+   */
+  function scheduleClosePanel() {
+    setTimeout(() => {
+      onNavigate?.();
+    }, 0);
+  }
 
   return (
     <div className="w-56 p-4">
@@ -41,14 +67,14 @@ function SettingsPanel({
       </p>
       <div className="relative flex items-center overflow-hidden rounded-full border border-outline-variant/40 bg-surface-container-low/50 p-0.5 text-sm font-semibold">
         <span
-          className={`absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-full bg-primary transition-[left] duration-300 ease-in-out ${
+          className={`pointer-events-none absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-full bg-primary transition-[left] duration-300 ease-in-out ${
             isES ? "left-[calc(50%+2px)]" : "left-[2px]"
           }`}
           aria-hidden
         />
         <Link
-          href="/en"
-          onClick={onNavigate}
+          href={hrefForLocale(pathname, "en")}
+          onClick={scheduleClosePanel}
           className={`relative z-10 flex flex-1 items-center justify-center rounded-full px-4 py-2 transition-colors duration-200 ${
             !isES ? "text-on-primary" : "text-on-surface-variant hover:text-on-surface"
           }`}
@@ -56,8 +82,8 @@ function SettingsPanel({
           English
         </Link>
         <Link
-          href="/es"
-          onClick={onNavigate}
+          href={hrefForLocale(pathname, "es")}
+          onClick={scheduleClosePanel}
           className={`relative z-10 flex flex-1 items-center justify-center rounded-full px-4 py-2 transition-colors duration-200 ${
             isES ? "text-on-primary" : "text-on-surface-variant hover:text-on-surface"
           }`}
@@ -77,9 +103,10 @@ export default function Navbar({ locale }: NavbarProps) {
   const [menuOpen, setMenuOpen]       = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [scrolled, setScrolled]       = useState(false);
-  const copy       = getMessages(locale).navbar;
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const navHrefs   = ["#features", "#how-it-works", "#scope", "#about"];
+  const copy           = getMessages(locale).navbar;
+  const popoverRef     = useRef<HTMLDivElement>(null);
+  const mobileSheetRef = useRef<HTMLDivElement>(null);
+  const navHrefs       = ["#features", "#how-it-works", "#scope", "#about"];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -87,11 +114,15 @@ export default function Navbar({ locale }: NavbarProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close desktop popover on outside click
+  // Close desktop popover on outside click.
+  // Excludes the mobile settings sheet so that tapping a language option there
+  // isn't treated as an "outside click" before the Link navigation fires.
   useEffect(() => {
     if (!popoverOpen) return;
     function handler(e: MouseEvent) {
-      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+      const outsideDesktopPopover = popoverRef.current && !popoverRef.current.contains(e.target as Node);
+      const insideMobileSheet     = mobileSheetRef.current && mobileSheetRef.current.contains(e.target as Node);
+      if (outsideDesktopPopover && !insideMobileSheet) {
         setPopoverOpen(false);
       }
     }
@@ -218,7 +249,7 @@ export default function Navbar({ locale }: NavbarProps) {
       {/* Mobile settings sheet                                               */}
       {/* ------------------------------------------------------------------ */}
       {popoverOpen && (
-        <div className="mx-auto mt-3 w-full max-w-6xl overflow-hidden rounded-[1.75rem] border border-outline-variant/25 bg-white shadow-xl shadow-slate-900/10 md:hidden">
+        <div ref={mobileSheetRef} className="mx-auto mt-3 w-full max-w-6xl overflow-hidden rounded-[1.75rem] border border-outline-variant/25 bg-white shadow-xl shadow-slate-900/10 md:hidden">
           <SettingsPanel
             locale={locale}
             onNavigate={() => setPopoverOpen(false)}

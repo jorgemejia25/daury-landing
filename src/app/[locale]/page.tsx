@@ -31,5 +31,5 @@ export default async function LocaleHomePage({ params }: LocalePageProps) {
   const { locale } = await params;
   const activeLocale: AppLocale = isValidLocale(locale) ? locale : "en";
 
-  return <LandingPage locale={activeLocale} />;
+  return <LandingPage key={activeLocale} locale={activeLocale} />;
 }
