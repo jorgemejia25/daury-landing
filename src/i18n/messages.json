@@ -118,6 +118,7 @@
       "roles": {
         "techLead": "Tech Lead",
         "fullstackDeveloper": "Fullstack Developer",
+        "productOwner": "Product Owner",
         "scrumBusiness": "Scrum Master & Business Manager"
       },
       "degrees": {
@@ -271,6 +272,7 @@
       "roles": {
         "techLead": "Líder Técnico",
         "fullstackDeveloper": "Desarrollador Fullstack",
+        "productOwner": "Product Owner",
         "scrumBusiness": "Scrum Master y Business Manager"
       },
       "degrees": {
