@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import LandingPage from "@/components/LandingPage";
 import { getDictionary, isValidLocale, locales, type AppLocale } from "@/i18n/config";
+import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 
 type LocalePageProps = {
   params: Promise<{ locale: string }>;
@@ -30,6 +32,7 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
 export default async function LocaleHomePage({ params }: LocalePageProps) {
   const { locale } = await params;
   const activeLocale: AppLocale = isValidLocale(locale) ? locale : "en";
+  const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
 
-  return <LandingPage key={activeLocale} locale={activeLocale} />;
+  return <LandingPage key={activeLocale} locale={activeLocale} initialTheme={theme} />;
 }

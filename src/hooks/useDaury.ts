@@ -141,18 +141,23 @@ export function useLocalMouse(strength = 12) {
   return [ref, pos] as const;
 }
 
-/* ─── Persistent state via localStorage ─── */
-export function usePersist<T>(key: string, def: T): [T, (v: T) => void] {
-  const [v, setV] = useState<T>(() => {
-    if (typeof window === 'undefined') return def;
-    try {
-      const raw = localStorage.getItem(key);
-      return raw !== null ? JSON.parse(raw) : def;
-    } catch { return def; }
-  });
+/* ─── Persistent state via localStorage (hydration-safe) ─── */
+export function usePersist<T>(key: string, def: T, initial?: T): [T, (v: T) => void] {
+  const [v, setV] = useState<T>(initial ?? def);
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
-    try { localStorage.setItem(key, JSON.stringify(v)); } catch {}
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw !== null) setV(JSON.parse(raw) as T);
+      } catch { /* ignore */ }
+      return;
+    }
+    try { localStorage.setItem(key, JSON.stringify(v)); } catch { /* ignore */ }
   }, [key, v]);
+
   return [v, setV];
 }
 

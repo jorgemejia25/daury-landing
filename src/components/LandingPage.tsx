@@ -1,8 +1,9 @@
 'use client';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePersist, useScrollY } from '@/hooks/useDaury';
 import { i18n } from '@/lib/daury-i18n';
+import { applyTheme, type Theme } from '@/lib/theme';
 import GradientField from './daury/GradientField';
 import Nav from './daury/Nav';
 import Hero from './daury/Hero';
@@ -14,6 +15,7 @@ import type { AppLocale } from '@/i18n/config';
 
 type LandingPageProps = {
   locale: AppLocale;
+  initialTheme: Theme;
 };
 
 function ScrollProgressBar() {
@@ -31,14 +33,19 @@ function ScrollProgressBar() {
   );
 }
 
-export default function LandingPage({ locale }: LandingPageProps) {
+export default function LandingPage({ locale, initialTheme }: LandingPageProps) {
   const router = useRouter();
-  const [theme, setTheme] = usePersist<string>('daury.theme', 'light');
-  const [lang, setLangState] = usePersist<string>('daury.lang', locale);
+  const [theme, setThemeState] = usePersist<Theme>('daury.theme', 'light', initialTheme);
+  const [lang, setLangState] = usePersist<string>('daury.lang', locale, locale);
 
-  /* Sync theme with html data-theme attribute */
+  const setTheme = useCallback((next: Theme) => {
+    setThemeState(next);
+    applyTheme(next);
+  }, [setThemeState]);
+
+  /* Keep document theme in sync after hydration (e.g. localStorage restore). */
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    applyTheme(theme);
   }, [theme]);
 
   /* Sync lang with html lang attribute */
