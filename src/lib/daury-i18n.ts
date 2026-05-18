@@ -12,7 +12,7 @@ export type I18nContent = {
   story: { eyebrow: string; title: string; paragraphs: string[]; pull: string; meta: Array<{ l: string; v: string }>; };
   scale: { eyebrow: string; title: string; lead: string; delivers: { t: string; list: string[] }; isnot: { t: string; list: string[] }; phases: Array<{ n: string; t: string; points: string[] }>; vision: string; };
   team: { eyebrow: string; title: string; lead: string; origin: string; stats: Array<{ l: string; v: string }>; members: TeamMember[]; };
-  involved: { eyebrow: string; title_a: string; title_b: string; lead: string; fields: { name: string; email: string; how: string; howPh: string }; submit: string; sent: string; legal: string; roles: string[]; };
+  involved: { eyebrow: string; title_a: string; title_b: string; lead: string; fields: { name: string; email: string; how: string; howPh: string }; submit: string; sent: string; error: string; errorNotConfigured: string; legal: string; roles: string[]; };
   footer: { tagline: string; copy: string; cols: Array<{ t: string; l: string[] }>; };
 };
 
@@ -133,6 +133,8 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
       fields: { name: 'Nombre', email: 'Correo', how: '¿Cómo te gustaría contribuir?', howPh: 'Contanos en una línea…' },
       submit: 'Expresar interés',
       sent: 'Recibido. Gracias.',
+      error: 'No se pudo enviar. Intentá de nuevo en un momento.',
+      errorNotConfigured: 'El formulario aún no está configurado en el servidor.',
       legal: 'Leemos cada mensaje. No es oferta de empleo; te contactamos si hay encaje.',
       roles: ['Construir', 'Diseñar', 'Salud', 'Alianza', 'Otro'],
     },
@@ -251,6 +253,8 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
       fields: { name: 'Name', email: 'Email', how: 'How would you like to contribute?', howPh: 'Tell us in a line…' },
       submit: 'Express interest',
       sent: 'Received. Thank you.',
+      error: "Couldn't send your message. Please try again in a moment.",
+      errorNotConfigured: "The form isn't configured on the server yet.",
       legal: "We read every message. Not an offer of employment; we'll follow up if there's a fit.",
       roles: ['Build', 'Design', 'Health', 'Partner', 'Other'],
     },

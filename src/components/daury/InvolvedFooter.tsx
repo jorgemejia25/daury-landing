@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { submitInvolvedForm } from '@/actions/submit-involved';
 import { useReveal, useElementParallax, useMouseParallax } from '@/hooks/useDaury';
 import DauryMark from './Logo';
 import type { I18nContent } from '@/lib/daury-i18n';
@@ -25,6 +26,7 @@ export function GetInvolved({ t }: { t: I18nContent }) {
   const [data, setData] = useState({ name: '', email: '', how: '', role: t.involved.roles[0] });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [ref, seen] = useReveal({ threshold: 0.15 });
   const [titleRef, titleY] = useElementParallax(0.06);
   const [formRef, formY] = useElementParallax(0.03);
@@ -32,26 +34,34 @@ export function GetInvolved({ t }: { t: I18nContent }) {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
     setLoading(true);
+    setError(null);
+
     try {
-      await fetch('https://formsubmit.co/ajax/devjorgemejia@gmail.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          role: data.role,
-          message: data.how,
-          _subject: 'Daury — New Applicant',
-          _captcha: 'false',
-          _template: 'table',
-        }),
+      const result = await submitInvolvedForm({
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        message: data.how,
       });
+
+      if (!result.ok) {
+        setError(
+          result.error === "not_configured"
+            ? t.involved.errorNotConfigured
+            : t.involved.error,
+        );
+        return;
+      }
+
+      setSent(true);
+      setData({ name: '', email: '', how: '', role: t.involved.roles[0] });
+      setTimeout(() => setSent(false), 5000);
+    } catch {
+      setError(t.involved.error);
     } finally {
       setLoading(false);
-      setSent(true);
-      setTimeout(() => setSent(false), 5000);
-      setData({ name: '', email: '', how: '', role: t.involved.roles[0] });
     }
   };
 
@@ -112,6 +122,9 @@ export function GetInvolved({ t }: { t: I18nContent }) {
               {sent ? t.involved.sent : loading ? '…' : t.involved.submit}
               {!sent && !loading && <svg className="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>}
             </button>
+            {error && (
+              <p role="alert" style={{ fontSize: 13, color: 'var(--coral)', margin: 0, lineHeight: 1.5 }}>{error}</p>
+            )}
             <p style={{ fontSize: 12, color: 'var(--ink-mute)', margin: 0, lineHeight: 1.55 }}>{t.involved.legal}</p>
           </form>
         </div>
