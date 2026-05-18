@@ -54,7 +54,7 @@ function StoryParagraph({ text, index }: { text: string; index: number }) {
       borderBottom: '1px solid var(--rule)',
       opacity: seen ? 1 : 0,
       transform: seen ? `translate3d(0, ${parY}px, 0)` : 'translateY(16px)',
-      transition: 'opacity 0.9s var(--ease), transform 0.5s var(--ease-out)',
+      transition: 'opacity var(--dur-reveal) var(--ease), transform 0.5s var(--ease-out)',
       display: 'flex', gap: 28, alignItems: 'flex-start',
     }}>
       <div className="mono" style={{ fontSize: 11, letterSpacing: '0.14em', color: 'var(--ink-mute)', flexShrink: 0, paddingTop: 8, width: 28 }}>
@@ -82,7 +82,7 @@ function PullQuote({ text }: { text: string }) {
     <div ref={setRef} style={{
       padding: '56px 0 0', opacity: seen ? 1 : 0,
       transform: seen ? `translate3d(0, ${parY}px, 0)` : 'translateY(16px)',
-      transition: 'opacity 1s var(--ease), transform 0.5s var(--ease-out)',
+      transition: 'opacity var(--dur-reveal) var(--ease), transform 0.5s var(--ease-out)',
     }}>
       <div className="mono" style={{ fontSize: 10, letterSpacing: '0.22em', color: 'var(--ink-mute)', textTransform: 'uppercase', marginBottom: 18 }}>— Pull quote</div>
       <p style={{
@@ -131,8 +131,8 @@ function VersusList({ title, list, positive }: { title: string; list: string[]; 
     <div ref={ref as React.Ref<HTMLDivElement>} style={{
       padding: '48px 44px', background: 'var(--bg-elev)',
       opacity: seen ? 1 : 0, transform: seen ? 'translateY(0)' : 'translateY(20px)',
-      transition: 'opacity 0.9s var(--ease), transform 0.9s var(--ease)',
-      transitionDelay: positive ? '0ms' : '120ms',
+      transition: 'opacity var(--dur-reveal) var(--ease), transform var(--dur-reveal) var(--ease)',
+      transitionDelay: positive ? '0ms' : 'var(--stagger)',
       display: 'flex', flexDirection: 'column', gap: 28, minHeight: 360,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -146,8 +146,8 @@ function VersusList({ title, list, positive }: { title: string; list: string[]; 
             display: 'flex', gap: 16, alignItems: 'flex-start',
             padding: '14px 0', borderTop: '1px solid var(--rule)',
             opacity: seen ? 1 : 0, transform: seen ? 'translateX(0)' : 'translateX(-10px)',
-            transition: 'opacity 0.6s var(--ease), transform 0.6s var(--ease)',
-            transitionDelay: `${200 + i * 80}ms`,
+            transition: 'opacity 0.5s var(--ease), transform 0.5s var(--ease)',
+            transitionDelay: `calc(160ms + ${i} * var(--stagger))`,
           }}>
             <span className="mono" style={{ fontSize: 11, letterSpacing: '0.12em', color: positive ? 'var(--green)' : 'var(--ink-mute)', flexShrink: 0, paddingTop: 4, width: 18 }}>
               {positive ? '+' : '—'}
@@ -180,8 +180,8 @@ function PhaseCard({ phase, i }: { phase: { n: string; t: string; points: string
       border: featured ? '1px solid var(--ink)' : '1px solid var(--rule)',
       opacity: seen ? 1 : 0,
       transform: seen ? `translate3d(${m.x * 0.4}px, ${parY + m.y * 0.4}px, 0)` : 'translateY(20px)',
-      transition: 'opacity 0.9s var(--ease), transform 0.4s var(--ease-out)',
-      transitionDelay: seen ? `${i * 120}ms, 0ms` : `${i * 120}ms`,
+      transition: 'opacity var(--dur-reveal) var(--ease), transform 0.4s var(--ease-out)',
+      transitionDelay: seen ? `calc(${i} * var(--stagger)), 0ms` : `calc(${i} * var(--stagger))`,
       position: 'relative', overflow: 'hidden', minHeight: 320,
       display: 'flex', flexDirection: 'column', gap: 24,
     }}>
@@ -209,8 +209,8 @@ function PhaseCard({ phase, i }: { phase: { n: string; t: string; points: string
             padding: '12px 0',
             borderTop: featured ? '1px solid color-mix(in oklab, var(--bg) 10%, transparent)' : '1px solid var(--rule)',
             opacity: seen ? 1 : 0, transform: seen ? 'translateY(0)' : 'translateY(8px)',
-            transition: 'opacity 0.6s var(--ease), transform 0.6s var(--ease)',
-            transitionDelay: `${300 + j * 90}ms`,
+            transition: 'opacity 0.5s var(--ease), transform 0.5s var(--ease)',
+            transitionDelay: `calc(200ms + ${j} * var(--stagger))`,
           }}>
             <span className="mono" style={{ fontSize: 11, letterSpacing: '0.12em', color: featured ? 'color-mix(in oklab, var(--bg) 55%, transparent)' : 'var(--ink-mute)', flexShrink: 0, paddingTop: 3, width: 22 }}>{String(j + 1).padStart(2, '0')}</span>
             <span style={{ fontSize: 15, lineHeight: 1.55, color: featured ? 'color-mix(in oklab, var(--bg) 86%, transparent)' : 'var(--ink-2)', flex: 1 }}>{pt}</span>
@@ -235,7 +235,7 @@ function VisionQuote({ text }: { text: string }) {
       padding: 'clamp(56px, 8vw, 96px) 0 24px', borderTop: '1px solid var(--rule)',
       opacity: seen ? 1 : 0,
       transform: seen ? `translate3d(0, ${parY}px, 0)` : 'translateY(20px)',
-      transition: 'opacity 1s var(--ease), transform 0.5s var(--ease-out)',
+      transition: 'opacity var(--dur-reveal) var(--ease), transform 0.5s var(--ease-out)',
       display: 'grid', gridTemplateColumns: '200px 1fr', gap: 64, alignItems: 'start',
     }} className="vision-grid">
       <div className="mono" style={{ fontSize: 11, letterSpacing: '0.22em', color: 'var(--ink-mute)', textTransform: 'uppercase' }}>★ Vision</div>

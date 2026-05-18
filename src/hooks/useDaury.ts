@@ -38,14 +38,18 @@ export function useScrollY(): number {
 export function useReveal(opts: { threshold?: number; rootMargin?: string } = {}) {
   const ref = useRef<HTMLElement | null>(null);
   const [seen, setSeen] = useState(false);
-  const threshold = opts.threshold ?? 0.12;
-  const rootMargin = opts.rootMargin ?? '0px 0px -5% 0px';
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    el.style.willChange = 'transform, opacity';
+    // Trigger earlier on mobile so fast-scrolling doesn't skip elements
+    const mobile = window.innerWidth < 768;
+    const threshold = opts.threshold ?? (mobile ? 0.06 : 0.12);
+    const rootMargin = opts.rootMargin ?? (mobile ? '0px 0px 0px 0px' : '0px 0px -5% 0px');
     // If already in viewport, show immediately
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.style.willChange = '';
       setSeen(true);
       return;
     }
@@ -53,6 +57,7 @@ export function useReveal(opts: { threshold?: number; rootMargin?: string } = {}
       entries.forEach(e => {
         if (e.isIntersecting) {
           setSeen(true);
+          if (el) el.style.willChange = '';
           io.disconnect();
         }
       });
@@ -64,11 +69,14 @@ export function useReveal(opts: { threshold?: number; rootMargin?: string } = {}
   return [ref, seen] as const;
 }
 
-/* ─── Element-relative parallax ─── */
+/* ─── Element-relative parallax (disabled on mobile for performance) ─── */
 export function useElementParallax(factor = 0.12) {
   const ref = useRef<HTMLElement | null>(null);
   const [y, setY] = useState(0);
   useEffect(() => {
+    if (window.innerWidth < 768) return; // skip parallax on mobile
+    const el = ref.current;
+    if (el) el.style.willChange = 'transform';
     const compute = () => {
       if (!ref.current) return;
       const r = ref.current.getBoundingClientRect();
@@ -80,7 +88,11 @@ export function useElementParallax(factor = 0.12) {
     scrollListeners.add(compute);
     compute();
     window.addEventListener('resize', compute);
-    return () => { scrollListeners.delete(compute); window.removeEventListener('resize', compute); };
+    return () => {
+      scrollListeners.delete(compute);
+      window.removeEventListener('resize', compute);
+      if (el) el.style.willChange = '';
+    };
   }, [factor]);
   return [ref, y] as const;
 }

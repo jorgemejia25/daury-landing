@@ -19,12 +19,14 @@ export function RevealText({ children, as: Tag = 'div', className = '', style = 
 export function MarqueeStrip({ items, reverse }: { items: string[]; reverse?: boolean }) {
   const y = useScrollY();
   const loop = [...items, ...items, ...items];
+  // Skip scroll-driven nudge on mobile to avoid jank
+  const nudge = typeof window !== 'undefined' && window.innerWidth >= 768 ? (reverse ? 1 : -1) * (y * 0.08) : 0;
   return (
     <section style={{ padding: '40px 0', position: 'relative' }}>
       <div className="marquee">
         <div className="marquee-track" style={{
           animationDirection: reverse ? 'reverse' : 'normal',
-          transform: `translate3d(${(reverse ? 1 : -1) * (y * 0.08)}px, 0, 0)`,
+          transform: `translate3d(${nudge}px, 0, 0)`,
         }}>
           {loop.map((it, i) => (
             <span key={i} style={{
@@ -94,8 +96,8 @@ function ProblemCard({ p, i }: { p: { icon: string; t: string; d: string }; i: n
       display: 'flex', flexDirection: 'column', gap: 18, minHeight: 260,
       opacity: seen ? 1 : 0,
       transform: seen ? `translate3d(${m.x * 0.4}px, ${parY + m.y * 0.4}px, 0)` : 'translateY(28px)',
-      transition: 'opacity 0.9s var(--ease), transform 0.4s var(--ease-out), border-color 0.3s',
-      transitionDelay: seen ? `${i * 100}ms, 0ms, 0ms` : `${i * 100}ms`,
+      transition: 'opacity var(--dur-reveal) var(--ease), transform 0.4s var(--ease-out), border-color 0.3s',
+      transitionDelay: seen ? `calc(${i} * var(--stagger)), 0ms, 0ms` : `calc(${i} * var(--stagger))`,
       position: 'relative', overflow: 'hidden',
     }}>
       <div aria-hidden style={{
@@ -154,8 +156,8 @@ function FeatureCard({ f, i }: { f: { k: string; t: string; d: string; tags: str
       padding: '48px 44px', background: 'var(--bg-elev)',
       position: 'relative', overflow: 'hidden',
       opacity: seen ? 1 : 0, transform: seen ? 'translateY(0)' : 'translateY(24px)',
-      transitionDelay: `${(i % 2) * 80}ms`,
-      transitionProperty: 'opacity, transform', transitionDuration: '0.9s', transitionTimingFunction: 'var(--ease)',
+      transitionDelay: `calc(${i % 2} * var(--stagger))`,
+      transitionProperty: 'opacity, transform', transitionDuration: 'var(--dur-reveal)', transitionTimingFunction: 'var(--ease)',
       display: 'flex', flexDirection: 'column', gap: 16, minHeight: 280,
     }}>
       <div aria-hidden style={{

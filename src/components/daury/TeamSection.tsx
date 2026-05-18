@@ -80,7 +80,7 @@ function MemberCard({ m, idx }: { m: TeamMember; idx: number }) {
       style={{
         position: 'relative', display: 'flex', flexDirection: 'column',
         opacity: seen ? 1 : 0, transform: seen ? 'translateY(0)' : 'translateY(16px)',
-        transition: `opacity 0.7s var(--ease) ${idx * 60}ms, transform 0.7s var(--ease) ${idx * 60}ms`,
+        transition: `opacity 0.6s var(--ease) calc(${idx} * var(--stagger)), transform 0.6s var(--ease) calc(${idx} * var(--stagger))`,
       }}
     >
       {/* Photo frame */}
