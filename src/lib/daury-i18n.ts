@@ -31,21 +31,21 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
   es: {
     nav: { experience: 'Experiencia', approach: 'Enfoque', story: 'Historia', team: 'Equipo', involved: 'Súmate', cta: 'Conocer Daury' },
     hero: {
-      tag: 'La plataforma para quienes cuidan',
+      tag: 'Para cuidadores con indicaciones médicas en casa',
       title_a: 'Cuidar, sin perder',
       title_b: 'el hilo.',
-      lead: 'Rutinas, seguimiento y coordinación para cuidadores y familias — todo en un solo lugar.',
+      lead: 'Organiza las rutinas indicadas por el profesional, registra lo hecho y comparte el historial con la familia o el médico.',
       cta1: 'Conocer Daury',
       cta2: 'Cómo funciona',
     },
-    marquee: ['Rutinas', 'Medicación', 'Seguimiento', 'Cuidador', 'Bienestar', 'Familia', 'Coordinación'],
+    marquee: ['Rutinas', 'Indicaciones', 'Registro', 'Rehabilitación', 'Historial', 'Cuidado en casa', 'Seguimiento'],
     connected: {
       eyebrow: 'El problema',
-      title: 'El cuidado diario se pierde entre tareas.',
-      lead: 'Las familias hacen lo mejor con herramientas dispersas. Daury reúne todo en un solo lugar.',
+      title: 'Las indicaciones médicas se pierden en el día a día.',
+      lead: 'El cuidador está cansado, ocupado y emocionalmente cargado. Registrar el cuidado se vuelve imposible — y el profesional nunca sabe qué pasó en casa.',
       problems: [
-        { icon: 'alert', t: 'El cuidado se fragmenta.', d: 'Sin estructura, cada tarea es aislada y los detalles importantes se pierden.' },
-        { icon: 'split', t: 'Los cuidadores cargan solos.', d: 'Sin visibilidad compartida, el desgaste crece y la coordinación falla.' },
+        { icon: 'alert', t: 'Las indicaciones quedan en un papel.', d: 'Sin estructura, las rutinas del médico o fisioterapeuta se olvidan, se improvisan o se hacen a medias.' },
+        { icon: 'split', t: 'El cuidador no registra cuando está agotado.', d: 'Al final del día, la carga emocional hace imposible recordar qué se hizo. El historial que el profesional necesita no existe.' },
       ],
     },
     core: {
@@ -53,10 +53,10 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
       title: 'Un día bien cuidado.',
       lead: 'Cuatro herramientas. Un flujo continuo.',
       features: [
-        { k: '01', t: 'Rutinas y tareas',       d: 'Medicación, comidas, higiene y cuidados. Todo en orden, con recordatorios claros.',  tags: ['Día estructurado'], color: 'blue' },
-        { k: '02', t: 'Panel del cuidador',      d: 'Seguimiento en tiempo real. Alertas cuando algo no se completa.',                    tags: ['Visibilidad', 'Alertas'], color: 'violet' },
-        { k: '03', t: 'Perfil de atención',      d: 'Estado, notas y preferencias del ser querido. Siempre actualizado y accesible.',     tags: ['Personalizado'], color: 'green' },
-        { k: '04', t: 'Coordinación familiar',   d: 'Todos los cuidadores en la misma página. Menos llamadas, menos confusión.',          tags: ['Equipo'], color: 'blue' },
+        { k: '01', t: 'Rutina desde las indicaciones', d: 'Las indicaciones del médico o fisioterapeuta se convierten en una rutina diaria clara y ordenada.',           tags: ['Indicaciones médicas'], color: 'blue' },
+        { k: '02', t: 'Registro rápido',               d: 'El cuidador marca cada actividad completada en menos de 20 segundos, incluso al final de un día agotador.',   tags: ['Rápido', 'Simple'], color: 'violet' },
+        { k: '03', t: 'Orientación paso a paso',       d: 'Cada actividad indicada viene con guía para completarla correctamente — sin adivinar ni improvisar.',         tags: ['Guía'], color: 'green' },
+        { k: '04', t: 'Historial exportable',          d: 'PDF semanal con todo lo registrado. Listo para la próxima consulta o para coordinar con la familia.',          tags: ['PDF semanal'], color: 'blue' },
       ],
     },
     flow: {
@@ -64,9 +64,9 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
       title: 'Simple desde el primer día.',
       lead: null,
       steps: [
-        { n: '01', t: 'Configurá el perfil',  d: 'Datos de la persona cuidada, rutinas y cuidadores en minutos.' },
-        { n: '02', t: 'Guiá cada día',        d: 'Recordatorios, tareas y registro — todo desde una sola app.' },
-        { n: '03', t: 'Mantené el control',   d: 'Seguimiento, ajustes y alertas cuando algo importa.' },
+        { n: '01', t: 'Las indicaciones se vuelven rutina', d: 'Las instrucciones del médico o fisioterapeuta se organizan en un plan diario claro.' },
+        { n: '02', t: 'Cada día, guiado y registrado',      d: 'Orientación paso a paso para cada actividad. Registro en menos de 20 segundos.' },
+        { n: '03', t: 'El historial habla por ti',          d: 'PDF semanal listo para la próxima consulta o para coordinar con la familia.' },
       ],
     },
     story: {
@@ -88,30 +88,30 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
     scale: {
       eyebrow: 'Visión',
       title: 'Construido útil. Construido para escalar.',
-      lead: 'Foco claro hoy. Alcance amplio mañana.',
+      lead: 'Foco claro hoy. Alcance institucional en la siguiente etapa.',
       delivers: {
         t: 'Lo que Daury entrega',
         list: [
-          'Estructura el día del ser querido y del cuidador.',
-          'Cualquier tipo de cuidado — no solo adultos mayores.',
-          'Coordinación entre múltiples cuidadores.',
-          'Seguimiento real, no solo recordatorios.',
+          'Convierte indicaciones médicas en rutinas diarias.',
+          'Registro rápido diseñado para el cuidador ocupado y agotado.',
+          'Orientación paso a paso para actividades de rehabilitación.',
+          'Historial exportable para compartir con el profesional de salud.',
         ],
       },
       isnot: {
         t: 'Lo que Daury no es',
         list: [
-          'No es una herramienta de diagnóstico médico.',
-          'No reemplaza a profesionales de la salud.',
-          'No es un simple recordatorio de pastillas.',
+          'No diagnostica ni recomienda tratamientos.',
+          'Organiza lo que el profesional ya indicó — no lo reemplaza.',
+          'No es un expediente médico ni plataforma de telemedicina.',
           'No requiere conocimientos técnicos para usarlo.',
         ],
       },
       phases: [
-        { n: 'Fase 01', t: 'Lanzamiento',            points: ['Cuidador + persona cuidada.', 'Rutinas, tareas y panel básico.', 'Cualquier tipo de cuidado.'] },
-        { n: 'Fase 02', t: 'Expansión inteligente',   points: ['Coordinación multi-cuidador.', 'Reportes y tendencias de bienestar.', 'Integración con profesionales de salud.'] },
+        { n: 'Fase 01', t: 'Cuidador en casa', points: ['Rutina diaria desde indicaciones médicas.', 'Registro rápido por actividad.', 'Historial exportable en PDF.'] },
+        { n: 'Fase 02', t: 'Alcance institucional', points: ['Clínicas de fisioterapia y cuidado domiciliario.', 'Registro estructurado para seguimiento profesional.', 'Continuidad del tratamiento entre consultas.'] },
       ],
-      vision: 'Una plataforma que hace visible el trabajo invisible del cuidado — y lo convierte en algo sostenible para familias de todo el mundo.',
+      vision: 'Daury organiza las indicaciones de tu profesional de salud. No sustituye su criterio clínico.',
     },
     team: {
       eyebrow: 'Las mentes detrás de Daury',
@@ -151,21 +151,21 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
   en: {
     nav: { experience: 'Experience', approach: 'Approach', story: 'Story', team: 'Team', involved: 'Get involved', cta: 'Discover Daury' },
     hero: {
-      tag: 'The platform built for caregivers',
+      tag: 'For caregivers with medical instructions at home',
       title_a: 'Care without',
       title_b: 'dropping the thread.',
-      lead: 'Routines, tracking and coordination for caregivers and families — all in one place.',
+      lead: 'Organizes the routines prescribed by the professional, tracks what was done and shares the history with the family or doctor.',
       cta1: 'Discover Daury',
       cta2: 'How it works',
     },
-    marquee: ['Routines', 'Medication', 'Tracking', 'Caregiver', 'Wellness', 'Family', 'Coordination'],
+    marquee: ['Routines', 'Instructions', 'Logging', 'Rehabilitation', 'History', 'Home care', 'Tracking'],
     connected: {
       eyebrow: 'The problem',
-      title: 'Daily care gets lost between tasks.',
-      lead: 'Families do their best with scattered tools. Daury brings everything into one place.',
+      title: 'Medical instructions get lost in daily life.',
+      lead: 'Caregivers are tired, busy and emotionally drained. Logging care becomes impossible — and the professional never knows what happened at home.',
       problems: [
-        { icon: 'alert', t: 'Care gets fragmented.',       d: 'Without structure, every task is isolated and important details slip through.' },
-        { icon: 'split', t: 'Caregivers carry it alone.',  d: 'Without shared visibility, burnout grows and coordination breaks down.' },
+        { icon: 'alert', t: 'Instructions stay on paper.',        d: "Without structure, the doctor's or physiotherapist's routines get forgotten, improvised, or done halfway." },
+        { icon: 'split', t: 'No one logs when exhausted.',        d: "At the end of a hard day, emotional load makes it impossible to remember what was done. The record the doctor needs doesn't exist." },
       ],
     },
     core: {
@@ -173,10 +173,10 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
       title: 'A well-cared day.',
       lead: 'Four tools. One continuous flow.',
       features: [
-        { k: '01', t: 'Routines & tasks',      d: 'Medication, meals, hygiene and care tasks. All in order, with clear reminders.',        tags: ['Structured day'], color: 'blue' },
-        { k: '02', t: 'Caregiver panel',        d: 'Real-time tracking. Alerts when something is missed.',                                  tags: ['Visibility', 'Alerts'], color: 'violet' },
-        { k: '03', t: 'Care profile',           d: "Status, notes and the loved one's preferences. Always up to date and accessible.",      tags: ['Personalized'], color: 'green' },
-        { k: '04', t: 'Family coordination',    d: 'All caregivers on the same page. Fewer calls, less confusion.',                         tags: ['Team'], color: 'blue' },
+        { k: '01', t: 'Routine from instructions',  d: "The doctor's or physiotherapist's instructions become a clear, ordered daily routine.",              tags: ['Medical instructions'], color: 'blue' },
+        { k: '02', t: 'Quick logging',              d: 'Each completed activity is logged in under 20 seconds — even at the end of an exhausting day.',      tags: ['Fast', 'Simple'], color: 'violet' },
+        { k: '03', t: 'Step-by-step guidance',      d: 'Each prescribed activity comes with guidance to complete it correctly — no guessing, no improvising.', tags: ['Guidance'], color: 'green' },
+        { k: '04', t: 'Exportable history',         d: 'Weekly PDF with everything logged. Ready for the next appointment or to coordinate with family.',     tags: ['Weekly PDF'], color: 'blue' },
       ],
     },
     flow: {
@@ -184,9 +184,9 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
       title: 'Simple from day one.',
       lead: null,
       steps: [
-        { n: '01', t: 'Set up the profile',  d: "The care recipient's details, routines and caregivers in minutes." },
-        { n: '02', t: 'Guide each day',      d: 'Reminders, tasks and logs — all from one app.' },
-        { n: '03', t: 'Stay in control',     d: 'Tracking, adjustments and alerts when something matters.' },
+        { n: '01', t: 'Instructions become a routine', d: "The doctor's or physiotherapist's directions are organized into a clear daily plan." },
+        { n: '02', t: 'Every day, guided and logged',  d: 'Step-by-step guidance for each activity. Logged in under 20 seconds.' },
+        { n: '03', t: 'The history speaks for you',    d: 'Weekly PDF ready for the next appointment or to coordinate with family.' },
       ],
     },
     story: {
@@ -212,26 +212,26 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
       delivers: {
         t: 'What Daury delivers',
         list: [
-          "Structures the day for both the care recipient and caregiver.",
-          'Any type of care — not only elderly or cognitive cases.',
-          'Coordination across multiple caregivers.',
-          'Real tracking, not just reminders.',
+          'Turns medical instructions into daily routines.',
+          'Quick logging designed for the busy, exhausted caregiver.',
+          'Step-by-step guidance for rehabilitation activities.',
+          'Exportable history to share with the healthcare professional.',
         ],
       },
       isnot: {
         t: 'What Daury is not',
         list: [
-          'Not a medical diagnosis tool.',
-          "Doesn't replace healthcare professionals.",
-          'Not a simple pill reminder app.',
+          'Does not diagnose or recommend treatments.',
+          'Organizes what the professional already prescribed — does not replace them.',
+          'Not a full medical record or telemedicine platform.',
           'No technical skills needed to use it.',
         ],
       },
       phases: [
-        { n: 'Phase 01', t: 'Launch',                points: ['Caregiver + care recipient.', 'Routines, tasks and basic panel.', 'Any type of care.'] },
-        { n: 'Phase 02', t: 'Intelligent expansion',  points: ['Multi-caregiver coordination.', 'Wellness reports and trends.', 'Integration with health professionals.'] },
+        { n: 'Phase 01', t: 'Caregiver at home',       points: ['Daily routine from medical instructions.', 'Quick logging per activity.', 'Exportable weekly PDF.'] },
+        { n: 'Phase 02', t: 'Institutional reach',     points: ['Physiotherapy clinics and home care services.', 'Structured records for professional follow-up.', 'Treatment continuity between appointments.'] },
       ],
-      vision: 'A platform that makes the invisible work of caregiving visible — and turns it into something sustainable for families everywhere.',
+      vision: 'Daury organizes your healthcare professional\'s instructions. It does not replace their clinical judgment.',
     },
     team: {
       eyebrow: 'The minds behind Daury',
