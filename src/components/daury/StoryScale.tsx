@@ -30,7 +30,7 @@ export function Story({ t }: { t: I18nContent }) {
             {t.story.paragraphs.map((para, i) => (
               <StoryParagraph key={i} text={para} index={i} />
             ))}
-            <PullQuote text={t.story.pull} />
+            <PullQuote text={t.story.pull} label={t.story.pullLabel} />
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@ function StoryParagraph({ text, index }: { text: string; index: number }) {
   );
 }
 
-function PullQuote({ text }: { text: string }) {
+function PullQuote({ text, label }: { text: string; label: string }) {
   const [revealRef, seen] = useReveal({ threshold: 0.3 });
   const [parRef, parY] = useElementParallax(0.08);
 
@@ -84,7 +84,7 @@ function PullQuote({ text }: { text: string }) {
       transform: seen ? `translate3d(0, ${parY}px, 0)` : 'translateY(16px)',
       transition: 'opacity var(--dur-reveal) var(--ease), transform 0.5s var(--ease-out)',
     }}>
-      <div className="mono" style={{ fontSize: 10, letterSpacing: '0.22em', color: 'var(--ink-mute)', textTransform: 'uppercase', marginBottom: 18 }}>— Pull quote</div>
+      <div className="mono" style={{ fontSize: 10, letterSpacing: '0.22em', color: 'var(--ink-mute)', textTransform: 'uppercase', marginBottom: 18 }}>{label}</div>
       <p style={{
         fontFamily: "'Bricolage Grotesque', sans-serif", fontStyle: 'italic', fontWeight: 400,
         fontSize: 'clamp(28px, 3.4vw, 44px)', lineHeight: 1.15,
@@ -110,8 +110,8 @@ export function Scale({ t }: { t: I18nContent }) {
 
         {/* Delivers / Is Not */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: 'var(--rule)', border: '1px solid var(--rule)', borderRadius: 28, overflow: 'hidden', marginBottom: 96 }} className="versus-grid">
-          <VersusList title={t.scale.delivers.t} list={t.scale.delivers.list} positive />
-          <VersusList title={t.scale.isnot.t} list={t.scale.isnot.list} positive={false} />
+          <VersusList title={t.scale.delivers.t} label={t.scale.labels.delivers} list={t.scale.delivers.list} positive />
+          <VersusList title={t.scale.isnot.t} label={t.scale.labels.isnot} list={t.scale.isnot.list} positive={false} />
         </div>
 
         {/* Phases */}
@@ -119,13 +119,13 @@ export function Scale({ t }: { t: I18nContent }) {
           {t.scale.phases.map((ph, i) => <PhaseCard key={i} phase={ph} i={i} />)}
         </div>
 
-        <VisionQuote text={t.scale.vision} />
+        <VisionQuote text={t.scale.vision} label={t.scale.labels.vision} />
       </div>
     </section>
   );
 }
 
-function VersusList({ title, list, positive }: { title: string; list: string[]; positive: boolean }) {
+function VersusList({ title, label, list, positive }: { title: string; label: string; list: string[]; positive: boolean }) {
   const [ref, seen] = useReveal({ threshold: 0.2 });
   return (
     <div ref={ref as React.Ref<HTMLDivElement>} style={{
@@ -137,7 +137,7 @@ function VersusList({ title, list, positive }: { title: string; list: string[]; 
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span aria-hidden style={{ width: 8, height: 8, borderRadius: 999, background: positive ? 'var(--green)' : 'var(--ink-mute)' }}/>
-        <span className="mono" style={{ fontSize: 11, letterSpacing: '0.18em', color: 'var(--ink-mute)', textTransform: 'uppercase' }}>{positive ? 'Delivers' : 'Not this'}</span>
+        <span className="mono" style={{ fontSize: 11, letterSpacing: '0.18em', color: 'var(--ink-mute)', textTransform: 'uppercase' }}>{label}</span>
       </div>
       <h3 style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 500, fontSize: 'clamp(24px, 2.6vw, 34px)', letterSpacing: '-0.02em', lineHeight: 1.15, margin: 0, maxWidth: 380 }}>{title}</h3>
       <ul style={{ listStyle: 'none', padding: 0, margin: 'auto 0 0', display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -221,7 +221,7 @@ function PhaseCard({ phase, i }: { phase: { n: string; t: string; points: string
   );
 }
 
-function VisionQuote({ text }: { text: string }) {
+function VisionQuote({ text, label }: { text: string; label: string }) {
   const [revealRef, seen] = useReveal({ threshold: 0.2 });
   const [parRef, parY] = useElementParallax(0.1);
 
@@ -238,7 +238,7 @@ function VisionQuote({ text }: { text: string }) {
       transition: 'opacity var(--dur-reveal) var(--ease), transform 0.5s var(--ease-out)',
       display: 'grid', gridTemplateColumns: '200px 1fr', gap: 64, alignItems: 'start',
     }} className="vision-grid">
-      <div className="mono" style={{ fontSize: 11, letterSpacing: '0.22em', color: 'var(--ink-mute)', textTransform: 'uppercase' }}>★ Vision</div>
+      <div className="mono" style={{ fontSize: 11, letterSpacing: '0.22em', color: 'var(--ink-mute)', textTransform: 'uppercase' }}>{label}</div>
       <p style={{
         fontFamily: "'Bricolage Grotesque', sans-serif", fontWeight: 400, fontStyle: 'italic',
         fontSize: 'clamp(28px, 3.4vw, 48px)', lineHeight: 1.18,

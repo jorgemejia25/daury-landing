@@ -35,17 +35,17 @@ function TestimonialCard({ quote, authorName, authorRole, authorImage }: Testimo
 const testimonials: Testimonial[] = [
   {
     quote:
-      "Daury didn't just help my father remember his medicine; it helped us remember how to be a family again, rather than just full-time caregivers.",
+      "Daury turns the therapist's instructions into a day we can actually follow at home.",
     authorName: "Elena R.",
-    authorRole: "Daughter & Primary Caregiver",
+    authorRole: "Family Caregiver",
     authorImage:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBw_-UQzPL3gzWhu487lm4Z4dVKDDCK2tgQPya8-5p7eexOJXekLGGCSjtjXYCzfTKir6M_zF8WO3RXxxRtoWz8nsBpvJI5MWVmPs2KwyyoBL5-_0sRybHEAQXhRRFIPIyqGyn8S1EQbjUXRnQ63nSIer5ewXqtvW1_ksgDMRh2OhJDrrvnR_InUG9F8qmcjQjKqMBoq4JFq3ZLTjGgl7LxBpgveCUAyZjxPMCfUcWYVBzwNFPxhjyiDzf4XsmaX7PKFpiddl4QPVM",
   },
   {
     quote:
-      "The predictive insights gave me a 24-hour head start on a rough patch. That level of foresight is priceless for our clinical team.",
+      "A weekly summary of completed activities, pain and incidents would make follow-up visits much clearer.",
     authorName: "Dr. Marcus Vance",
-    authorRole: "Cognitive Specialist",
+    authorRole: "Physiotherapist",
     authorImage:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuA03okVl3N2Cu3vt24K7urV-gedIF-PiUY_j7y4yUrJ4lqivTtLAGzcnwP7dqv4vIFPeB1oN76ATf_9KBjY4N_bFMuTqV6bzCZf7CIwe97CE--GL0N9MDA82b-cmqlYppBZ4xlrttsSkLarGt30i3DDZnRCzXwWdkQvfQAc23TKvctFjWX-djnV3kW9XKWTQrq030sMxTpDcXir1JVwButZGQVtRL42GXQ1zslnHxwLrEztIfGVJvwRc_0-NPngNGMjPOHuhntfCc8",
   },

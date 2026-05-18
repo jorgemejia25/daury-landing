@@ -53,10 +53,10 @@ export default function ProductScope({ locale }: ProductScopeProps) {
           <div className="glass-card rounded-[2rem] p-8 md:p-10">
             <div className="flex items-center gap-3 mb-5">
               <span className="h-7 w-7 flex items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold">1</span>
-              <p className="font-semibold text-on-surface">{copy.mvpTitle}</p>
+              <p className="font-semibold text-on-surface">{copy.resultTitle}</p>
             </div>
             <ul className="space-y-3">
-              {copy.mvpItems.map((item: string) => (
+              {copy.resultItems.map((item: string) => (
                 <li key={item} className="text-sm text-on-surface-variant leading-relaxed">{item}</li>
               ))}
             </ul>

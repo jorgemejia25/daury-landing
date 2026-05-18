@@ -60,23 +60,23 @@ export default function Features({ locale }: FeaturesProps) {
       </FadeIn>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Memory Anchors — large */}
+        {/* Structured instructions */}
         <FadeIn direction="up" delay={0} className="md:col-span-2">
           <div className="glass-card p-10 rounded-[2.5rem] flex flex-col justify-between overflow-hidden relative group h-full">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] -mr-32 -mt-32 transition-all duration-500 group-hover:bg-primary/20" />
             <div>
-              <MaterialIcon name="memory" className="text-4xl text-primary mb-6" />
-              <h3 className="text-3xl font-bold mb-4">{copy.memoryAnchors.title}</h3>
+              <MaterialIcon name="assignment" className="text-4xl text-primary mb-6" />
+              <h3 className="text-3xl font-bold mb-4">{copy.structuredInstructions.title}</h3>
               <p className="text-lg text-on-surface-variant max-w-md">
-                {copy.memoryAnchors.description}
+                {copy.structuredInstructions.description}
               </p>
             </div>
             <div className="mt-12 flex gap-4">
               <span className="px-4 py-2 rounded-full bg-surface-bright/30 text-xs font-semibold uppercase tracking-widest">
-                {copy.memoryAnchors.tag1}
+                {copy.structuredInstructions.tag1}
               </span>
               <span className="px-4 py-2 rounded-full bg-surface-bright/30 text-xs font-semibold uppercase tracking-widest">
-                {copy.memoryAnchors.tag2}
+                {copy.structuredInstructions.tag2}
               </span>
             </div>
           </div>

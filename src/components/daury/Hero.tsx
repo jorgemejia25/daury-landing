@@ -54,7 +54,7 @@ export default function Hero({ t }: HeroProps) {
             {t.hero.lead}
           </p>
           <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-            <MagneticButton href="#approach" variant="primary">
+            <MagneticButton href="#experience" variant="primary">
               {t.hero.cta1}
               <svg className="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </MagneticButton>

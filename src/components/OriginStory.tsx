@@ -37,9 +37,9 @@ export default function OriginStory({ locale }: OriginStoryProps) {
               <FadeIn direction="right" delay={0.08} className="relative h-full min-h-[300px] lg:min-h-[500px]">
                 <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10" />
                 <img
-                  src="https://cdn1.faroutmagazine.co.uk/uploads/1/2023/03/Pearl-Jam-Far-Out-Magazine.jpg"
-                  alt="Pearl Jam performing live on stage"
-                  className="absolute inset-0 h-full w-full object-cover grayscale-20 contrast-125 transition-transform duration-700 hover:scale-105 hover:grayscale-0"
+                  src="/logo.svg"
+                  alt="Daury product mark"
+                  className="absolute inset-0 h-full w-full object-contain p-16 grayscale-20 contrast-125 transition-transform duration-700 hover:scale-105 hover:grayscale-0"
                 />
                 {/* Gradient fade to blend with content on mobile */}
                 <div className="absolute inset-0 bg-linear-to-t from-surface via-transparent to-transparent lg:bg-linear-to-r lg:from-transparent lg:via-surface/80 lg:to-surface z-20" />

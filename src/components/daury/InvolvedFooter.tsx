@@ -191,7 +191,7 @@ export function FooterSection({ t }: { t: I18nContent }) {
           <span className="mono">{t.footer.copy}</span>
           <span className="mono" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--green)' }}/>
-            ALL SYSTEMS NOMINAL
+            {t.footer.status}
           </span>
         </div>
       </div>

@@ -1,120 +1,120 @@
 {
   "en": {
     "metadata": {
-      "title": "Daury — The Gentle Guardian of Cognitive Flow",
-      "description": "Support, memory, and care — all in one place. Navigating cognitive challenges with precision and empathy."
+      "title": "Daury - Clear instructions for home care",
+      "description": "Daury organizes professional instructions into daily routines, step-by-step guidance, quick logs and weekly summaries for informal caregivers."
     },
     "navbar": {
-      "navLinks": ["Experience", "Solutions", "Insights", "About"],
-      "cta": "Get Started",
+      "navLinks": ["Product", "Problem", "Scope", "Team"],
+      "cta": "Request demo",
       "language": "Language"
     },
     "hero": {
-      "badge": "Compassionate cognitive support",
-      "titleStart": "Support, memory, and care —",
-      "titleAccent": "all in one place.",
-      "description": "Daury helps families turn complex days into guided, manageable moments for children, older adults, and anyone needing cognitive support.",
-      "primaryCta": "Discover Daury",
-      "secondaryCta": "How It Works"
+      "badge": "Operational assistant for informal caregivers",
+      "titleStart": "Clear instructions for",
+      "titleAccent": "home care.",
+      "description": "Daury organizes what the doctor or therapist already prescribed, guides daily execution and logs care for family and professional follow-up.",
+      "primaryCta": "See product",
+      "secondaryCta": "Results"
     },
     "problem": {
-      "title": "Care should feel connected.",
-      "description": "Most tools solve only one part of the journey. Daury brings routines, memory support, guided activities, and caregiver follow-up into one continuous flow.",
+      "title": "Home care breaks when instructions arrive scattered.",
+      "description": "Families leave appointments with verbal directions, loose papers and daily uncertainty about what to do, when to stop and how to report what happened.",
       "stats": [
-        "Reminders alone are not enough without routines, identity support, and guided actions.",
-        "Caregivers need visibility and follow-up, not isolated tools."
+        "Caregivers need a clear routine, not more scattered information.",
+        "Professionals need a usable history of what happened at home."
       ],
-      "cardTitle": "One Daily Rhythm",
-      "cardDescription": "Everything families need, working together."
+      "cardTitle": "Daily Continuity",
+      "cardDescription": "Instructions, guidance and logging in one practical flow."
     },
     "features": {
-      "title": "Core Experience",
-      "description": "Designed to deliver immediate daily value with a calm, accessible workflow.",
-      "memoryAnchors": {
-        "title": "Daily Routines",
-        "description": "Caregivers define medication, meals, hygiene, and other essential tasks with clear reminders.",
-        "tag1": "Structured Day",
-        "tag2": "Simple Reminders"
+      "title": "Core Product",
+      "description": "Daury delivers the complete care experience for rehabilitation and mobility support at home.",
+      "structuredInstructions": {
+        "title": "Structured Instructions",
+        "description": "Caregivers register professional instructions with guided templates, frequency and restrictions.",
+        "tag1": "Guided Setup",
+        "tag2": "No Prescribing"
       },
       "careHub": {
-        "title": "Caregiver Panel",
-        "description": "Track completion, adjust activities, and receive basic alerts when tasks are missed."
+        "title": "Daily Routine",
+        "description": "A clear view of pending, completed and skipped activities for the day."
       },
       "safeZones": {
-        "title": "Person Recognition",
-        "description": "Manual recognition with photos and names to reinforce familiar connections."
+        "title": "Step-by-step Guidance",
+        "description": "Preparation, numbered steps, stop signals and what to avoid for each indicated activity."
       },
       "flowState": {
-        "title": "Guided Cognitive Activities",
-        "description": "Step-by-step activities adapted by profile, with simple follow-up: completed vs not completed."
+        "title": "Weekly History",
+        "description": "Completed activities, pain, notes and incidents organized into a shareable weekly summary."
       }
     },
     "howItWorks": {
-      "title": "How It Flows",
-      "description": "A clean three-step journey for caregivers and users.",
+      "title": "Product Result",
+      "description": "What the caregiver gets from Daury.",
       "steps": [
         {
           "number": "1",
-          "title": "Set the Care Plan",
-          "description": "Define profile, routines, key people, and reminders in minutes."
+          "title": "Knows what is due today",
+          "description": "The routine turns professional instructions into concrete daily activities."
         },
         {
           "number": "2",
-          "title": "Guide the Day",
-          "description": "Deliver clear daily actions, reminders, and guided activities with familiar faces."
+          "title": "Acts with fewer doubts",
+          "description": "Guides explain how to execute each registered activity and when to consult the professional."
         },
         {
           "number": "3",
-          "title": "Keep Everyone Aligned",
-          "description": "Track completion, adjust routines, and receive meaningful alerts."
+          "title": "Shares a weekly summary",
+          "description": "The history gives family and professionals clearer information for follow-up."
         }
       ]
     },
     "originStory": {
-      "badge": "Product focus",
-      "title": "Why Daury exists",
+      "badge": "Product scope",
+      "title": "What Daury covers",
       "paragraphs": [
-        "Daury started from Jorge's idea that cognitive support should not be fragmented or overwhelming.",
-        "The song \"Daughter\" by Pearl Jam helped frame the emotional reality behind closed curtains: struggles that families carry silently.",
-        "From that starting point, Daury was designed to be a daily companion, not a diagnostic tool and not just a game app.",
-        "Its core value is practical human support: simplicity, integration, and real usefulness in everyday life."
+        "Daury is built for caregivers of adults in post-operative recovery, light rehabilitation, fracture recovery or reduced mobility.",
+        "It only organizes instructions previously given by a healthcare professional.",
+        "The app does not diagnose, prescribe or recommend new activities.",
+        "Its value is operational: routine, guidance, quick logging and weekly continuity."
       ]
     },
     "productScope": {
-      "title": "Built to Be Useful. Built to Scale.",
-      "subtitle": "A focused launch with room to evolve intelligently.",
+      "title": "Focused product. Clear boundaries.",
+      "subtitle": "A practical app for the care that happens between appointments.",
       "doesTitle": "What Daury Delivers",
       "doesItems": [
-        "Integrates routines, memory, activities, and caregiver tracking.",
-        "Supports multiple profiles, not only Alzheimer-related cases.",
-        "Prioritizes usability for people with cognitive challenges.",
-        "Keeps caregivers at the center of the workflow."
+        "Daily routines based on professional instructions.",
+        "Step-by-step guidance for registered activities.",
+        "Quick logging of pain, notes and incidents.",
+        "Weekly exportable summaries for family or professional review."
       ],
       "doesNotTitle": "What Daury Is Not",
       "doesNotItems": [
-        "It is not a medical diagnosis or treatment tool.",
+        "It does not diagnose or prescribe.",
         "It does not replace healthcare professionals.",
-        "It is not only a cognitive games app or a basic calendar.",
-        "It does not require AI to provide value in the base version."
+        "It is not telemedicine or a complete medical record.",
+        "It does not cover psychiatric, oncological or palliative care within its main scope."
       ],
-      "mvpTitle": "Launch Focus",
-      "mvpItems": [
-        "Start with one profile focus: older adult plus caregiver.",
-        "Deliver routines with visual reminders and a basic caregiver panel.",
-        "Expand gradually into more profiles and activities."
+      "resultTitle": "Caregiver Result",
+      "resultItems": [
+        "A caregiver can open Daury and know what must be done today.",
+        "Each activity can be completed with concise guidance.",
+        "The week ends with a useful care history."
       ],
-      "aiTitle": "Intelligent Evolution",
+      "aiTitle": "Institutional Value",
       "aiItems": [
-        "Automatic personalization of routines and activity suggestions.",
-        "Simple voice assistant for real-time step-by-step guidance.",
-        "Advanced recognition, predictive alerts, and caregiver insights."
+        "Condition-specific routines for rehabilitation and mobility care.",
+        "Use by physiotherapy clinics and home care services.",
+        "Structured summaries for professional follow-up."
       ],
-      "visionTitle": "Vision",
-      "visionText": "Build an accessible platform that improves user autonomy, reduces caregiver emotional burden, and connects technology with humane care."
+      "visionTitle": "Positioning",
+      "visionText": "Daury organizes what the professional already prescribed, guides daily execution and logs home care to improve clarity, continuity and safety."
     },
     "team": {
       "title": "The Minds Behind Daury",
-      "description": "A dedicated team building the future of compassionate cognitive care — one thoughtful pixel at a time.",
+      "description": "A USAC team building a focused product for caregivers who need clarity at home.",
       "roles": {
         "techLead": "Tech Lead",
         "fullstackDeveloper": "Fullstack Developer",
@@ -126,148 +126,148 @@
       }
     },
     "earlyAccess": {
-      "title": "Work with us on Daury",
-      "description": "We're assembling a small, mission-driven team and partners who care about cognitive health, humane technology, and lasting impact. Whether you build, design, heal, or connect organizations, we want to hear from you.",
+      "title": "Request a Daury demo",
+      "description": "If you provide care at home or work in rehabilitation, we can show how Daury organizes instructions, routines, logs and history for your context.",
       "name": "Name",
       "namePlaceholder": "John Doe",
       "email": "Email Address",
-      "interest": "How would you like to contribute?",
-      "submit": "Express interest",
-      "legal": "We read every message. Submitting this form is not an offer of employment; we'll follow up if there is a fit. By sending this, you agree to our terms of service and privacy policy.",
+      "interest": "What case do you want to organize?",
+      "submit": "Request demo",
+      "legal": "Daury does not replace medical attention or professional instructions.",
       "options": [
-        { "value": "engineering", "label": "Engineering & product" },
-        { "value": "design", "label": "Design & brand" },
-        { "value": "clinical", "label": "Clinical care & research" },
-        { "value": "partnerships", "label": "Partnerships & strategy" },
-        { "value": "other", "label": "Something else" }
+        { "value": "caregiver", "label": "Family care" },
+        { "value": "physiotherapy", "label": "Physiotherapy" },
+        { "value": "clinic", "label": "Clinic" },
+        { "value": "home-care", "label": "Home care" },
+        { "value": "other", "label": "Other" }
       ]
     },
     "footer": {
-      "copyright": "© 2026 Daury. The Gentle Guardian of Cognitive Flow.",
+      "copyright": "© 2026 Daury. Clear instructions for home care.",
       "links": [
-        { "label": "How It Works", "href": "#how-it-works" },
-        { "label": "Meet the Team", "href": "#team" },
-        { "label": "Our Story", "href": "#about" },
-        { "label": "Get Involved", "href": "#contact" }
+        { "label": "Product", "href": "#experience" },
+        { "label": "Scope", "href": "#story" },
+        { "label": "Team", "href": "#team" },
+        { "label": "Demo", "href": "#involved" }
       ]
     }
   },
   "es": {
     "metadata": {
-      "title": "Daury — El Guardián del Flujo Cognitivo",
-      "description": "Apoyo, memoria y cuidado, todo en un solo lugar. Navega desafíos cognitivos con precisión y empatía."
+      "title": "Daury - Indicaciones claras para cuidar en casa",
+      "description": "Daury organiza indicaciones profesionales en rutinas diarias, guías paso a paso, registros rápidos e historiales semanales para cuidadores informales."
     },
     "navbar": {
-      "navLinks": ["Experiencia", "Soluciones", "Insights", "Acerca de"],
-      "cta": "Comenzar",
+      "navLinks": ["Producto", "Problema", "Alcance", "Equipo"],
+      "cta": "Solicitar demo",
       "language": "Idioma"
     },
     "hero": {
-      "badge": "Apoyo cognitivo con enfoque humano",
-      "titleStart": "Apoyo, memoria y cuidado —",
-      "titleAccent": "todo en un solo lugar.",
-      "description": "Daury ayuda a las familias a transformar días complejos en momentos guiados y manejables para quienes necesitan apoyo cognitivo.",
-      "primaryCta": "Descubrir Daury",
-      "secondaryCta": "Cómo Funciona"
+      "badge": "Asistente operativo para cuidadores informales",
+      "titleStart": "Indicaciones claras para",
+      "titleAccent": "cuidar en casa.",
+      "description": "Daury organiza lo que el médico o terapeuta ya indicó, guía la ejecución diaria y registra el cuidado para seguimiento familiar y profesional.",
+      "primaryCta": "Ver producto",
+      "secondaryCta": "Resultados"
     },
     "problem": {
-      "title": "El cuidado debe sentirse conectado.",
-      "description": "La mayoría de herramientas resuelven solo una parte. Daury integra rutinas, memoria, actividades guiadas y seguimiento del cuidador en un solo flujo.",
+      "title": "El cuidado en casa se rompe cuando las indicaciones llegan sueltas.",
+      "description": "Las familias salen de consulta con instrucciones verbales, papeles dispersos y dudas diarias sobre qué hacer, cuándo detenerse y cómo reportar lo ocurrido.",
       "stats": [
-        "Los recordatorios por sí solos no resuelven la rutina diaria ni la memoria contextual.",
-        "Los cuidadores necesitan seguimiento real, no herramientas aisladas."
+        "El cuidador necesita una rutina clara, no más información dispersa.",
+        "El profesional necesita un historial usable de lo que pasó en casa."
       ],
-      "cardTitle": "Un Ritmo Diario",
-      "cardDescription": "Todo lo esencial, trabajando en conjunto."
+      "cardTitle": "Continuidad Diaria",
+      "cardDescription": "Indicaciones, guía y registro en un flujo práctico."
     },
     "features": {
-      "title": "Experiencia Base",
-      "description": "Pensada para aportar valor diario inmediato con una interacción clara y accesible.",
-      "memoryAnchors": {
-        "title": "Rutinas Diarias",
-        "description": "El cuidador define tareas clave como medicamento, comida o higiene con recordatorios claros.",
-        "tag1": "Día Estructurado",
-        "tag2": "Recordatorios Simples"
+      "title": "Producto central",
+      "description": "Daury entrega la experiencia completa para cuidado de rehabilitación y movilidad en casa.",
+      "structuredInstructions": {
+        "title": "Indicaciones Estructuradas",
+        "description": "El cuidador registra indicaciones profesionales con plantillas guiadas, frecuencia y restricciones.",
+        "tag1": "Setup Guiado",
+        "tag2": "Sin Prescribir"
       },
       "careHub": {
-        "title": "Panel del Cuidador",
-        "description": "Permite ver cumplimiento, ajustar actividades y recibir alertas básicas."
+        "title": "Rutina Diaria",
+        "description": "Vista clara de actividades pendientes, completadas y omitidas durante el día."
       },
       "safeZones": {
-        "title": "Reconocimiento de Personas",
-        "description": "Identificación manual con fotos y nombres para reforzar vínculos familiares."
+        "title": "Guía Paso a Paso",
+        "description": "Preparación, pasos numerados, señales de detención y qué evitar en cada actividad indicada."
       },
       "flowState": {
-        "title": "Actividades Guiadas",
-        "description": "Actividades cognitivas paso a paso con seguimiento simple: completado o no completado."
+        "title": "Historial Semanal",
+        "description": "Actividades, dolor, notas e incidentes organizados en un resumen semanal compartible."
       }
     },
     "howItWorks": {
-      "title": "Cómo Funciona",
-      "description": "Un recorrido simple en tres etapas para cuidador y usuario.",
+      "title": "Resultado del producto",
+      "description": "Lo que obtiene el cuidador con Daury.",
       "steps": [
         {
           "number": "1",
-          "title": "Define el Plan",
-          "description": "Configura perfil, rutinas, personas clave y recordatorios en minutos."
+          "title": "Sabe qué toca hoy",
+          "description": "La rutina convierte indicaciones profesionales en actividades diarias concretas."
         },
         {
           "number": "2",
-          "title": "Guía el Día",
-          "description": "La persona recibe acciones claras, recordatorios y actividades guiadas con rostros familiares."
+          "title": "Actúa con menos dudas",
+          "description": "Las guías explican cómo ejecutar cada actividad registrada y cuándo consultar al profesional."
         },
         {
           "number": "3",
-          "title": "Mantén al Círculo Conectado",
-          "description": "El cuidador revisa cumplimiento, ajusta rutinas y recibe alertas útiles."
+          "title": "Comparte un resumen semanal",
+          "description": "El historial da mejor información a la familia y al profesional para seguimiento."
         }
       ]
     },
     "originStory": {
-      "badge": "Enfoque del producto",
-      "title": "Por qué existe Daury",
+      "badge": "Alcance del producto",
+      "title": "Qué cubre Daury",
       "paragraphs": [
-        "Daury parte de la idea original de Jorge: el apoyo cognitivo no debe ser fragmentado ni difícil de usar.",
-        "La canción \"Daughter\" de Pearl Jam ayudó a enmarcar una realidad emocional detrás de cortinas cerradas: problemas que las familias viven en silencio.",
-        "Desde ahí, Daury se diseñó como acompañante diario, no como herramienta de diagnóstico y no como una app de juegos aislada.",
-        "Su valor central es práctico y humano: simplicidad, integración y utilidad real en la vida cotidiana."
+        "Daury empieza con cuidadores de adultos en recuperación postoperatoria, rehabilitación leve, fractura o movilidad reducida.",
+        "Solo organiza indicaciones previamente dadas por un profesional de salud.",
+        "La app no diagnostica, prescribe ni recomienda actividades nuevas.",
+        "Su valor es operativo: rutina, guía, registro rápido y continuidad semanal."
       ]
     },
     "productScope": {
-      "title": "Útil desde hoy, listo para crecer",
-      "subtitle": "Un lanzamiento enfocado con evolución inteligente.",
+      "title": "Producto enfocado. Límites claros.",
+      "subtitle": "Una app práctica para el cuidado que sucede entre consultas.",
       "doesTitle": "Lo que Daury entrega",
       "doesItems": [
-        "Integra rutinas, memoria, actividades y seguimiento del cuidador.",
-        "Funciona para múltiples perfiles, no solo Alzheimer.",
-        "Está pensada para personas con dificultades cognitivas.",
-        "Incluye al cuidador como parte central del sistema."
+        "Rutinas diarias basadas en indicaciones profesionales.",
+        "Guía paso a paso para actividades registradas.",
+        "Registro rápido de dolor, notas e incidentes.",
+        "Resumen semanal exportable para familia o profesional."
       ],
       "doesNotTitle": "Lo que Daury no es",
       "doesNotItems": [
-        "No es una herramienta médica ni de diagnóstico.",
+        "No diagnostica ni prescribe.",
         "No reemplaza a profesionales de salud.",
-        "No es solo una app de juegos cognitivos o un calendario.",
-        "No necesita IA para ser útil en su versión base."
+        "No es telemedicina ni expediente médico completo.",
+        "No cubre cuidado psiquiátrico, oncológico o paliativo dentro de su alcance principal."
       ],
-      "mvpTitle": "Enfoque de Lanzamiento",
-      "mvpItems": [
-        "Comenzar con un perfil principal: adulto mayor + cuidador.",
-        "Lanzar rutinas con recordatorios visuales y panel básico de seguimiento.",
-        "Expandir gradualmente a más perfiles y actividades."
+      "resultTitle": "Resultado para el cuidador",
+      "resultItems": [
+        "El cuidador puede abrir Daury y saber qué debe hacerse hoy.",
+        "Cada actividad puede completarse con orientación breve.",
+        "La semana termina con un historial útil de cuidado."
       ],
-      "aiTitle": "Evolución Inteligente",
+      "aiTitle": "Valor institucional",
       "aiItems": [
-        "Personalización automática de rutinas y actividades sugeridas.",
-        "Asistente de voz simple con guía paso a paso en tiempo real.",
-        "Reconocimiento avanzado, alertas predictivas e insights para cuidadores."
+        "Rutinas por condición para rehabilitación y movilidad.",
+        "Uso en clínicas de fisioterapia y servicios de cuidado domiciliario.",
+        "Resúmenes estructurados para seguimiento profesional."
       ],
-      "visionTitle": "Visión",
-      "visionText": "Convertirse en una plataforma accesible que mejore la autonomía, reduzca la carga emocional del cuidador y conecte tecnología con cuidado humano."
+      "visionTitle": "Posicionamiento",
+      "visionText": "Daury organiza lo que el profesional ya indicó, guía su ejecución diaria y registra el cuidado en casa para mejorar claridad, continuidad y seguridad."
     },
     "team": {
       "title": "Las Mentes Detrás de Daury",
-      "description": "Un equipo dedicado construyendo el futuro del cuidado cognitivo compasivo, un detalle a la vez.",
+      "description": "Un equipo de USAC construyendo un producto enfocado para cuidadores que necesitan claridad en casa.",
       "roles": {
         "techLead": "Líder Técnico",
         "fullstackDeveloper": "Desarrollador Fullstack",
@@ -279,29 +279,29 @@
       }
     },
     "earlyAccess": {
-      "title": "Trabaja con nosotros en Daury",
-      "description": "Estamos reuniendo un equipo pequeño y socios con propósito que se preocupan por la salud cognitiva, la tecnología humana y el impacto duradero.",
+      "title": "Solicitar una demo de Daury",
+      "description": "Si cuidas en casa o trabajas con rehabilitación, podemos mostrarte cómo Daury organiza indicaciones, rutina, registro e historial para tu contexto.",
       "name": "Nombre",
       "namePlaceholder": "Juan Pérez",
       "email": "Correo Electrónico",
-      "interest": "¿Cómo te gustaría contribuir?",
-      "submit": "Enviar interés",
-      "legal": "Leemos cada mensaje. Enviar este formulario no constituye una oferta de empleo; te contactaremos si hay afinidad. Al enviarlo, aceptas nuestros términos de servicio y política de privacidad.",
+      "interest": "¿Qué caso quieres organizar?",
+      "submit": "Solicitar demo",
+      "legal": "Daury no sustituye atención médica ni indicaciones profesionales.",
       "options": [
-        { "value": "engineering", "label": "Ingeniería y producto" },
-        { "value": "design", "label": "Diseño y marca" },
-        { "value": "clinical", "label": "Cuidado clínico e investigación" },
-        { "value": "partnerships", "label": "Alianzas y estrategia" },
-        { "value": "other", "label": "Otro interés" }
+        { "value": "caregiver", "label": "Cuidado familiar" },
+        { "value": "physiotherapy", "label": "Fisioterapia" },
+        { "value": "clinic", "label": "Clínica" },
+        { "value": "home-care", "label": "Cuidado domiciliario" },
+        { "value": "other", "label": "Otro" }
       ]
     },
     "footer": {
-      "copyright": "© 2026 Daury. El Guardián del Flujo Cognitivo.",
+      "copyright": "© 2026 Daury. Indicaciones claras para cuidar en casa.",
       "links": [
-        { "label": "Cómo Funciona", "href": "#how-it-works" },
-        { "label": "El Equipo", "href": "#team" },
-        { "label": "Nuestra Historia", "href": "#about" },
-        { "label": "Participar", "href": "#contact" }
+        { "label": "Producto", "href": "#experience" },
+        { "label": "Alcance", "href": "#story" },
+        { "label": "Equipo", "href": "#team" },
+        { "label": "Demo", "href": "#involved" }
       ]
     }
   }
