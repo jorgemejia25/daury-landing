@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daury — Business Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  /* ── Variables exactas del landing (light mode) ── */
+  :root {
+    --bg:       #F6F6F4;
+    --bg-2:     #ECEDE9;
+    --bg-elev:  #FFFFFF;
+    --ink:      #0A0B12;
+    --ink-2:    #2A2E40;
+    --ink-soft: rgba(10, 11, 18, 0.60);
+    --ink-mute: rgba(10, 11, 18, 0.34);
+    --rule:     rgba(10, 11, 18, 0.07);
+    --rule-2:   rgba(10, 11, 18, 0.12);
+    --blue:     #2358E8;
+    --violet:   #6E3BD6;
+    /* Gradiente sin verde: azul → índigo → violeta */
+    --grad-start: #2358E8;
+    --grad-mid:   #4B36EC;
+    --grad-end:   #7B3BD6;
+  }
+
+  @page { size: 85.6mm 54mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding: 48px 40px;
+  }
+  .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    align-self: flex-start;
+    margin-left: calc(50vw - 85.6mm / 2 - 40px);
+  }
+
+  /* ── Card shell ── */
+  .card {
+    width: 85.6mm;
+    height: 54mm;
+    position: relative;
+    overflow: hidden;
+    border-radius: 3mm;
+    background: var(--bg);
+    box-shadow:
+      0 1px 2px rgba(10,11,18,0.04),
+      0 8px 32px -12px rgba(10,11,18,0.12);
+  }
+
+  /* ── Blobs: solo azul, como el hero del landing ── */
+  .blobs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .blob  { position: absolute; border-radius: 50%; }
+
+  /* Blob azul principal — top-left, atmosphérico */
+  .blob-blue {
+    width: 72mm; height: 72mm;
+    background: var(--blue);
+    filter: blur(18mm);
+    top: -24mm; left: -20mm;
+    opacity: 0.20;
+  }
+  /* Blob índigo — complementa el gradiente, muy sutil abajo-derecha */
+  .blob-indigo {
+    width: 44mm; height: 44mm;
+    background: #4B36EC;
+    filter: blur(16mm);
+    bottom: -16mm; right: -10mm;
+    opacity: 0.08;
+  }
+
+  /* ── Card content ── */
+  .card-inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    padding: 4.5mm 5.5mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* ── Logo ── */
+  .logo-row { display: flex; align-items: center; gap: 1.8mm; }
+
+  /* Mark más pequeño, gradiente suave para combinar con fondo claro */
+  .logo-mark { opacity: 0.72; flex-shrink: 0; }
+
+  .wordmark {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 500;
+    font-size: 4.8mm;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* Línea gradiente: azul → índigo → violeta */
+  .grad-rule {
+    height: 0.32mm;
+    width: 100%;
+    margin-top: 1.6mm;
+    background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-mid) 48%, var(--grad-end) 100%);
+    opacity: 0.42;
+    border-radius: 1mm;
+  }
+
+  /* ── Texto central ── */
+  .text-block { display: flex; flex-direction: column; gap: 2mm; }
+
+  .eyebrow-text {
+    font-family: 'Geist Mono', monospace;
+    font-size: 1.75mm;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    line-height: 1.3;
+  }
+
+  /* Dos estilos de tipografía igual que el Hero del landing:
+     title_a → Bricolage 500 normal   (--ink)
+     title_b → Bricolage 400 italic   (--ink-2) */
+  .title-block {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 4.4mm;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+  }
+  .title-a { font-weight: 500; color: var(--ink); }
+  .title-b { font-weight: 400; font-style: italic; color: var(--ink-2); }
+
+  .lead-text {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2.15mm;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 70mm;
+  }
+
+  /* ── URL row ── */
+  .bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .url {
+    font-family: 'Geist Mono', monospace;
+    font-size: 2.1mm;
+    letter-spacing: 0.08em;
+    color: var(--ink-mute);
+  }
+  /* Dot: gradiente azul-violeta en lugar del verde */
+  .dot-accent {
+    width: 1.5mm; height: 1.5mm;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--grad-start), var(--grad-end));
+    box-shadow: 0 0 1.5mm rgba(75, 54, 236, 0.35);
+  }
+
+  /* ── REVERSO ── */
+  .card-back .blob-blue   { top: -26mm; right: -16mm; left: auto; opacity: 0.16; }
+  .card-back .blob-indigo { bottom: -18mm; left: -10mm; right: auto; opacity: 0.07; }
+
+  .card-back .card-inner {
+    align-items: center;
+    justify-content: center;
+    gap: 3mm;
+  }
+
+  .qr-wrap {
+    width: 22mm; height: 22mm;
+    border-radius: 1.2mm;
+    overflow: hidden;
+    padding: 1mm;
+    background: var(--bg-elev);
+    box-shadow: 0 1px 4px var(--rule-2);
+  }
+  .qr-wrap canvas { width: 100% !important; height: 100% !important; display: block; }
+
+  .back-grad-line {
+    width: 16mm; height: 0.32mm;
+    background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-mid) 48%, var(--grad-end) 100%);
+    opacity: 0.40;
+    border-radius: 1mm;
+  }
+  .back-hint {
+    font-family: 'Geist Mono', monospace;
+    font-size: 1.85mm;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .back-url {
+    font-family: 'Geist Mono', monospace;
+    font-size: 2.2mm;
+    letter-spacing: 0.10em;
+    color: var(--ink-soft);
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: none; padding: 0; gap: 0; display: block; }
+    .label { display: none; }
+    .card {
+      border-radius: 0;
+      box-shadow: none;
+      break-after: page;
+      page-break-after: always;
+    }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<span class="label">Frente</span>
+
+<!-- ═══ FRONT ═══ -->
+<div class="card card-front">
+  <div class="blobs">
+    <div class="blob blob-blue"></div>
+    <div class="blob blob-indigo"></div>
+  </div>
+
+  <div class="card-inner">
+
+    <!-- Logo: mark pequeño + gradiente azul→índigo→violeta -->
+    <div>
+      <div class="logo-row">
+        <svg class="logo-mark" width="4.5mm" height="3.8mm" viewBox="0 0 392 332" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Gradiente natural: azul eléctrico → índigo → violeta profundo -->
+            <linearGradient id="gFront" x1="0" y1="0" x2="392" y2="332" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#3D6DF5"/>
+              <stop offset="45%"  stop-color="#5B42EE"/>
+              <stop offset="100%" stop-color="#8040DC"/>
+            </linearGradient>
+          </defs>
+          <path d="M144.131 298.103C146.634 291.211 149.031 284.699 151.898 276.914C149.189 277.657 147.58 278.082 145.979 278.54C118.957 286.256 94.7303 280.814 74.3477 261.666C54.7585 243.263 57.7667 211.429 79.794 195.972C82.4318 194.121 84.2291 192.161 82.2088 189.027C79.9668 185.549 77.0662 186.043 74.0723 188.196C60.3353 198.078 53.1774 211.553 52.1299 228.352C51.9965 230.491 52.1116 232.646 52.1116 234.84C26.2414 230.973 5.70211 209.901 1.00332 182.05C-2.15227 163.346 1.89036 146.889 16.6321 133.56C21.3522 129.292 26.9007 129.822 31.9909 128.127C61.6287 118.254 89.3625 122.092 114.677 140.851C116.671 142.328 118.562 144.028 120.188 145.897C122.494 148.547 125.114 149.124 127.453 146.647C129.617 144.355 129.377 141.748 126.868 139.233C115.121 127.463 100.936 120.234 84.9523 116.254C62.2991 110.615 40.4518 114.12 19.0238 122.154C9.27392 101.241 16.9713 69.6531 35.3696 54.9772C60.3269 35.0695 90.5764 36.5505 113.424 58.8967C115.814 61.2343 118.173 62.3009 120.691 59.728C123.098 57.2696 122.447 54.7873 119.997 52.3999C111.802 44.4171 102.815 37.7278 91.1881 34.3327C102.85 15.0645 119.645 4.34309 141.363 0.859999C163.48 -2.68685 182.249 5.06767 199.381 18.0398C202.698 14.9442 205.573 11.6556 209.018 9.15132C223.617 -1.46132 239.312 -0.292955 255.121 5.76399C269.68 11.342 280.426 21.5733 288.267 34.8589C290.595 38.8042 292.666 39.9877 297.63 38.632C318.011 33.0667 336.126 38.1683 350.509 53.4502C365.467 69.3431 369.455 88.445 363.622 109.522C363.445 110.162 363.196 110.781 362.905 111.632C366.521 114.682 370.557 117.409 373.756 120.901C389.212 137.776 392.53 157.624 386.229 179.017C379.866 200.623 365.111 214.138 343.156 219.068C319.991 224.27 300.223 216.362 282.825 201.501C279.293 198.485 276.987 197.775 272.664 200.182C247.466 214.21 220.985 218.454 193.478 207.932C185.045 204.707 177.295 199.594 169.463 194.958C166.715 193.331 164.447 191.93 162.123 194.864C159.907 197.662 161.034 200.205 163.606 202.164C186.176 219.361 211.507 226.837 239.533 221.487C251.312 219.238 262.581 214.231 273.998 210.239C276.375 209.407 277.703 209.327 280.078 210.872C288.521 216.36 297.386 221.2 306.447 226.494C301.538 241.36 288.633 247.033 273.97 250.148C264.22 252.22 254.265 253.386 244.58 255.699C219.133 261.776 200.853 277.658 185.774 298.418C179.084 307.628 170.598 315.573 162.592 323.765C160.237 326.175 156.906 327.885 153.724 329.186C145.786 332.431 139.099 328.355 139.593 319.788C140.007 312.625 142.47 305.58 144.131 298.103ZM231.364 120.414C240.777 133.86 252.002 145.584 264.713 155.959C268.433 158.995 271.793 159.817 276.458 157.845C292.911 150.891 307.493 141.264 319.979 128.521C327.486 120.86 332.781 111.982 333.979 101.052C335.94 83.1702 320.778 69.0555 303.077 71.9851C294.157 73.4614 286.877 77.6444 280.467 84.0553C278.552 79.9222 277.115 75.7796 274.828 72.1769C272.452 68.4323 269.587 64.854 266.357 61.8186C249.531 46.0067 225.408 51.8872 219.602 73.3764C218.213 78.5182 218.19 84.272 218.7 89.6336C219.765 100.81 224.844 110.572 231.364 120.414ZM185.901 20.9962C185.004 25.1926 183.656 29.3498 183.287 33.5921C181.49 54.2276 178.838 74.5941 167.788 92.7916C166.199 95.4086 165.979 98.0903 168.996 99.6079C171.803 101.02 173.875 99.5256 175.61 96.9852C189.29 76.9611 190.844 53.7793 192.844 30.7556C193.232 26.2915 189.307 21.02 185.901 20.9962Z" fill="url(#gFront)"/>
+        </svg>
+        <span class="wordmark">daury</span>
+      </div>
+      <div class="grad-rule"></div>
+    </div>
+
+    <!-- Texto: igual que el hero del landing reescrito -->
+    <div class="text-block">
+      <span class="eyebrow-text">La plataforma para quienes cuidan</span>
+      <div class="title-block">
+        <span class="title-a">Cuidar, sin perder</span><br>
+        <span class="title-b">el hilo.</span>
+      </div>
+      <p class="lead-text">Rutinas, seguimiento y coordinación para cuidadores y familias.</p>
+    </div>
+
+    <!-- URL -->
+    <div class="bottom-row">
+      <span class="url">daury.cloud</span>
+      <span class="dot-accent"></span>
+    </div>
+
+  </div>
+</div>
+
+<span class="label">Reverso</span>
+
+<!-- ═══ BACK ═══ -->
+<div class="card card-back">
+  <div class="blobs">
+    <div class="blob blob-blue"></div>
+    <div class="blob blob-indigo"></div>
+  </div>
+  <div class="card-inner">
+    <span class="back-hint">Conocé Daury</span>
+    <div class="qr-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" shape-rendering="crispEdges" width="100%" height="100%"><path fill="#FFFFFF" d="M0 0h27v27H0z"/><path stroke="#0A0B12" d="M1 1.5h7m1 0h1m1 0h4m1 0h2m1 0h7M1 2.5h1m5 0h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m2 0h4m1 0h1m3 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h1m2 0h4m1 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h3m2 0h4m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h1m1 0h1m2 0h1m4 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m1 0h1m1 0h1m2 0h1M1 9.5h1m3 0h1m1 0h6m1 0h3m1 0h5m2 0h1M3 10.5h1m1 0h2m1 0h2m3 0h1m1 0h3m3 0h2m1 0h1M1 11.5h4m2 0h1m1 0h1m1 0h1m2 0h3m1 0h1m3 0h2M3 12.5h1m1 0h1m2 0h3m1 0h3m2 0h1m2 0h1m2 0h2M2 13.5h1m3 0h2m1 0h1m1 0h4m3 0h3m1 0h4M1 14.5h3m1 0h2m1 0h1m2 0h1m2 0h5m2 0h1m2 0h1M3 15.5h1m1 0h5m1 0h1m4 0h2m2 0h4M3 16.5h2m1 0h1m1 0h1m4 0h1m1 0h1m4 0h2m1 0h2M1 17.5h2m1 0h4m2 0h3m1 0h10M9 18.5h3m1 0h1m3 0h1m3 0h1M1 19.5h7m1 0h2m1 0h4m1 0h1m1 0h1m1 0h1M1 20.5h1m5 0h1m2 0h1m1 0h1m1 0h1m1 0h2m3 0h3m1 0h1M1 21.5h1m1 0h3m1 0h1m1 0h3m1 0h2m2 0h7m1 0h1M1 22.5h1m1 0h3m1 0h1m2 0h1m3 0h3m1 0h3m2 0h3M1 23.5h1m1 0h3m1 0h1m8 0h1m2 0h1m2 0h1m1 0h1M1 24.5h1m5 0h1m2 0h2m1 0h1m1 0h1m2 0h1m1 0h5M1 25.5h7m1 0h1m2 0h1m1 0h3m6 0h3"/></svg>
+    </div>
+    <div class="back-grad-line"></div>
+    <span class="back-url">daury.cloud</span>
+  </div>
+</div>
+
+</body>
+</html>
