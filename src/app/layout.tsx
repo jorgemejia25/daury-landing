@@ -1,39 +1,34 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { Plus_Jakarta_Sans } from "next/font/google";
-import { defaultLocale, isValidLocale } from "@/i18n/config";
-import AOSInit from "@/components/AOSInit";
+import { isValidLocale } from "@/i18n/config";
 import "./globals.css";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "Daury",
-  description: "Localized cognitive support experiences in multiple languages.",
+  title: "Daury — Support, memory and care. All in one place.",
+  description: "Daury helps families turn complex days into guided, manageable moments — for children, older adults, and anyone needing cognitive support.",
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const localeCookie = (await cookies()).get("locale")?.value;
-  const activeLocale = localeCookie && isValidLocale(localeCookie) ? localeCookie : defaultLocale;
+  const activeLocale = localeCookie && isValidLocale(localeCookie) ? localeCookie : "en";
 
   return (
-    <html lang={activeLocale} className={plusJakartaSans.className}>
+    <html lang={activeLocale} data-theme="light">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap"
           rel="stylesheet"
         />
+        {/* Prevent flash of unstyled theme */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('daury.theme');if(t)document.documentElement.setAttribute('data-theme',JSON.parse(t));}catch(e){}`,
+          }}
+        />
       </head>
-      <body className="selection:bg-primary selection:text-on-primary">
-        <AOSInit />
+      <body>
         {children}
       </body>
     </html>
