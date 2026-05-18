@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { cookies } from "next/headers";
 import { isValidLocale } from "@/i18n/config";
-import { parseTheme, THEME_COOKIE, THEME_STORAGE_KEY } from "@/lib/theme";
+import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Daury — Support, memory and care. All in one place.",
   description: "Daury helps families turn complex days into guided, manageable moments — for children, older adults, and anyone needing cognitive support.",
 };
-
-const themeInitScript = `(function(){try{var k=${JSON.stringify(THEME_STORAGE_KEY)};var t=localStorage.getItem(k);if(t){var v=JSON.parse(t);if(v==="dark"||v==="light"){document.documentElement.setAttribute("data-theme",v);document.cookie=${JSON.stringify(THEME_COOKIE)}+"="+v+"; path=/; max-age=31536000; SameSite=Lax";}}}catch(e){}})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -28,12 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           rel="stylesheet"
         />
       </head>
-      <body>
-        <Script id="daury-theme-init" strategy="beforeInteractive">
-          {themeInitScript}
-        </Script>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

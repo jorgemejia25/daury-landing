@@ -43,7 +43,7 @@ export default function LandingPage({ locale, initialTheme }: LandingPageProps) 
     applyTheme(next);
   }, [setThemeState]);
 
-  /* Keep document theme in sync after hydration (e.g. localStorage restore). */
+  /* Keep document theme and cookie in sync when theme changes (including post-hydration restore). */
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);

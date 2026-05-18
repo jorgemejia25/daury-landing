@@ -233,16 +233,14 @@ export function LangToggle({ lang, setLang }: { lang: string; setLang: (l: strin
 }
 
 export function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
   const isDark = theme === 'dark';
   return (
     <button onClick={() => setTheme(isDark ? 'light' : 'dark')} aria-label="Toggle theme" style={{
       width: 36, height: 36, borderRadius: 999, background: 'var(--bg-2)',
       display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s',
     }}>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ transition: 'transform 0.5s var(--ease)', transform: mounted && isDark ? 'rotate(40deg)' : 'rotate(0)' }}>
-        {mounted && isDark ? (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ transition: 'transform 0.5s var(--ease)', transform: isDark ? 'rotate(40deg)' : 'rotate(0)' }}>
+        {isDark ? (
           <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
         ) : (
           <>
