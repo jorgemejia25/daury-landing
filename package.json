@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "card:pdf": "node scripts/export-card.mjs"
+    "card:pdf": "node scripts/export-card.mjs",
+    "survey:responses": "node scripts/read-survey-responses.mjs"
   },
   "dependencies": {
     "aos": "^2.3.4",
