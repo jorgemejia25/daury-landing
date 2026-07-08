@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import {
   careChallengeOptions,
+  careTargetOptions,
   essentialFeatureOptions,
   organizationMethodOptions,
   trustConcernOptions,
@@ -15,6 +16,7 @@ export type SubmitCareSurveyResult =
   | { ok: false; error: "validation" | "server" };
 
 const organizationValues = new Set(organizationMethodOptions.map((option) => option.value));
+const careTargetValues = new Set(careTargetOptions.map((option) => option.value));
 const careChallengeValues = new Set(careChallengeOptions.map((option) => option.value));
 const trustConcernValues = new Set(trustConcernOptions.map((option) => option.value));
 const essentialFeatureValues = new Set(essentialFeatureOptions.map((option) => option.value));
@@ -28,9 +30,9 @@ function cleanChoice(value: string, allowedValues: Set<string>) {
   return allowedValues.has(clean) ? clean : "";
 }
 
-function cleanLimitedChoices(values: string[], allowedValues: Set<string>, max: number) {
+function cleanChoices(values: string[], allowedValues: Set<string>) {
   const unique = Array.from(new Set(values.map((value) => value.trim())));
-  return unique.filter((value) => allowedValues.has(value)).slice(0, max);
+  return unique.filter((value) => allowedValues.has(value));
 }
 
 function hasValidPrice(value: string) {
@@ -40,9 +42,10 @@ function hasValidPrice(value: string) {
 function normalizePayload(payload: CareSurveyPayload): CareSurveyPayload | null {
   const normalized: CareSurveyPayload = {
     locale: payload.locale === "en" ? "en" : "es",
+    careTarget: cleanChoice(payload.careTarget, careTargetValues),
     organizationMethod: cleanChoice(payload.organizationMethod, organizationValues),
     organizationOther: cleanText(payload.organizationOther, 120),
-    careChallenges: cleanLimitedChoices(payload.careChallenges, careChallengeValues, 2),
+    careChallenges: cleanChoices(payload.careChallenges, careChallengeValues),
     careChallengesOther: cleanText(payload.careChallengesOther, 120),
     hadIncident: payload.hadIncident === "yes" || payload.hadIncident === "no" ? payload.hadIncident : "",
     incidentStory: cleanText(payload.incidentStory, 500),
@@ -50,23 +53,23 @@ function normalizePayload(payload: CareSurveyPayload): CareSurveyPayload | null 
       payload.appTrust === "yes" || payload.appTrust === "no" || payload.appTrust === "maybe"
         ? payload.appTrust
         : "",
-    trustConcerns: cleanLimitedChoices(payload.trustConcerns, trustConcernValues, 5),
+    trustConcerns: cleanChoices(payload.trustConcerns, trustConcernValues),
     trustConcernsOther: cleanText(payload.trustConcernsOther, 120),
     appInterest:
       payload.appInterest === "yes" || payload.appInterest === "no" || payload.appInterest === "maybe"
         ? payload.appInterest
         : "",
     interestNoReason: cleanText(payload.interestNoReason, 280),
-    essentialFeatures: cleanLimitedChoices(payload.essentialFeatures, essentialFeatureValues, 3),
+    essentialFeatures: cleanChoices(payload.essentialFeatures, essentialFeatureValues),
     essentialFeaturesOther: cleanText(payload.essentialFeaturesOther, 120),
     priceTooExpensive: cleanText(payload.priceTooExpensive, 20),
     priceExpensiveButPay: cleanText(payload.priceExpensiveButPay, 20),
     priceBargain: cleanText(payload.priceBargain, 20),
     priceTooCheap: cleanText(payload.priceTooCheap, 20),
-    completedPath: payload.completedPath.map((step) => cleanText(step, 30)).filter(Boolean).slice(0, 16),
+    completedPath: payload.completedPath.map((step) => cleanText(step, 30)).filter(Boolean),
   };
 
-  if (!normalized.organizationMethod || normalized.careChallenges.length === 0) return null;
+  if (!normalized.careTarget || !normalized.organizationMethod || normalized.careChallenges.length === 0) return null;
   if (normalized.organizationMethod === "other" && !normalized.organizationOther) return null;
   if (normalized.careChallenges.includes("other") && !normalized.careChallengesOther) return null;
   if (!normalized.hadIncident || !normalized.appTrust || !normalized.appInterest) return null;
@@ -77,7 +80,7 @@ function normalizePayload(payload: CareSurveyPayload): CareSurveyPayload | null 
 
   if (normalized.trustConcerns.includes("other") && !normalized.trustConcernsOther) return null;
 
-  if (normalized.appInterest === "no") {
+  if (normalized.appInterest === "no" || normalized.appInterest === "maybe") {
     if (!normalized.interestNoReason) return null;
     return {
       ...normalized,

@@ -1,6 +1,7 @@
 import type { CareSurveyResultRecord } from "@/actions/get-survey-results";
 import {
   careChallengeOptions,
+  careTargetOptions,
   essentialFeatureOptions,
   organizationMethodOptions,
   trustConcernOptions,
@@ -171,6 +172,9 @@ export function summarize(records: CareSurveyResultRecord[]): SurveySummary {
 
 export const organizationDistribution = (records: CareSurveyResultRecord[]) =>
   distributionSingle(records, organizationMethodOptions, (r) => r.organizationMethod);
+
+export const careTargetDistribution = (records: CareSurveyResultRecord[]) =>
+  distributionSingle(records, careTargetOptions, (r) => r.careTarget ?? "");
 
 export const careChallengeDistribution = (records: CareSurveyResultRecord[]) =>
   distributionMulti(records, careChallengeOptions, (r) => r.careChallenges);
@@ -388,6 +392,7 @@ export function toCsv(records: CareSurveyResultRecord[]): string {
   const headers = [
     "fecha",
     "idioma",
+    "tipo_cuidado",
     "organizacion",
     "organizacion_otro",
     "retos",
@@ -413,6 +418,7 @@ export function toCsv(records: CareSurveyResultRecord[]): string {
   const rows = records.map((record) => [
     new Date(record._creationTime).toISOString(),
     record.locale,
+    labelFor(careTargetOptions, record.careTarget ?? ""),
     labelFor(organizationMethodOptions, record.organizationMethod),
     record.organizationOther,
     multiLabels(record.careChallenges, careChallengeOptions),

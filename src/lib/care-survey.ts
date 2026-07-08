@@ -5,6 +5,7 @@ export type SurveyChoice = {
 
 export type CareSurveyPayload = {
   locale: string;
+  careTarget: string;
   organizationMethod: string;
   organizationOther: string;
   careChallenges: string[];
@@ -24,6 +25,11 @@ export type CareSurveyPayload = {
   priceTooCheap: string;
   completedPath: string[];
 };
+
+export const careTargetOptions: SurveyChoice[] = [
+  { value: "personal", label: "Es mi cuidado personal" },
+  { value: "third_party", label: "Cuidé a otra persona" },
+];
 
 export const organizationMethodOptions: SurveyChoice[] = [
   { value: "paper", label: "Papel/agenda física" },
@@ -75,6 +81,7 @@ export const interestOptions = trustOptions;
 
 export const emptyCareSurveyPayload: CareSurveyPayload = {
   locale: "es",
+  careTarget: "",
   organizationMethod: "",
   organizationOther: "",
   careChallenges: [],

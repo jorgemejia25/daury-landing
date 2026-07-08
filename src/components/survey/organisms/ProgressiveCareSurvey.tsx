@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { submitCareSurvey } from "@/actions/submit-care-survey";
 import {
   careChallengeOptions,
+  careTargetOptions,
   emptyCareSurveyPayload,
   essentialFeatureOptions,
   interestOptions,
@@ -24,6 +25,7 @@ import SurveyQuestionFrame from "../molecules/SurveyQuestionFrame";
 
 type StepId =
   | "intro"
+  | "p1"
   | "p3"
   | "p4"
   | "p5"
@@ -44,6 +46,7 @@ type ProgressiveCareSurveyProps = {
 
 const stepMeta: Record<StepId, { tone: "mint" | "lavender" | "peach" | "sky" }> = {
   intro: { tone: "lavender" },
+  p1: { tone: "mint" },
   p3: { tone: "mint" },
   p4: { tone: "mint" },
   p5: { tone: "mint" },
@@ -110,7 +113,7 @@ const toneVars: Record<"mint" | "lavender" | "peach" | "sky", SurveyToneVars> = 
 };
 
 function getVisibleSteps(data: CareSurveyPayload): StepId[] {
-  const steps: StepId[] = ["intro", "p3", "p4", "p5"];
+  const steps: StepId[] = ["intro", "p1", "p3", "p4", "p5"];
 
   if (data.hadIncident === "yes") {
     steps.push("p5Story");
@@ -124,12 +127,12 @@ function getVisibleSteps(data: CareSurveyPayload): StepId[] {
 
   steps.push("p8");
 
-  if (data.appInterest === "no") {
+  if (data.appInterest === "no" || data.appInterest === "maybe") {
     steps.push("p8Reason");
     return steps;
   }
 
-  if (data.appInterest === "yes" || data.appInterest === "maybe") {
+  if (data.appInterest === "yes") {
     steps.push("p9", "p10", "p11", "p12", "p13");
   }
 
@@ -145,6 +148,8 @@ function isValidPrice(value: string) {
 }
 
 function validateStep(step: StepId, data: CareSurveyPayload) {
+  if (step === "p1" && !data.careTarget) return "Elegí una opción para continuar.";
+
   if (step === "p3") {
     if (!data.organizationMethod) return "Elegí una opción para continuar.";
     if (data.organizationMethod === "other" && !data.organizationOther.trim()) return "Contanos cuál método usás.";
@@ -298,19 +303,20 @@ export default function ProgressiveCareSurvey({ locale }: ProgressiveCareSurveyP
 function getQuestionTitle(step: StepId) {
   const titles: Record<StepId, string> = {
     intro: "Hola, gracias por ayudarnos.",
-    p3: "¿Cómo organizas actualmente su cuidado?",
-    p4: "¿Cuál es tu mayor reto al cuidarlo/a?",
-    p5: "¿Has tenido algún incidente por falta de organización?",
-    p5Story: "Cuéntanos brevemente qué pasó.",
-    p6: "¿Confiarías en una aplicación para llevar el control del cuidado de tu familiar?",
-    p7: "¿Por qué no confiarías del todo?",
-    p8: "¿Te gustaría usar una app que te ayude a gestionar esto?",
-    p8Reason: "¿Por qué no?",
-    p9: "¿Qué función te parece indispensable?",
-    p10: "¿Desde qué precio mensual te parecería demasiado cara?",
-    p11: "¿Desde qué precio mensual dirías que es cara, pero aún la pagarías si te convence?",
-    p12: "¿Desde qué precio mensual dirías que es muy accesible?",
-    p13: "¿Desde qué precio mensual dudarías de la calidad por ser demasiado barata?",
+    p1: "¿El cuidado que llevaste fue personal o para alguien más?",
+    p3: "¿Cómo organizaste ese cuidado?",
+    p4: "¿Cuál fue tu mayor reto al cuidarlo/a?",
+    p5: "¿Tuviste algún incidente por falta de organización?",
+    p5Story: "Contanos brevemente qué pasó.",
+    p6: "¿Habrías confiado en una aplicación para llevar el control del cuidado?",
+    p7: "¿Por qué no habrías confiado del todo?",
+    p8: "¿Te habría gustado usar una app que te ayudara a gestionar esto?",
+    p8Reason: "¿Por qué no o por qué no estabas seguro/a?",
+    p9: "¿Qué función te habría parecido indispensable?",
+    p10: "¿Desde qué precio mensual te habría parecido demasiado cara?",
+    p11: "¿Desde qué precio mensual habrías dicho que era cara, pero aún la pagarías si te convencía?",
+    p12: "¿Desde qué precio mensual habrías dicho que era muy accesible?",
+    p13: "¿Desde qué precio mensual habrías dudado de la calidad por ser demasiado barata?",
   };
 
   return titles[step];
@@ -318,13 +324,13 @@ function getQuestionTitle(step: StepId) {
 
 function getQuestionHelper(step: StepId) {
   const helpers: Partial<Record<StepId, string>> = {
-    intro: "Queremos conocer tu experiencia y tus opiniones sobre cómo se vive el cuidado en casa. Tus respuestas nos ayudan a diseñar algo más claro, útil y realista para las familias.",
-    p4: "Opción múltiple, elige hasta 2.",
+    intro: "Queremos saber cómo llevaste el cuidado de una persona: puede haber sido tu cuidado personal, en casa, en un consultorio o dentro de una institución.",
+    p4: "Podés seleccionar varias opciones.",
     p5Story: "Opcional.",
     p6: "Medicamentos, citas, contactos de emergencia.",
-    p7: "Opción múltiple.",
+    p7: "Podés seleccionar varias opciones.",
     p8Reason: "Respuesta abierta corta.",
-    p9: "Elige máximo 3.",
+    p9: "Podés seleccionar varias opciones.",
     p10: "Escribe un número entero en quetzales.",
     p11: "Escribe un número entero en quetzales.",
     p12: "Escribe un número entero en quetzales.",
@@ -342,10 +348,10 @@ function renderQuestion(
   if (step === "intro") {
     return (
       <div className="grid gap-3">
-        {["Responde con tranquilidad, una pregunta a la vez.", "No hay respuestas correctas o incorrectas.", "La encuesta toma pocos minutos."].map((item) => (
+        {["Respondé con tranquilidad, una pregunta a la vez.", "No hay respuestas correctas o incorrectas.", "La encuesta dura pocos minutos."].map((item) => (
           <div
             key={item}
-            className="flex items-center gap-3 px-3.5 py-3 rounded-[18px] border border-[var(--survey-border)] bg-[var(--survey-surface)] text-[var(--survey-soft)] text-[15px] leading-[1.4]"
+            className="flex items-center gap-3 px-3.5 py-3 rounded-[18px] border border-[var(--survey-border)] bg-[var(--survey-surface)] text-[var(--survey-ink)] text-[15px] font-medium leading-[1.4]"
           >
             <span
               aria-hidden
@@ -355,6 +361,16 @@ function renderQuestion(
           </div>
         ))}
       </div>
+    );
+  }
+
+  if (step === "p1") {
+    return (
+      <SurveyChoiceGroup
+        options={careTargetOptions}
+        value={data.careTarget}
+        onChange={(value) => updateAnswer("careTarget", value as string)}
+      />
     );
   }
 
@@ -379,7 +395,6 @@ function renderQuestion(
         <SurveyChoiceGroup
           options={careChallengeOptions}
           multiple
-          maxSelections={2}
           values={data.careChallenges}
           onChange={(values) => updateAnswer("careChallenges", values as string[])}
         />
@@ -448,7 +463,6 @@ function renderQuestion(
         <SurveyChoiceGroup
           options={essentialFeatureOptions}
           multiple
-          maxSelections={3}
           values={data.essentialFeatures}
           onChange={(values) => updateAnswer("essentialFeatures", values as string[])}
         />

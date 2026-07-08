@@ -7,6 +7,7 @@ export type CareSurveyResultRecord = {
   _id: string;
   _creationTime: number;
   locale: string;
+  careTarget?: string;
   organizationMethod: string;
   organizationOther: string;
   careChallenges: string[];

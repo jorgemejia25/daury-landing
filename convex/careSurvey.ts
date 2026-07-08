@@ -4,6 +4,7 @@ import { v } from "convex/values";
 export const submit = mutation({
   args: {
     locale: v.string(),
+    careTarget: v.string(),
     organizationMethod: v.string(),
     organizationOther: v.string(),
     careChallenges: v.array(v.string()),

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Cell,
@@ -20,6 +19,7 @@ import type { CareSurveyResultRecord } from "@/actions/get-survey-results";
 import {
   analyzePrices,
   careChallengeDistribution,
+  careTargetDistribution,
   essentialFeatureDistribution,
   organizationDistribution,
   pct,
@@ -32,6 +32,7 @@ import {
 } from "@/lib/care-survey-analytics";
 import {
   careChallengeOptions,
+  careTargetOptions,
   essentialFeatureOptions,
   organizationMethodOptions,
   trustConcernOptions,
@@ -101,6 +102,8 @@ export default function SurveyResultsDashboard({ records, onReset }: SurveyResul
     const summary = summarize(records);
     return {
       summary,
+      careTarget: ranked(careTargetDistribution(records)),
+      careTargetTotal: records.filter((record) => record.careTarget).length,
       challenges: ranked(careChallengeDistribution(records)),
       organization: ranked(organizationDistribution(records)),
       concerns: ranked(trustConcernDistribution(records)),
@@ -279,6 +282,8 @@ function SummaryDashboard({
   summary: ReturnType<typeof summarize>;
   analytics: {
     challenges: Bucket[];
+    careTarget: Bucket[];
+    careTargetTotal: number;
     organization: Bucket[];
     concerns: Bucket[];
     features: Bucket[];
@@ -330,6 +335,10 @@ function SummaryDashboard({
 
             <Card title="Mayores retos">
               <MetricBars rows={toChartRows(analytics.challenges, summary.denominators.challenges)} color="var(--blue)" />
+            </Card>
+
+            <Card title="Tipo de cuidado" subtitle={`${analytics.careTargetTotal} respuestas`}>
+              <MetricBars rows={toChartRows(analytics.careTarget, analytics.careTargetTotal)} color="var(--green)" />
             </Card>
 
             <Card title="Actitud general">
@@ -706,6 +715,7 @@ const TABLE_COLUMNS = [
   { key: "interest", label: "Interés", className: "w-[68px]" },
   { key: "trust", label: "Confianza", className: "w-[76px]" },
   { key: "incident", label: "Incidente", className: "w-[76px]" },
+  { key: "careTarget", label: "Cuidado", className: "min-w-[132px]" },
   { key: "organization", label: "Organiza", className: "min-w-[168px]" },
   { key: "challenges", label: "Retos", className: "min-w-[192px]" },
   { key: "features", label: "Funciones", className: "min-w-[168px]" },
@@ -826,6 +836,11 @@ function ResponseTableRow({
         </td>
         <td className="py-5 pr-7">
           <AttitudeSignal value={record.hadIncident} />
+        </td>
+        <td className="py-5 pr-7">
+          <span className="block truncate text-[12px] leading-snug text-[var(--ink)]" title={labelOne(careTargetOptions, record.careTarget ?? "")}>
+            {labelOne(careTargetOptions, record.careTarget ?? "")}
+          </span>
         </td>
         <td className="py-5 pr-7">
           <span className="block truncate text-[12px] leading-snug text-[var(--ink)]" title={orgLabel}>

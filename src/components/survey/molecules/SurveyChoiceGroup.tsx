@@ -6,7 +6,6 @@ type SurveyChoiceGroupProps = {
   value?: string;
   values?: string[];
   multiple?: boolean;
-  maxSelections?: number;
   onChange: (value: string | string[]) => void;
 };
 
@@ -15,7 +14,6 @@ export default function SurveyChoiceGroup({
   value = "",
   values = [],
   multiple = false,
-  maxSelections,
   onChange,
 }: SurveyChoiceGroupProps) {
   const selectValue = (nextValue: string) => {
@@ -30,10 +28,6 @@ export default function SurveyChoiceGroup({
       return;
     }
 
-    if (maxSelections && values.length >= maxSelections) {
-      return;
-    }
-
     onChange([...values, nextValue]);
   };
 
@@ -41,13 +35,11 @@ export default function SurveyChoiceGroup({
     <div className="grid gap-2.5">
       {options.map((option) => {
         const selected = multiple ? values.includes(option.value) : value === option.value;
-        const disabled = Boolean(multiple && maxSelections && values.length >= maxSelections && !selected);
 
         return (
           <SurveyOption
             key={option.value}
             selected={selected}
-            disabled={disabled}
             onClick={() => selectValue(option.value)}
           >
             {option.label}

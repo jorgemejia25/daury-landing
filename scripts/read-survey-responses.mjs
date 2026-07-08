@@ -16,6 +16,7 @@ console.table(
     id: row._id,
     createdAt: new Date(row._creationTime).toISOString(),
     locale: row.locale,
+    careTarget: row.careTarget ?? "",
     organizationMethod: row.organizationMethod,
     careChallenges: row.careChallenges.join(", "),
     hadIncident: row.hadIncident,

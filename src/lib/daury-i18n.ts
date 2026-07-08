@@ -3,7 +3,7 @@ export type TeamMember = {
 };
 
 export type I18nContent = {
-  nav: { experience: string; approach: string; story: string; team: string; involved: string; cta: string; };
+  nav: { experience: string; approach: string; story: string; team: string; survey: string; involved: string; cta: string; };
   hero: { tag: string; title_a: string; title_b: string; lead: string; cta1: string; cta2: string; };
   marquee: string[];
   connected: { eyebrow: string; title: string; lead: string; problems: Array<{ icon: string; t: string; d: string }>; };
@@ -38,7 +38,7 @@ const members: TeamMember[] = [
 
 export const i18n: Record<'es' | 'en', I18nContent> = {
   es: {
-    nav: { experience: 'Producto', approach: 'Problema', story: 'Alcance', team: 'Equipo', involved: 'Demo', cta: 'Solicitar demo' },
+    nav: { experience: 'Producto', approach: 'Problema', story: 'Alcance', team: 'Equipo', survey: 'Encuesta', involved: 'Demo', cta: 'Solicitar demo' },
     hero: {
       tag: 'Asistente operativo para cuidadores informales',
       title_a: 'Indicaciones claras para',
@@ -163,7 +163,7 @@ export const i18n: Record<'es' | 'en', I18nContent> = {
   },
 
   en: {
-    nav: { experience: 'Product', approach: 'Problem', story: 'Scope', team: 'Team', involved: 'Demo', cta: 'Request demo' },
+    nav: { experience: 'Product', approach: 'Problem', story: 'Scope', team: 'Team', survey: 'Survey', involved: 'Demo', cta: 'Request demo' },
     hero: {
       tag: 'Operational assistant for informal caregivers',
       title_a: 'Clear instructions for',

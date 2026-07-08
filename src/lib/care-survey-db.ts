@@ -27,6 +27,7 @@ export async function saveCareSurveyResponse(payload: CareSurveyPayload, userAge
 
   await convex.mutation(api.careSurvey.submit, {
     locale: payload.locale,
+    careTarget: payload.careTarget,
     organizationMethod: payload.organizationMethod,
     organizationOther: payload.organizationOther,
     careChallenges: payload.careChallenges,

@@ -4,6 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   careSurveyResponses: defineTable({
     locale: v.string(),
+    careTarget: v.optional(v.string()),
     organizationMethod: v.string(),
     organizationOther: v.string(),
     careChallenges: v.array(v.string()),

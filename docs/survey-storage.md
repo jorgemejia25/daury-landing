@@ -32,6 +32,7 @@ Estas quedan en `.env.local` (no se versiona, ver `.gitignore`). Para despliegue
 ```ts
 careSurveyResponses: defineTable({
   locale: v.string(),
+  careTarget: v.optional(v.string()),
   organizationMethod: v.string(),
   organizationOther: v.string(),
   careChallenges: v.array(v.string()),

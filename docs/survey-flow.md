@@ -34,19 +34,42 @@ Hola, gracias por ayudarnos.
 Mensaje:
 
 ```txt
-Queremos conocer tu experiencia y tus opiniones sobre cómo se vive el cuidado en casa. Tus respuestas nos ayudan a diseñar algo más claro, útil y realista para las familias.
+Queremos saber cómo llevaste el cuidado de una persona: puede haber sido tu cuidado personal, en casa, en un consultorio o dentro de una institución.
 ```
 
 El usuario presiona `Empezar` y pasa a la primera pregunta.
 
 ## Preguntas y opciones
 
+### P1. Tipo de cuidado
+
+Pregunta visible:
+
+```txt
+¿El cuidado que llevaste fue personal o para alguien más?
+```
+
+Campo interno:
+
+```txt
+careTarget
+```
+
+Opciones:
+
+- `personal`: Es mi cuidado personal
+- `third_party`: Cuidé a otra persona
+
+Regla:
+
+- Luego pasa a P3.
+
 ### P3. Organización actual
 
 Pregunta visible:
 
 ```txt
-¿Cómo organizas actualmente su cuidado?
+¿Cómo organizaste ese cuidado?
 ```
 
 Campo interno:
@@ -73,7 +96,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Cuál es tu mayor reto al cuidarlo/a?
+¿Cuál fue tu mayor reto al cuidarlo/a?
 ```
 
 Campo interno:
@@ -85,7 +108,7 @@ careChallenges
 Tipo:
 
 ```txt
-Opción múltiple, máximo 2.
+Opción múltiple. Permite seleccionar varias opciones.
 ```
 
 Opciones:
@@ -108,7 +131,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Has tenido algún incidente por falta de organización?
+¿Tuviste algún incidente por falta de organización?
 ```
 
 Campo interno:
@@ -132,7 +155,7 @@ Saltos:
 Pregunta visible:
 
 ```txt
-Cuéntanos brevemente qué pasó.
+Contanos brevemente qué pasó.
 ```
 
 Campo interno:
@@ -156,7 +179,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Confiarías en una aplicación para llevar el control del cuidado de tu familiar?
+¿Habrías confiado en una aplicación para llevar el control del cuidado?
 ```
 
 Contexto visible:
@@ -188,7 +211,7 @@ Saltos:
 Pregunta visible:
 
 ```txt
-¿Por qué no confiarías del todo?
+¿Por qué no habrías confiado del todo?
 ```
 
 Campo interno:
@@ -200,7 +223,7 @@ trustConcerns
 Tipo:
 
 ```txt
-Opción múltiple.
+Opción múltiple. Permite seleccionar varias opciones.
 ```
 
 Opciones:
@@ -222,7 +245,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Te gustaría usar una app que te ayude a gestionar esto?
+¿Te habría gustado usar una app que te ayudara a gestionar esto?
 ```
 
 Campo interno:
@@ -240,7 +263,7 @@ Opciones:
 Saltos:
 
 - Si responde `yes`, pasa a P9.
-- Si responde `maybe`, pasa a P9.
+- Si responde `maybe`, pasa a P8.1 y termina después de esa respuesta.
 - Si responde `no`, pasa a P8.1 y termina después de esa respuesta.
 
 ### P8.1. Razón para no usarla
@@ -248,7 +271,7 @@ Saltos:
 Pregunta visible:
 
 ```txt
-¿Por qué no?
+¿Por qué no o por qué no estabas seguro/a?
 ```
 
 Campo interno:
@@ -273,7 +296,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Qué función te parece indispensable?
+¿Qué función te habría parecido indispensable?
 ```
 
 Campo interno:
@@ -285,7 +308,7 @@ essentialFeatures
 Tipo:
 
 ```txt
-Opción múltiple, máximo 3.
+Opción múltiple. Permite seleccionar varias opciones.
 ```
 
 Opciones:
@@ -306,7 +329,7 @@ Regla:
 
 ## Precio Van Westendorp
 
-Estas preguntas solo aparecen si P8 fue `yes` o `maybe`.
+Estas preguntas solo aparecen si P8 fue `yes`.
 
 Los campos de precio:
 
@@ -328,7 +351,7 @@ Moneda: GTQ
 Pregunta visible:
 
 ```txt
-¿Desde qué precio mensual te parecería demasiado cara?
+¿Desde qué precio mensual te habría parecido demasiado cara?
 ```
 
 Campo interno:
@@ -347,7 +370,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Desde qué precio mensual dirías que es cara, pero aún la pagarías si te convence?
+¿Desde qué precio mensual habrías dicho que era cara, pero aún la pagarías si te convencía?
 ```
 
 Campo interno:
@@ -366,7 +389,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Desde qué precio mensual dirías que es muy accesible?
+¿Desde qué precio mensual habrías dicho que era muy accesible?
 ```
 
 Campo interno:
@@ -385,7 +408,7 @@ Regla:
 Pregunta visible:
 
 ```txt
-¿Desde qué precio mensual dudarías de la calidad por ser demasiado barata?
+¿Desde qué precio mensual habrías dudado de la calidad por ser demasiado barata?
 ```
 
 Campo interno:
