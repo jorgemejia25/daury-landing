@@ -1,37 +1,30 @@
-import fs from "node:fs";
-import path from "node:path";
-import { DatabaseSync } from "node:sqlite";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../convex/_generated/api.js";
 
-const databasePath = process.env.DAURY_SURVEY_DATABASE_PATH ?? path.join(process.cwd(), "data", "care-survey.sqlite");
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
 
-if (!fs.existsSync(databasePath)) {
-  console.log(`No survey database found at ${databasePath}`);
-  process.exit(0);
+if (!convexUrl) {
+  console.error("NEXT_PUBLIC_CONVEX_URL is not set. Run `npx convex dev` first or set it in .env.local.");
+  process.exit(1);
 }
 
-const database = new DatabaseSync(databasePath);
+const convex = new ConvexHttpClient(convexUrl);
+const rows = await convex.query(api.careSurvey.list, {});
 
-try {
-  const rows = database.prepare(`
-    SELECT
-      id,
-      created_at,
-      locale,
-      organization_method,
-      care_challenges_json,
-      had_incident,
-      app_trust,
-      app_interest,
-      essential_features_json,
-      price_too_expensive_cents,
-      price_expensive_but_pay_cents,
-      price_bargain_cents,
-      price_too_cheap_cents
-    FROM care_survey_responses
-    ORDER BY created_at DESC
-  `).all();
-
-  console.table(rows);
-} finally {
-  database.close();
-}
+console.table(
+  rows.map((row) => ({
+    id: row._id,
+    createdAt: new Date(row._creationTime).toISOString(),
+    locale: row.locale,
+    organizationMethod: row.organizationMethod,
+    careChallenges: row.careChallenges.join(", "),
+    hadIncident: row.hadIncident,
+    appTrust: row.appTrust,
+    appInterest: row.appInterest,
+    essentialFeatures: row.essentialFeatures.join(", "),
+    priceTooExpensiveCents: row.priceTooExpensiveCents,
+    priceExpensiveButPayCents: row.priceExpensiveButPayCents,
+    priceBargainCents: row.priceBargainCents,
+    priceTooCheapCents: row.priceTooCheapCents,
+  })),
+);

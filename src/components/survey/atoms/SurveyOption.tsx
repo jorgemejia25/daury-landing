@@ -5,48 +5,33 @@ type SurveyOptionProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   selected: boolean;
 };
 
-export default function SurveyOption({ children, selected, style, ...props }: SurveyOptionProps) {
+export default function SurveyOption({ children, selected, disabled, className, style, ...props }: SurveyOptionProps) {
   return (
     <button
       type="button"
       aria-pressed={selected}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 14,
-        width: "100%",
-        minHeight: 56,
-        padding: "14px 16px",
-        borderRadius: 18,
-        border: "1px solid",
-        borderColor: selected ? "var(--survey-accent)" : "var(--survey-border)",
-        background: selected ? "var(--survey-accent-soft)" : "var(--survey-surface)",
-        color: selected ? "var(--survey-accent-text)" : "var(--survey-ink)",
-        textAlign: "left",
-        boxShadow: selected ? "0 14px 36px -28px var(--survey-accent)" : "none",
-        transition: "background 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.25s var(--ease)",
-        ...style,
-      }}
+      disabled={disabled}
+      style={style}
+      className={[
+        "flex items-center justify-between gap-3.5 w-full min-h-[56px] px-4 py-3.5 rounded-[18px] text-left",
+        "border transition-[background,border-color,transform] duration-300 ease-[var(--ease)]",
+        selected
+          ? "border-[var(--survey-accent)] bg-[var(--survey-accent-soft)] text-[var(--survey-accent-text)] shadow-[0_14px_36px_-28px_var(--survey-accent)]"
+          : "border-[var(--survey-border)] bg-[var(--survey-surface)] text-[var(--survey-ink)]",
+        disabled ? "opacity-45 cursor-not-allowed" : "cursor-pointer",
+        className ?? "",
+      ].join(" ")}
       {...props}
     >
-      <span style={{ lineHeight: 1.28 }}>{children}</span>
+      <span className="leading-[1.28]">{children}</span>
       <span
         aria-hidden
-        style={{
-          display: "grid",
-          placeItems: "center",
-          flex: "0 0 auto",
-          width: 22,
-          height: 22,
-          borderRadius: 999,
-          border: "1px solid",
-          borderColor: selected ? "var(--survey-accent)" : "var(--survey-border-strong)",
-          background: selected ? "var(--survey-accent)" : "transparent",
-          color: "#fff",
-          fontSize: 13,
-          fontWeight: 700,
-        }}
+        className={[
+          "grid place-items-center flex-none w-[22px] h-[22px] rounded-full border text-white text-[13px] font-bold",
+          selected
+            ? "border-[var(--survey-accent)] bg-[var(--survey-accent)]"
+            : "border-[var(--survey-border-strong)] bg-transparent",
+        ].join(" ")}
       >
         {selected ? "✓" : ""}
       </span>

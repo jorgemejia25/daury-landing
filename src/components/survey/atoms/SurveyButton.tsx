@@ -5,56 +5,34 @@ type SurveyButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "ghost";
 };
 
-const variantStyles = {
-  primary: {
-    background: "var(--survey-ink)",
-    borderColor: "var(--survey-ink)",
-    color: "var(--survey-cream)",
-    boxShadow: "0 18px 44px -24px rgba(61, 58, 80, 0.48)",
-  },
-  secondary: {
-    background: "var(--survey-surface)",
-    borderColor: "var(--survey-border-strong)",
-    color: "var(--survey-ink)",
-    boxShadow: "none",
-  },
-  ghost: {
-    background: "transparent",
-    borderColor: "transparent",
-    color: "var(--survey-soft)",
-    boxShadow: "none",
-  },
-};
+const variantClasses = {
+  primary:
+    "bg-[var(--survey-ink)] border-[var(--survey-ink)] text-[var(--survey-cream)] shadow-[0_18px_44px_-24px_rgba(61,58,80,0.48)]",
+  secondary:
+    "bg-[var(--survey-surface)] border-[var(--survey-border-strong)] text-[var(--survey-ink)]",
+  ghost:
+    "bg-transparent border-transparent text-[var(--survey-soft)]",
+} as const;
 
 export default function SurveyButton({
   children,
   variant = "primary",
   disabled,
-  style,
+  className,
   ...props
 }: SurveyButtonProps) {
   return (
     <button
       type="button"
       disabled={disabled}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 10,
-        minHeight: 46,
-        padding: "12px 18px",
-        borderRadius: 999,
-        border: "1px solid",
-        fontSize: 14,
-        fontWeight: 650,
-        lineHeight: 1,
-        transition: "transform 0.25s var(--ease), opacity 0.25s var(--ease), box-shadow 0.25s var(--ease)",
-        opacity: disabled ? 0.48 : 1,
-        cursor: disabled ? "not-allowed" : "pointer",
-        ...variantStyles[variant],
-        ...style,
-      }}
+      className={[
+        "inline-flex items-center justify-center gap-2.5 min-h-[46px] px-[18px] py-3 rounded-full border",
+        "text-sm font-[650] leading-none",
+        "transition-[transform,opacity,box-shadow] duration-300 ease-[var(--ease)]",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        variantClasses[variant],
+        className ?? "",
+      ].join(" ")}
       {...props}
     >
       {children}

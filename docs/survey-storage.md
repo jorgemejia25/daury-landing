@@ -1,138 +1,144 @@
 # Configuración actual de almacenamiento de la encuesta
 
-Este documento describe cómo se guardan hoy las respuestas de la encuesta y qué debe cambiar cuando se haga un despliegue real.
+Este documento describe cómo se guardan hoy las respuestas de la encuesta.
 
 ## Estado actual
 
-La encuesta guarda respuestas con SQLite local usando `node:sqlite`.
+La encuesta guarda respuestas en **Convex**, una base de datos en la nube con funciones serverless.
 
 Archivos principales:
 
+- `convex/schema.ts`: define la tabla `careSurveyResponses` y sus tipos.
+- `convex/careSurvey.ts`: define la mutation `submit` (inserta una respuesta) y la query `list` (lista respuestas).
 - `src/actions/submit-care-survey.ts`: valida y normaliza el payload recibido desde el cliente.
-- `src/lib/care-survey-db.ts`: crea la base SQLite, crea la tabla si no existe e inserta cada respuesta.
-- `scripts/read-survey-responses.mjs`: lee respuestas locales y las imprime en consola.
-- `data/care-survey.sqlite`: archivo local de base de datos generado en runtime.
+- `src/lib/care-survey-db.ts`: crea un `ConvexHttpClient` y llama a la mutation `submit`.
+- `scripts/read-survey-responses.mjs`: lee respuestas desde Convex y las imprime en consola.
 
-La ruta de encuesta está marcada como runtime Node:
+Como ya no depende de filesystem ni de `node:sqlite`, la ruta de encuesta (`src/app/[locale]/encuesta/page.tsx`) ya no necesita fijar `runtime = "nodejs"`.
+
+## Variables de entorno
+
+Convex genera y gestiona estas variables automáticamente al correr `npx convex dev` (desarrollo) o `npx convex deploy` (producción):
+
+```txt
+CONVEX_DEPLOYMENT=...
+NEXT_PUBLIC_CONVEX_URL=https://<tu-deployment>.convex.cloud
+```
+
+Estas quedan en `.env.local` (no se versiona, ver `.gitignore`). Para despliegues (Vercel, etc.) hay que configurar `NEXT_PUBLIC_CONVEX_URL` como variable de entorno del proyecto apuntando al deployment de producción.
+
+## Schema actual
 
 ```ts
-export const runtime = "nodejs";
-```
-
-Esto está en `src/app/[locale]/encuesta/page.tsx`, porque SQLite local y filesystem no funcionan en runtime Edge.
-
-## Ubicación de la base
-
-Por defecto se usa:
-
-```txt
-data/care-survey.sqlite
-```
-
-También se puede sobrescribir con:
-
-```txt
-DAURY_SURVEY_DATABASE_PATH=/ruta/a/care-survey.sqlite
-```
-
-La carpeta `data/` está ignorada por Git en `.gitignore`, porque contiene datos locales y no debe versionarse.
-
-## Tabla actual
-
-La tabla se llama:
-
-```sql
-care_survey_responses
-```
-
-Schema actual:
-
-```sql
-CREATE TABLE IF NOT EXISTS care_survey_responses (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  created_at TEXT NOT NULL,
-  locale TEXT NOT NULL,
-  organization_method TEXT NOT NULL,
-  organization_other TEXT NOT NULL,
-  care_challenges_json TEXT NOT NULL,
-  care_challenges_other TEXT NOT NULL,
-  had_incident TEXT NOT NULL,
-  incident_story TEXT NOT NULL,
-  app_trust TEXT NOT NULL,
-  trust_concerns_json TEXT NOT NULL,
-  trust_concerns_other TEXT NOT NULL,
-  app_interest TEXT NOT NULL,
-  interest_no_reason TEXT NOT NULL,
-  essential_features_json TEXT NOT NULL,
-  essential_features_other TEXT NOT NULL,
-  price_too_expensive_cents INTEGER,
-  price_expensive_but_pay_cents INTEGER,
-  price_bargain_cents INTEGER,
-  price_too_cheap_cents INTEGER,
-  price_currency TEXT NOT NULL,
-  completed_path_json TEXT NOT NULL,
-  user_agent TEXT NOT NULL
-);
+careSurveyResponses: defineTable({
+  locale: v.string(),
+  organizationMethod: v.string(),
+  organizationOther: v.string(),
+  careChallenges: v.array(v.string()),
+  careChallengesOther: v.string(),
+  hadIncident: v.string(),
+  incidentStory: v.string(),
+  appTrust: v.string(),
+  trustConcerns: v.array(v.string()),
+  trustConcernsOther: v.string(),
+  appInterest: v.string(),
+  interestNoReason: v.string(),
+  essentialFeatures: v.array(v.string()),
+  essentialFeaturesOther: v.string(),
+  priceTooExpensiveCents: v.union(v.number(), v.null()),
+  priceExpensiveButPayCents: v.union(v.number(), v.null()),
+  priceBargainCents: v.union(v.number(), v.null()),
+  priceTooCheapCents: v.union(v.number(), v.null()),
+  priceCurrency: v.string(),
+  completedPath: v.array(v.string()),
+  userAgent: v.string(),
+})
 ```
 
 Notas:
 
-- Las opciones múltiples se guardan como JSON string.
-- Los precios se capturan como números enteros en quetzales y se guardan en centavos.
-- Ejemplo: el usuario escribe `25`, se guarda `2500`.
+- Convex agrega automáticamente `_id` y `_creationTime` a cada documento (no hace falta un `id` ni `created_at` manual).
+- Las opciones múltiples se guardan como arrays nativos (ya no como JSON stringificado).
+- Los precios se capturan como números enteros en quetzales y se guardan en centavos (el usuario escribe `25`, se guarda `2500`).
 - La moneda actual es fija: `GTQ`.
-- `completed_path_json` guarda el camino de preguntas que vio el usuario.
+- `completedPath` guarda el camino de preguntas que vio el usuario.
 
-## Cómo revisar respuestas en local
+## Cómo revisar respuestas
 
-Comando recomendado:
+Opción 1 — dashboard de Convex:
+
+```bash
+npx convex dashboard
+```
+
+Opción 2 — CLI:
+
+```bash
+npx convex data careSurveyResponses
+```
+
+Opción 3 — script del proyecto (imprime una tabla resumida en consola):
 
 ```bash
 npm run survey:responses
 ```
 
-Alternativa con SQLite CLI:
+Opción 4 — panel visual en la app (gráficas + descarga de CSV):
 
-```bash
-sqlite3 data/care-survey.sqlite "SELECT * FROM care_survey_responses ORDER BY created_at DESC;"
+```txt
+/es/encuesta/resultados?key=TU_CLAVE
 ```
 
-## Limitaciones del estado actual
+## Panel de resultados
 
-Esta configuración sirve para desarrollo local o una demo controlada en una máquina persistente.
+Ruta: `src/app/[locale]/encuesta/resultados/page.tsx` → `/<locale>/encuesta/resultados`.
 
-No es suficiente para un despliegue serio en plataformas serverless como Vercel porque:
+Muestra, con Recharts:
 
-- El filesystem puede ser efímero.
-- Múltiples instancias no comparten el mismo archivo SQLite.
-- Puede haber pérdida de respuestas después de redeploys o cold starts.
-- `node:sqlite` es una API experimental de Node.
+- KPIs (total de respuestas, % interesados, % que confían, precio óptimo).
+- Donas para preguntas sí / no / tal vez (interés, confianza, incidentes).
+- Barras para respuestas categóricas (organización, retos, preocupaciones, funciones).
+- Curva de sensibilidad de precio **Van Westendorp** (precio óptimo OPP, indiferencia IPP y
+  rango aceptable PMC–PME).
+- Lista de respuestas de texto abierto.
+- Botón **Descargar CSV** con todas las respuestas (etiquetas legibles, precios en Q, BOM UTF-8
+  para Excel).
 
-## Qué cambiar en despliegue real
+Archivos:
 
-Cuando se haga el despliegue real, cambiar `src/lib/care-survey-db.ts` para usar una base persistente.
+- `src/actions/get-survey-results.ts`: server action que lee de Convex, protegida por clave.
+- `src/lib/care-survey-analytics.ts`: agregaciones, Van Westendorp y generación de CSV (funciones puras).
+- `src/components/survey/results/SurveyResultsDashboard.tsx`: dashboard cliente con Recharts.
 
-Opciones recomendadas:
+### Acceso (importante)
 
-- Turso/libSQL si se quiere mantener una experiencia parecida a SQLite.
-- Postgres administrado si se quiere una opción más estándar para producción.
-- Supabase, Neon o Railway Postgres si se busca setup rápido.
+El panel expone respuestas sensibles (historias de incidentes, etc.), así que **está cerrado por
+defecto**. Define la variable de entorno `SURVEY_ADMIN_KEY` y abre la ruta con `?key=`:
 
-La capa a reemplazar es principalmente:
-
-```ts
-saveCareSurveyResponse(payload, userAgent)
+```txt
+SURVEY_ADMIN_KEY=una-clave-larga-y-secreta
 ```
 
-Idealmente mantener el contrato de esa función y cambiar solo la implementación interna.
+- Si `SURVEY_ADMIN_KEY` no está definida → el panel no muestra datos (falla cerrado).
+- Si la clave no coincide → pide la clave.
+- En producción, configura `SURVEY_ADMIN_KEY` en las variables de entorno del hosting.
+- La ruta lleva `robots: noindex` para no ser indexada.
 
-## Checklist de migración
+## Setup inicial (primera vez en esta máquina)
 
-1. Crear la tabla equivalente en la base de producción.
-2. Configurar variables de entorno de conexión.
-3. Reemplazar `node:sqlite` y escritura a filesystem en `src/lib/care-survey-db.ts`.
-4. Mantener la validación en `src/actions/submit-care-survey.ts`.
-5. Crear un script nuevo para leer/exportar respuestas desde producción.
-6. Probar envío desde `/es/encuesta`.
-7. Confirmar que los precios siguen guardándose en centavos y moneda `GTQ`.
+1. `npm install` (ya incluye la dependencia `convex`).
+2. Ejecutar `npx convex dev` una vez. Esto:
+   - Pide iniciar sesión en Convex (abre el navegador).
+   - Pide crear o vincular un proyecto de Convex.
+   - Sube `convex/schema.ts` y `convex/careSurvey.ts` al deployment de desarrollo.
+   - Genera `convex/_generated/` (tipos y API cliente) y `.env.local` con `NEXT_PUBLIC_CONVEX_URL`.
+3. Dejar `npx convex dev` corriendo en una terminal aparte mientras se desarrolla (redepliega funciones automáticamente al guardar cambios en `convex/`).
+4. Definir `SURVEY_ADMIN_KEY` en `.env.local` para poder abrir el panel de resultados.
+5. Probar el envío desde `/es/encuesta` y ver el panel en `/es/encuesta/resultados?key=...`.
 
+## Despliegue a producción
+
+1. `npx convex deploy` crea/actualiza el deployment de producción y sube el schema y las funciones.
+2. Configurar `NEXT_PUBLIC_CONVEX_URL` en las variables de entorno de la plataforma de hosting (Vercel, etc.) con la URL del deployment de producción.
+3. Configurar `SURVEY_ADMIN_KEY` en el hosting para proteger el panel de resultados.
+4. No hace falta configurar nada de filesystem: Convex funciona igual en serverless/edge que en local.

@@ -38,7 +38,7 @@ export default function SurveyChoiceGroup({
   };
 
   return (
-    <div style={{ display: "grid", gap: 10 }}>
+    <div className="grid gap-2.5">
       {options.map((option) => {
         const selected = multiple ? values.includes(option.value) : value === option.value;
         const disabled = Boolean(multiple && maxSelections && values.length >= maxSelections && !selected);
@@ -49,7 +49,6 @@ export default function SurveyChoiceGroup({
             selected={selected}
             disabled={disabled}
             onClick={() => selectValue(option.value)}
-            style={{ opacity: disabled ? 0.44 : 1, cursor: disabled ? "not-allowed" : "pointer" }}
           >
             {option.label}
           </SurveyOption>

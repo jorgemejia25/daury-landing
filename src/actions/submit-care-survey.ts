@@ -114,7 +114,7 @@ export async function submitCareSurvey(payload: CareSurveyPayload): Promise<Subm
 
   try {
     const headerStore = await headers();
-    saveCareSurveyResponse(normalized, headerStore.get("user-agent") ?? "");
+    await saveCareSurveyResponse(normalized, headerStore.get("user-agent") ?? "");
     return { ok: true };
   } catch (error) {
     console.error("Care survey submission failed", error);

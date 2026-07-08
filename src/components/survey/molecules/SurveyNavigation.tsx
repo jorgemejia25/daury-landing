@@ -18,7 +18,7 @@ export default function SurveyNavigation({
   onNext,
 }: SurveyNavigationProps) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+    <div className="flex justify-between gap-3.5 flex-wrap">
       <SurveyButton variant="ghost" onClick={onBack} disabled={!canGoBack || loading}>
         Atrás
       </SurveyButton>

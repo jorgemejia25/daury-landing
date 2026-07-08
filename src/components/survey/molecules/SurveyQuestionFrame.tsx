@@ -14,42 +14,20 @@ export default function SurveyQuestionFrame({
   children,
 }: SurveyQuestionFrameProps) {
   return (
-    <article
-      style={{
-        display: "grid",
-        gap: 18,
-        minHeight: "clamp(360px, 58vh, 460px)",
-        padding: "clamp(22px, 3.2vw, 34px)",
-        borderRadius: 28,
-        border: "1px solid var(--survey-border)",
-        background: "var(--survey-surface)",
-        boxShadow: "0 30px 80px -46px rgba(61, 58, 80, 0.45)",
-        backdropFilter: "blur(18px)",
-      }}
-    >
-      <div style={{ display: "grid", gap: 16, alignSelf: "start" }}>
-        <div style={{ display: "grid", gap: 10 }}>
-          <h3
-            className="display"
-            style={{
-              margin: 0,
-              color: "var(--survey-ink)",
-              fontSize: "clamp(28px, 3.5vw, 44px)",
-              lineHeight: 1.02,
-              letterSpacing: "-0.02em",
-              textWrap: "balance",
-            }}
-          >
+    <article className="grid gap-[18px] min-h-[clamp(360px,58vh,460px)] p-[clamp(22px,3.2vw,34px)] rounded-[28px] border border-[var(--survey-border)] bg-[var(--survey-surface)] shadow-[0_30px_80px_-46px_rgba(61,58,80,0.45)] backdrop-blur-xl">
+      <div className="grid gap-4 self-start">
+        <div className="grid gap-2.5">
+          <h3 className="display m-0 text-[var(--survey-ink)] text-[clamp(28px,3.5vw,44px)] leading-[1.02] tracking-[-0.02em] text-balance">
             {title}
           </h3>
-          {helper && <p style={{ margin: 0, color: "var(--survey-soft)", fontSize: 15, lineHeight: 1.5 }}>{helper}</p>}
+          {helper && <p className="m-0 text-[var(--survey-soft)] text-[15px] leading-[1.5]">{helper}</p>}
         </div>
       </div>
 
-      <div style={{ display: "grid", gap: 16, alignSelf: "center" }}>
+      <div className="grid gap-4 self-center">
         {children}
         {error && (
-          <p role="alert" style={{ margin: 0, color: "#C75E8A", fontSize: 14, lineHeight: 1.45 }}>
+          <p role="alert" className="m-0 text-[#C75E8A] text-sm leading-[1.45]">
             {error}
           </p>
         )}

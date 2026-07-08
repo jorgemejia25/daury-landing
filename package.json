@@ -8,14 +8,16 @@
     "start": "next start",
     "lint": "eslint",
     "card:pdf": "node scripts/export-card.mjs",
-    "survey:responses": "node scripts/read-survey-responses.mjs"
+    "survey:responses": "node --env-file=.env.local scripts/read-survey-responses.mjs"
   },
   "dependencies": {
     "aos": "^2.3.4",
+    "convex": "^1.42.1",
     "framer-motion": "^12.38.0",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "recharts": "^3.9.2",
     "resend": "^6.12.3"
   },
   "devDependencies": {

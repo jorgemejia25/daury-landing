@@ -16,96 +16,42 @@ export default function CareSurveySection({ locale }: CareSurveySectionProps) {
     <section
       id="survey"
       ref={ref as Ref<HTMLElement>}
-      className="survey-section"
-      style={{ position: "relative", overflow: "hidden", minHeight: "100vh", display: "grid", alignItems: "center", padding: "clamp(72px, 8vw, 104px) 0 clamp(40px, 6vw, 72px)" }}
+      className="survey-section relative overflow-hidden min-h-screen grid items-center pt-[72px] pb-[52px] sm:pt-[clamp(72px,8vw,104px)] sm:pb-[clamp(40px,6vw,72px)]"
     >
       <div
         aria-hidden
-        style={{
-          position: "absolute",
-          width: 460,
-          height: 460,
-          left: "min(8vw, 120px)",
-          top: 60,
-          borderRadius: 999,
-          background: "#E9E3F7",
-          filter: "blur(86px)",
-          opacity: 0.56,
-          animation: "surveyFloatA 16s var(--ease) infinite alternate",
-        }}
+        className="pointer-events-none absolute w-[460px] h-[460px] left-[min(8vw,120px)] top-[60px] rounded-full bg-[#E9E3F7] blur-[86px] opacity-55 animate-[surveyFloatA_16s_var(--ease)_infinite_alternate]"
       />
       <div
         aria-hidden
-        style={{
-          position: "absolute",
-          width: 420,
-          height: 420,
-          right: "min(5vw, 90px)",
-          bottom: 60,
-          borderRadius: 999,
-          background: "#DCF2E6",
-          filter: "blur(88px)",
-          opacity: 0.5,
-          animation: "surveyFloatB 18s var(--ease) infinite alternate",
-        }}
+        className="pointer-events-none absolute w-[420px] h-[420px] right-[min(5vw,90px)] bottom-[60px] rounded-full bg-[#DCF2E6] blur-[88px] opacity-50 animate-[surveyFloatB_18s_var(--ease)_infinite_alternate]"
       />
 
       <div className="container">
         <div
-          className="survey-layout"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "minmax(280px, 0.76fr) minmax(360px, 1fr)",
-            gap: "clamp(28px, 5vw, 64px)",
-            alignItems: "center",
-            opacity: seen ? 1 : 0,
-            transform: seen ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.55s var(--ease), transform 0.55s var(--ease)",
-          }}
+          className={[
+            "survey-layout grid grid-cols-1 items-start gap-[clamp(28px,5vw,64px)]",
+            "lg:grid-cols-[minmax(280px,0.76fr)_minmax(360px,1fr)] lg:items-center",
+            "transition-[opacity,transform] duration-[550ms] ease-[var(--ease)]",
+            seen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+          ].join(" ")}
         >
-          <div style={{ display: "grid", gap: 16, position: "sticky", top: 88, alignSelf: "center" }}>
-            <h2
-              className="display"
-              style={{
-                margin: 0,
-                color: "var(--survey-ink)",
-                fontSize: "clamp(34px, 5vw, 62px)",
-                lineHeight: 0.98,
-                letterSpacing: "-0.03em",
-                textWrap: "balance",
-              }}
-            >
+          <div className="grid gap-4 max-w-[620px] mx-auto lg:sticky lg:top-[88px] lg:max-w-none lg:self-center">
+            <h2 className="display m-0 text-[var(--survey-ink)] text-[clamp(34px,5vw,62px)] leading-[0.98] tracking-[-0.03em] text-balance">
               Cuidado en casa, con menos carga mental.
             </h2>
-            <div
-              style={{
-                display: "grid",
-                gap: 10,
-                padding: "clamp(12px, 1.6vw, 18px)",
-                borderRadius: 24,
-                border: "1px solid var(--survey-border)",
-                background: "var(--survey-surface)",
-                boxShadow: "0 28px 70px -54px rgba(61, 58, 80, 0.52)",
-                backdropFilter: "blur(18px)",
-              }}
-            >
+            <div className="grid gap-2.5 p-[clamp(12px,1.6vw,18px)] rounded-3xl border border-[var(--survey-border)] bg-[var(--survey-surface)] shadow-[0_28px_70px_-54px_rgba(61,58,80,0.52)] backdrop-blur-xl">
               <img
                 src={medicalCareIllustration.src}
                 alt=""
                 aria-hidden
-                style={{
-                  width: "100%",
-                  maxHeight: 280,
-                  objectFit: "contain",
-                  filter: "drop-shadow(0 24px 34px rgba(61, 58, 80, 0.12))",
-                  animation: "surveyImageFloat 7s var(--ease) infinite alternate",
-                }}
+                className="w-full max-h-[280px] object-contain drop-shadow-[0_24px_34px_rgba(61,58,80,0.12)] animate-[surveyImageFloat_7s_var(--ease)_infinite_alternate]"
               />
               <a
                 href="https://storyset.com/health"
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: "var(--survey-faint)", fontSize: 12, justifySelf: "center" }}
+                className="text-[var(--survey-faint)] text-xs justify-self-center"
               >
                 Health illustrations by Storyset
               </a>
@@ -115,43 +61,6 @@ export default function CareSurveySection({ locale }: CareSurveySectionProps) {
           <ProgressiveCareSurvey locale={locale} />
         </div>
       </div>
-
-      <style>{`
-        @keyframes surveyFloatA {
-          from { transform: translate3d(-18px, -12px, 0) scale(0.98); }
-          to { transform: translate3d(34px, 28px, 0) scale(1.04); }
-        }
-
-        @keyframes surveyFloatB {
-          from { transform: translate3d(28px, 18px, 0) scale(1); }
-          to { transform: translate3d(-24px, -26px, 0) scale(1.05); }
-        }
-
-        @keyframes surveyImageFloat {
-          from { transform: translate3d(0, 6px, 0) rotate(-0.8deg); }
-          to { transform: translate3d(0, -10px, 0) rotate(0.8deg); }
-        }
-
-        @media (max-width: 1024px) {
-          .survey-layout {
-            grid-template-columns: 1fr !important;
-            align-items: start !important;
-          }
-
-          .survey-layout > div:first-child {
-            position: static !important;
-            max-width: 620px;
-            margin: 0 auto;
-          }
-        }
-
-        @media (max-width: 640px) {
-          .survey-section {
-            padding-top: 72px !important;
-            padding-bottom: 52px !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

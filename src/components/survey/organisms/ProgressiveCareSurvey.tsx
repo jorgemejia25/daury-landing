@@ -247,23 +247,14 @@ export default function ProgressiveCareSurvey({ locale }: ProgressiveCareSurveyP
   if (sent) {
     return (
       <div
-        style={{
-          ...toneVars.mint,
-          display: "grid",
-          gap: 24,
-          padding: "clamp(28px, 5vw, 48px)",
-          borderRadius: 28,
-          border: "1px solid var(--survey-border)",
-          background: "var(--survey-surface)",
-          boxShadow: "0 30px 80px -46px rgba(61, 58, 80, 0.45)",
-          backdropFilter: "blur(18px)",
-        }}
+        style={toneVars.mint}
+        className="grid gap-6 p-[clamp(28px,5vw,48px)] rounded-[28px] border border-[var(--survey-border)] bg-[var(--survey-surface)] shadow-[0_30px_80px_-46px_rgba(61,58,80,0.45)] backdrop-blur-xl"
       >
         <span className="eyebrow">Encuesta recibida</span>
-        <h3 className="display" style={{ margin: 0, color: "var(--survey-ink)", fontSize: "clamp(36px, 5vw, 64px)", lineHeight: 1 }}>
+        <h3 className="display m-0 text-[var(--survey-ink)] text-[clamp(36px,5vw,64px)] leading-none">
           Gracias por compartir tu experiencia.
         </h3>
-        <p style={{ margin: 0, color: "var(--survey-soft)", maxWidth: 560 }}>
+        <p className="m-0 text-[var(--survey-soft)] max-w-[560px]">
           Tus respuestas ayudan a entender mejor cómo se organiza el cuidado en casa y qué tendría que resolver Daury primero.
         </p>
         <div>
@@ -276,13 +267,7 @@ export default function ProgressiveCareSurvey({ locale }: ProgressiveCareSurveyP
   }
 
   return (
-    <div
-      style={{
-        ...toneVars[meta.tone],
-        display: "grid",
-        gap: 18,
-      }}
-    >
+    <div style={toneVars[meta.tone]} className="grid gap-[18px]">
       <AnimatePresence mode="wait" custom={direction}>
         <motion.div
           key={currentStep}
@@ -356,33 +341,15 @@ function renderQuestion(
 ) {
   if (step === "intro") {
     return (
-      <div style={{ display: "grid", gap: 12 }}>
+      <div className="grid gap-3">
         {["Responde con tranquilidad, una pregunta a la vez.", "No hay respuestas correctas o incorrectas.", "La encuesta toma pocos minutos."].map((item) => (
           <div
             key={item}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              padding: "12px 14px",
-              borderRadius: 18,
-              border: "1px solid var(--survey-border)",
-              background: "var(--survey-surface)",
-              color: "var(--survey-soft)",
-              fontSize: 15,
-              lineHeight: 1.4,
-            }}
+            className="flex items-center gap-3 px-3.5 py-3 rounded-[18px] border border-[var(--survey-border)] bg-[var(--survey-surface)] text-[var(--survey-soft)] text-[15px] leading-[1.4]"
           >
             <span
               aria-hidden
-              style={{
-                flex: "0 0 auto",
-                width: 9,
-                height: 9,
-                borderRadius: 999,
-                background: "var(--survey-accent)",
-                boxShadow: "0 0 0 4px var(--survey-accent-soft)",
-              }}
+              className="flex-none w-[9px] h-[9px] rounded-full bg-[var(--survey-accent)] shadow-[0_0_0_4px_var(--survey-accent-soft)]"
             />
             {item}
           </div>

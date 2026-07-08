@@ -7,8 +7,6 @@ type SurveyPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-export const runtime = "nodejs";
-
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -31,26 +29,10 @@ export default async function SurveyPage({ params }: SurveyPageProps) {
   const activeLocale: AppLocale = isValidLocale(locale) ? locale : "es";
 
   return (
-    <main style={{ minHeight: "100vh", position: "relative" }}>
+    <main className="min-h-screen relative">
       <Link
         href={`/${activeLocale}`}
-        style={{
-          position: "fixed",
-          top: 22,
-          left: "var(--pad)",
-          zIndex: 20,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "10px 14px",
-          borderRadius: 999,
-          border: "1px solid var(--rule)",
-          background: "color-mix(in oklab, var(--bg-elev) 78%, transparent)",
-          backdropFilter: "blur(18px)",
-          color: "var(--ink-2)",
-          fontSize: 14,
-          fontWeight: 600,
-        }}
+        className="fixed top-[22px] left-[var(--pad)] z-20 inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full border border-[var(--rule)] bg-[color-mix(in_oklab,var(--bg-elev)_78%,transparent)] backdrop-blur-xl text-[var(--ink-2)] text-sm font-semibold"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M19 12H5M11 6l-6 6 6 6" />
