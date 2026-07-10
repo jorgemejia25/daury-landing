@@ -32,10 +32,18 @@ import {
 } from "@/lib/care-survey-analytics";
 import {
   careChallengeOptions,
+  carePayerOptions,
   careTargetOptions,
+  caredPersonAgeOptions,
+  conditionDurationOptions,
+  coordinationFrequencyOptions,
+  discoveryChannelOptions,
   essentialFeatureOptions,
+  familyCaregiverOptions,
+  interestRequirementOptions,
   organizationMethodOptions,
   trustConcernOptions,
+  whatsappPreferenceOptions,
 } from "@/lib/care-survey";
 
 type SurveyResultsDashboardProps = {
@@ -801,6 +809,14 @@ function ResponseTableRow({
     record.trustConcerns.length > 0 ||
     record.incidentStory.length > 0 ||
     record.interestNoReason.length > 0 ||
+    Boolean(record.organizationAppName) ||
+    Boolean(record.priorCareAppName) ||
+    Boolean(record.paidCareDetails) ||
+    Boolean(record.carePayer) ||
+    Boolean(record.whatsappPreference) ||
+    Boolean(record.discoveryChannel) ||
+    Boolean(record.conditionDuration) ||
+    Boolean(record.closingExperience) ||
     hasPrice;
 
   const orgLabel = labelOne(organizationMethodOptions, record.organizationMethod);
@@ -950,6 +966,28 @@ function ResponseDetailPanel({
             />
           </DetailSection>
         )}
+        <DetailSection label="Contexto" expanded={expanded} delay={0.06}>
+          <InlineFactList
+            items={[
+              ["Edad", labelOne(caredPersonAgeOptions, record.caredPersonAge ?? "")],
+              ["Familiares", labelOne(familyCaregiverOptions, record.familyCaregivers ?? "")],
+              ["Frecuencia", labelOne(coordinationFrequencyOptions, record.coordinationFrequency ?? "")],
+              ["App de organización", record.organizationAppName ?? ""],
+              ["App previa", record.priorCareAppName ?? ""],
+            ]}
+          />
+        </DetailSection>
+        {(record.currentlyPaysCare || record.carePayer || record.paidCareDetails) && (
+          <DetailSection label="Gasto" expanded={expanded} delay={0.07}>
+            <InlineFactList
+              items={[
+                ["Paga hoy", yesNoMaybeLabels[record.currentlyPaysCare ?? ""] ?? (record.currentlyPaysCare ?? "")],
+                ["Detalle", record.paidCareDetails ?? ""],
+                ["Quién pagaría", labelOne(carePayerOptions, record.carePayer ?? "")],
+              ]}
+            />
+          </DetailSection>
+        )}
         {record.trustConcerns.length > 0 && (
           <DetailSection label="Le frena" expanded={expanded} delay={0.08}>
             <InlineTags
@@ -959,12 +997,33 @@ function ResponseDetailPanel({
             />
           </DetailSection>
         )}
+        {(record.interestRequirements?.length ?? 0) > 0 && (
+          <DetailSection label="Para decir sí" expanded={expanded} delay={0.1}>
+            <InlineTags
+              options={interestRequirementOptions}
+              values={record.interestRequirements ?? []}
+              other={record.interestRequirementOther ?? ""}
+            />
+          </DetailSection>
+        )}
         {record.essentialFeatures.length > 0 && (
           <DetailSection label="Funciones" expanded={expanded} delay={0.12}>
             <InlineTags
               options={essentialFeatureOptions}
               values={record.essentialFeatures}
               other={record.essentialFeaturesOther}
+            />
+          </DetailSection>
+        )}
+        {(record.whatsappPreference || record.discoveryChannel || record.conditionDuration) && (
+          <DetailSection label="Producto" expanded={expanded} delay={0.14}>
+            <InlineFactList
+              items={[
+                ["WhatsApp", labelOne(whatsappPreferenceOptions, record.whatsappPreference ?? "")],
+                ["Canal", labelOne(discoveryChannelOptions, record.discoveryChannel ?? "")],
+                ["Canal otro", record.discoveryOther ?? ""],
+                ["Duración", labelOne(conditionDurationOptions, record.conditionDuration ?? "")],
+              ]}
             />
           </DetailSection>
         )}
@@ -979,6 +1038,13 @@ function ResponseDetailPanel({
           <DetailSection label="Sin interés" expanded={expanded} delay={0.2}>
             <p className="m-0 text-[12px] leading-[1.6] text-[var(--ink-soft)]">
               {record.interestNoReason}
+            </p>
+          </DetailSection>
+        )}
+        {record.closingExperience && (
+          <DetailSection label="Cierre" expanded={expanded} delay={0.22}>
+            <p className="m-0 text-[12px] leading-[1.6] text-[var(--ink-soft)]">
+              {record.closingExperience}
             </p>
           </DetailSection>
         )}
@@ -1112,6 +1178,25 @@ function InlineTags({
     <p className="m-0 text-[12px] leading-[1.55] text-[var(--ink)]">
       {labels.join(" · ")}
     </p>
+  );
+}
+
+function InlineFactList({ items }: { items: [string, string][] }) {
+  const visibleItems = items.filter(([, value]) => value && value !== "—");
+
+  if (visibleItems.length === 0) {
+    return <span className="text-[12px] text-[var(--ink-mute)]">—</span>;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+      {visibleItems.map(([label, value]) => (
+        <span key={label} className="text-[12px] leading-[1.55] text-[var(--ink-soft)]">
+          <span className="text-[var(--ink-mute)]">{label}: </span>
+          <span className="text-[var(--ink)]">{value}</span>
+        </span>
+      ))}
+    </div>
   );
 }
 

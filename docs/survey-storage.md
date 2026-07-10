@@ -32,25 +32,42 @@ Estas quedan en `.env.local` (no se versiona, ver `.gitignore`). Para despliegue
 ```ts
 careSurveyResponses: defineTable({
   locale: v.string(),
+  hasManagedCare: v.optional(v.string()),
   careTarget: v.optional(v.string()),
+  caredPersonAge: v.optional(v.string()),
+  familyCaregivers: v.optional(v.string()),
+  coordinationFrequency: v.optional(v.string()),
   organizationMethod: v.string(),
   organizationOther: v.string(),
+  organizationAppName: v.optional(v.string()),
   careChallenges: v.array(v.string()),
   careChallengesOther: v.string(),
+  priorCareAppUse: v.optional(v.string()),
+  priorCareAppName: v.optional(v.string()),
   hadIncident: v.string(),
   incidentStory: v.string(),
+  currentlyPaysCare: v.optional(v.string()),
+  paidCareDetails: v.optional(v.string()),
+  carePayer: v.optional(v.string()),
   appTrust: v.string(),
   trustConcerns: v.array(v.string()),
   trustConcernsOther: v.string(),
   appInterest: v.string(),
   interestNoReason: v.string(),
+  interestRequirements: v.optional(v.array(v.string())),
+  interestRequirementOther: v.optional(v.string()),
+  whatsappPreference: v.optional(v.string()),
   essentialFeatures: v.array(v.string()),
   essentialFeaturesOther: v.string(),
+  discoveryChannel: v.optional(v.string()),
+  discoveryOther: v.optional(v.string()),
+  conditionDuration: v.optional(v.string()),
   priceTooExpensiveCents: v.union(v.number(), v.null()),
   priceExpensiveButPayCents: v.union(v.number(), v.null()),
   priceBargainCents: v.union(v.number(), v.null()),
   priceTooCheapCents: v.union(v.number(), v.null()),
   priceCurrency: v.string(),
+  closingExperience: v.optional(v.string()),
   completedPath: v.array(v.string()),
   userAgent: v.string(),
 })
@@ -63,6 +80,9 @@ Notas:
 - Los precios se capturan como números enteros en quetzales y se guardan en centavos (el usuario escribe `25`, se guarda `2500`).
 - La moneda actual es fija: `GTQ`.
 - `completedPath` guarda el camino de preguntas que vio el usuario.
+- Los campos agregados en la versión nueva del flujo son `optional` en el schema para conservar compatibilidad con respuestas antiguas.
+- Si el filtro inicial `hasManagedCare = no`, la encuesta agradece y termina sin insertar una respuesta.
+- Las preguntas de precio (`conditionDuration`, P17-P20) solo se guardan cuando `appInterest = yes`; en otros caminos los precios se guardan como `null`.
 
 ## Cómo revisar respuestas
 
@@ -101,9 +121,10 @@ Muestra, con Recharts:
 - Barras para respuestas categóricas (organización, retos, preocupaciones, funciones).
 - Curva de sensibilidad de precio **Van Westendorp** (precio óptimo OPP, indiferencia IPP y
   rango aceptable PMC–PME).
-- Lista de respuestas de texto abierto.
-- Botón **Descargar CSV** con todas las respuestas (etiquetas legibles, precios en Q, BOM UTF-8
-  para Excel).
+- Lista de respuestas de texto abierto y detalles nuevos del flujo (edad, frecuencia, gasto,
+  WhatsApp, canal de descubrimiento y duración de la condición cuando existan).
+- Botón **Descargar CSV** con todas las respuestas y los campos nuevos (etiquetas legibles,
+  precios en Q, BOM UTF-8 para Excel).
 
 Archivos:
 
