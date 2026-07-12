@@ -90,6 +90,32 @@ Opción 4 — panel visual en la app (gráficas + descarga de CSV):
 /es/encuesta/resultados?key=TU_CLAVE
 ```
 
+## Datos de prueba (seed)
+
+Para poblar el deployment de desarrollo con respuestas variadas y realistas (útil para
+probar el dashboard sin esperar respuestas reales):
+
+```bash
+npm run survey:seed          # inserta 32 respuestas
+npm run survey:seed -- 60    # o un número custom
+```
+
+`scripts/seed-survey-responses.mjs` genera respuestas con distribuciones ponderadas por
+campo (tipo de cuidado, organización, retos, confianza, interés, precios Van Westendorp,
+etc.) usando un PRNG con semilla fija, así que correrlo varias veces produce el mismo
+dataset. Solo inserta — no borra nada.
+
+Si necesitás limpiar el deployment de desarrollo antes de resembrar (por ejemplo, para no
+mezclar tandas de prueba), `convex/careSurvey.ts` expone `clearAll`: una mutation
+**interna** (no llamable desde el navegador, solo vía CLI con tu deploy key):
+
+```bash
+npx convex run careSurvey:clearAll
+```
+
+Úsala con cuidado — borra todas las filas de `careSurveyResponses` en el deployment activo
+(dev por defecto). Nunca la expongas como mutation pública.
+
 ## Panel de resultados
 
 Ruta: `src/app/[locale]/encuesta/resultados/page.tsx` → `/<locale>/encuesta/resultados`.

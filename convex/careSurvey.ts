@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const submit = mutation({
@@ -35,5 +35,19 @@ export const list = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.db.query("careSurveyResponses").order("desc").collect();
+  },
+});
+
+/**
+ * Wipes every survey response. Not part of the public API — only callable via
+ * `npx convex run careSurvey:clearAll` (deploy-key auth), never from the browser.
+ * Used to reset dev/demo data before reseeding.
+ */
+export const clearAll = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const docs = await ctx.db.query("careSurveyResponses").collect();
+    await Promise.all(docs.map((doc) => ctx.db.delete(doc._id)));
+    return { deleted: docs.length };
   },
 });

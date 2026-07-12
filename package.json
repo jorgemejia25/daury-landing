@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "card:pdf": "node scripts/export-card.mjs",
-    "survey:responses": "node --env-file=.env.local scripts/read-survey-responses.mjs"
+    "survey:responses": "node --env-file=.env.local scripts/read-survey-responses.mjs",
+    "survey:seed": "node --env-file=.env.local scripts/seed-survey-responses.mjs"
   },
   "dependencies": {
     "aos": "^2.3.4",

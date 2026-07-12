@@ -45,7 +45,6 @@ type SurveyResultsDashboardProps = {
 
 type View = "resumen" | "respuestas";
 type ChartRow = { value: string; label: string; pct: number; count: number };
-type AttRow = { label: string; yes: number; maybe: number; no: number; total: number };
 
 const ORG_COLORS: Record<string, string> = {
   paper: "var(--org-paper)",
@@ -53,6 +52,11 @@ const ORG_COLORS: Record<string, string> = {
   memory: "var(--org-memory)",
   app: "var(--org-app)",
   other: "var(--org-other)",
+};
+
+const CARE_TARGET_COLORS: Record<string, string> = {
+  personal: "var(--blue)",
+  third_party: "var(--violet)",
 };
 
 const ATTITUDE_COLORS = {
@@ -293,21 +297,9 @@ function SummaryDashboard({
   trustPct: number;
   incidentPct: number;
 }) {
-  const attitudeRows: AttRow[] = [
-    { label: "Interés", ...summary.interest },
-    { label: "Confianza", ...summary.trust },
-    {
-      label: "Incidente",
-      yes: summary.incident.yes,
-      maybe: 0,
-      no: summary.incident.no,
-      total: summary.incident.total,
-    },
-  ];
-
   return (
     <main className="mx-auto w-full max-w-7xl px-6 py-5">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <KpiCard label="Interés" value={formatPct(interestPct)} note={`${summary.interest.yes} de ${summary.interest.total}`} accent="var(--green)" />
           <KpiCard label="Confianza" value={formatPct(trustPct)} note={`${summary.trust.yes} de ${summary.trust.total}`} accent="var(--blue)" />
@@ -320,53 +312,59 @@ function SummaryDashboard({
           <KpiCard label="Precio óptimo" value={formatQ(analytics.prices.opp)} note="al mes" accent="var(--violet)" />
         </div>
 
-        <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-2">
-          <div className="flex flex-col gap-4">
-            <Card
-              title="Qué construir primero"
-              subtitle={`${summary.denominators.features} interesados`}
-            >
-              {summary.denominators.features === 0 ? (
-                <CardEmpty message="Nadie eligió funciones todavía." />
-              ) : (
-                <MetricBars rows={toChartRows(analytics.features, summary.denominators.features)} color="var(--violet)" />
-              )}
-            </Card>
-
-            <Card title="Mayores retos">
-              <MetricBars rows={toChartRows(analytics.challenges, summary.denominators.challenges)} color="var(--blue)" />
-            </Card>
-
-            <Card title="Tipo de cuidado" subtitle={`${analytics.careTargetTotal} respuestas`}>
-              <MetricBars rows={toChartRows(analytics.careTarget, analytics.careTargetTotal)} color="var(--green)" />
-            </Card>
-
-            <Card title="Actitud general">
-              <AttitudeBars rows={attitudeRows} />
-            </Card>
-
-            {summary.denominators.concerns > 0 && (
-              <Card
-                title="Qué frena la confianza"
-                subtitle={`${summary.denominators.concerns} personas dudan`}
-              >
-                <MetricBars
-                  rows={toChartRows(analytics.concerns, summary.denominators.concerns)}
-                  color="var(--coral)"
-                />
-              </Card>
+        <div className="columns-1 gap-4 md:columns-2 xl:columns-3">
+          <Card
+            className="mb-4 break-inside-avoid"
+            title="Qué construir primero"
+            subtitle={`${summary.denominators.features} interesados`}
+          >
+            {summary.denominators.features === 0 ? (
+              <CardEmpty message="Nadie eligió funciones todavía." />
+            ) : (
+              <MetricBars rows={toChartRows(analytics.features, summary.denominators.features)} color="var(--violet)" />
             )}
-          </div>
+          </Card>
 
-          <div className="flex flex-col gap-4">
-            <Card title="Cuánto pagarían al mes">
-              <PriceChart analysis={analytics.prices} />
-            </Card>
+          <Card className="mb-4 break-inside-avoid" title="Cuánto pagarían al mes">
+            <PriceChart analysis={analytics.prices} />
+          </Card>
 
-            <Card title="Cómo se organizan hoy" subtitle={`${total} respuestas`}>
-              <OrganizationBreakdown data={analytics.organization} colors={ORG_COLORS} total={total} />
+          <Card className="mb-4 break-inside-avoid" title="Mayores retos">
+            <MetricBars rows={toChartRows(analytics.challenges, summary.denominators.challenges)} color="var(--blue)" />
+          </Card>
+
+          <Card className="mb-4 break-inside-avoid" title="Cómo se organizan hoy" subtitle={`${total} respuestas`}>
+            <DonutBreakdown data={analytics.organization} colors={ORG_COLORS} total={total} />
+          </Card>
+
+          <Card className="mb-4 break-inside-avoid" title="Actitud general">
+            <AttitudeDonuts summary={summary} />
+          </Card>
+
+          <Card
+            className="mb-4 break-inside-avoid"
+            title="Tipo de cuidado"
+            subtitle={`${analytics.careTargetTotal} respuestas`}
+          >
+            {analytics.careTargetTotal === 0 ? (
+              <CardEmpty message="Sin datos todavía." />
+            ) : (
+              <DonutBreakdown data={analytics.careTarget} colors={CARE_TARGET_COLORS} total={analytics.careTargetTotal} />
+            )}
+          </Card>
+
+          {summary.denominators.concerns > 0 && (
+            <Card
+              className="mb-4 break-inside-avoid"
+              title="Qué frena la confianza"
+              subtitle={`${summary.denominators.concerns} personas dudan`}
+            >
+              <MetricBars
+                rows={toChartRows(analytics.concerns, summary.denominators.concerns)}
+                color="var(--coral)"
+              />
             </Card>
-          </div>
+          )}
         </div>
       </div>
     </main>
@@ -393,13 +391,18 @@ function Card({
   title,
   subtitle,
   children,
+  className,
 }: {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <article className="rounded-2xl border border-[var(--rule)] bg-[var(--bg-elev)] p-5 shadow-[0_1px_0_rgba(10,11,18,0.04)]">
+    <article
+      className={`rounded-2xl border border-[var(--rule)] bg-[var(--bg-elev)] p-5 shadow-[0_1px_0_rgba(10,11,18,0.04)] ${className ?? ""}`}
+    >
+
       <header className="mb-4 flex items-start justify-between gap-3 border-b border-[var(--rule)] pb-3">
         <h2 className="font-['Bricolage_Grotesque','Geist',sans-serif] text-base font-medium tracking-[-0.015em] text-[var(--ink)]">
           {title}
@@ -481,45 +484,80 @@ function MetricBars({ rows, color }: { rows: ChartRow[]; color: string }) {
   );
 }
 
-function AttitudeBars({ rows }: { rows: AttRow[] }) {
+function AttitudeDonuts({ summary }: { summary: ReturnType<typeof summarize> }) {
+  const donuts = [
+    { label: "Interés", yes: summary.interest.yes, maybe: summary.interest.maybe, no: summary.interest.no, total: summary.interest.total },
+    { label: "Confianza", yes: summary.trust.yes, maybe: summary.trust.maybe, no: summary.trust.no, total: summary.trust.total },
+    { label: "Incidente", yes: summary.incident.yes, maybe: 0, no: summary.incident.no, total: summary.incident.total },
+  ];
+
   return (
     <div className="flex flex-col gap-4">
-      {rows.map((row) => {
-        const yesPct = pct(row.yes, row.total);
-        const maybePct = pct(row.maybe, row.total);
-        const noPct = pct(row.no, row.total);
+      <div className="flex items-start justify-around gap-2">
+        {donuts.map((donut) => (
+          <AttitudeDonut key={donut.label} {...donut} />
+        ))}
+      </div>
 
-        return (
-          <div key={row.label}>
-            <div className="mb-1.5 flex items-center justify-between gap-4">
-              <span className="text-[13px] text-[var(--ink-soft)]">{row.label}</span>
-              <span className="font-['Geist_Mono',ui-monospace,monospace] text-[12px] font-medium tabular-nums text-[var(--ink)]">
-                {formatPct(yesPct)} sí
-              </span>
-            </div>
-            <div
-              className="flex h-2 overflow-hidden rounded-full bg-[var(--bg-2)]"
-              title={`Sí ${row.yes} · Tal vez ${row.maybe} · No ${row.no}`}
-            >
-              {noPct > 0 && (
-                <div className="h-full" style={{ width: `${noPct}%`, background: ATTITUDE_COLORS.no }} />
-              )}
-              {maybePct > 0 && (
-                <div className="h-full" style={{ width: `${maybePct}%`, background: ATTITUDE_COLORS.maybe }} />
-              )}
-              {yesPct > 0 && (
-                <div className="h-full" style={{ width: `${yesPct}%`, background: ATTITUDE_COLORS.yes }} />
-              )}
-            </div>
-          </div>
-        );
-      })}
-
-      <div className="flex flex-wrap gap-3 border-t border-[var(--rule)] pt-3">
+      <div className="flex flex-wrap justify-center gap-3 border-t border-[var(--rule)] pt-3">
         <LegendItem color={ATTITUDE_COLORS.yes} label="Sí" />
         <LegendItem color={ATTITUDE_COLORS.maybe} label="Tal vez" />
         <LegendItem color={ATTITUDE_COLORS.no} label="No" />
       </div>
+    </div>
+  );
+}
+
+function AttitudeDonut({
+  label,
+  yes,
+  maybe,
+  no,
+  total,
+}: {
+  label: string;
+  yes: number;
+  maybe: number;
+  no: number;
+  total: number;
+}) {
+  const slices = [
+    { key: "yes", value: yes },
+    { key: "maybe", value: maybe },
+    { key: "no", value: no },
+  ].filter((slice) => slice.value > 0);
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="relative size-[84px]">
+        {slices.length > 0 && (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={slices}
+                dataKey="value"
+                nameKey="key"
+                innerRadius="62%"
+                outerRadius="100%"
+                paddingAngle={2}
+                stroke="var(--bg-elev)"
+                strokeWidth={2}
+                isAnimationActive={false}
+              >
+                {slices.map((slice) => (
+                  <Cell key={slice.key} fill={ATTITUDE_COLORS[slice.key as keyof typeof ATTITUDE_COLORS]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="font-['Bricolage_Grotesque','Geist',sans-serif] text-sm font-medium tabular-nums text-[var(--ink)]">
+            {total ? formatPct(pct(yes, total)) : "—"}
+          </span>
+        </div>
+      </div>
+      <span className="text-[12px] text-[var(--ink-soft)]">{label}</span>
     </div>
   );
 }
@@ -533,7 +571,7 @@ function LegendItem({ color, label }: { color: string; label: string }) {
   );
 }
 
-function OrganizationBreakdown({
+function DonutBreakdown({
   data,
   colors,
   total,
@@ -560,6 +598,7 @@ function OrganizationBreakdown({
                 dataKey="count"
                 stroke="var(--bg-elev)"
                 strokeWidth={2}
+                isAnimationActive={false}
               >
                 {slices.map((entry) => (
                   <Cell key={entry.value} fill={colors[entry.value] ?? "var(--ink-mute)"} />
