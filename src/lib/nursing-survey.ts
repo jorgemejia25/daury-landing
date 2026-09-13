@@ -79,7 +79,7 @@ export const nursingSurvey: SurveyQuestion[] = [
 
   { id: "funciones_deseadas", section: "VII. Cierre", kind: "multiple", label: "Pensando en una aplicación para apoyar el cuidado en casa, ¿qué funciones le resultarían más útiles? Seleccione hasta 3.", maxSelections: 3, options: [{ value: "recordatorio", label: "Recordatorios de la hora de cada tarea" }, { value: "pasoapaso", label: "Instrucciones paso a paso para realizar una tarea" }, { value: "confirmar", label: "Confirmar que una tarea ya fue realizada" }, { value: "avisar", label: "Avisar a otro familiar lo que ya se hizo" }, { value: "escalar", label: "Indicar cuándo debe llamar al médico" }, { value: "historial", label: "Guardar un historial para la cita médica" }] },
   { id: "dificultad_abierta", section: "VII. Cierre", kind: "long", label: "¿Qué es lo más difícil de cuidar a alguien en casa?" },
-  { id: "acepta_contacto", section: "VII. Cierre", kind: "single", label: "¿Autoriza que se le contacte para probar el prototipo?", options: [{ value: "si", label: "Sí" }, { value: "no", label: "No" }] },
+  { id: "acepta_contacto", section: "VII. Cierre", kind: "single", label: "¿Dispuesto(a) a probar un prototipo de una app de cuidado en casa?", options: [{ value: "si", label: "Sí" }, { value: "no", label: "No" }] },
   { id: "telefono_contacto", section: "VII. Cierre", kind: "short", label: "Número de teléfono", showIf: { question: "acepta_contacto", equals: "si" } },
 ];
 
@@ -138,7 +138,7 @@ const englishCopy: Record<string, { label: string; options?: Record<string, stri
   apoyo_digital: { label: "When you do not understand something on your phone, who helps you?", options: { solo: "No one; I solve it myself", hijo: "A child or grandchild", familiar: "Another family member", vecino: "A neighbor", nadie: "No one can help me" } },
   funciones_deseadas: { label: "Thinking about an app that supports care at home, which features would be most useful to you? Select up to 3.", options: { recordatorio: "Reminders for when each task is due", pasoapaso: "Step-by-step instructions for a task", confirmar: "A way to confirm that I completed it", avisar: "A way to notify another family member", escalar: "Guidance on when to call a doctor", historial: "A record to take to an appointment" } },
   dificultad_abierta: { label: "What is the most difficult part of caring for someone at home?" },
-  acepta_contacto: { label: "May we contact you to test the prototype?", options: { si: "Yes", no: "No" } },
+  acepta_contacto: { label: "Willing to test a prototype of a home-care app?", options: { si: "Yes", no: "No" } },
   telefono_contacto: { label: "Phone number" },
 };
 
