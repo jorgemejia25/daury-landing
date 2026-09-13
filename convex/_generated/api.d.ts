@@ -9,6 +9,7 @@
  */
 
 import type * as careSurvey from "../careSurvey.js";
+import type * as surveyResponses from "../surveyResponses.js";
 
 import type {
   ApiFromModules,
@@ -18,6 +19,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   careSurvey: typeof careSurvey;
+  surveyResponses: typeof surveyResponses;
 }>;
 
 /**
