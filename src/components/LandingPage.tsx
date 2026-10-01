@@ -7,11 +7,10 @@ import { applyTheme, type Theme } from '@/lib/theme';
 import GradientField from './daury/GradientField';
 import Nav from './daury/Nav';
 import Hero from './daury/Hero';
-import { MarqueeStrip, Connected, CoreExperience, Flow } from './daury/Approach';
+import { Connected, CoreExperience, Flow } from './daury/Approach';
 import { Story, Scale } from './daury/StoryScale';
 import TeamSection from './daury/TeamSection';
 import { GetInvolved, FooterSection } from './daury/InvolvedFooter';
-import CareSurveyCallout from './survey/templates/CareSurveyCallout';
 import type { AppLocale } from '@/i18n/config';
 
 type LandingPageProps = {
@@ -78,15 +77,12 @@ export default function LandingPage({ locale, initialTheme }: LandingPageProps) 
       <div style={{ position: 'relative', zIndex: 1 }}>
         <Nav lang={lang} setLang={setLang} theme={theme} setTheme={setTheme} t={t} />
         <Hero t={t} />
-        <MarqueeStrip items={t.marquee} />
         <Connected t={t} />
         <CoreExperience t={t} />
         <Flow t={t} />
         <Story t={t} />
         <Scale t={t} />
-        <MarqueeStrip items={t.marquee} reverse />
         <TeamSection t={t} />
-        <CareSurveyCallout locale={lang} />
         <GetInvolved t={t} />
         <FooterSection t={t} />
       </div>

@@ -1,6 +1,6 @@
 'use client';
 import { useRef } from 'react';
-import { useScrollY, useReveal, useElementParallax, useMouseParallax, useLocalMouse } from '@/hooks/useDaury';
+import { useReveal, useElementParallax, useMouseParallax, useLocalMouse } from '@/hooks/useDaury';
 import type { I18nContent } from '@/lib/daury-i18n';
 
 /* ─── Shared RevealText ─── */
@@ -12,39 +12,6 @@ export function RevealText({ children, as: Tag = 'div', className = '', style = 
     <Tag ref={ref as React.Ref<HTMLElement>} className={`${className} mask-reveal${seen ? ' in' : ''}`} style={style}>
       {children}
     </Tag>
-  );
-}
-
-/* ─── Marquee Strip ─── */
-export function MarqueeStrip({ items, reverse }: { items: string[]; reverse?: boolean }) {
-  const y = useScrollY();
-  const loop = [...items, ...items, ...items];
-  // Skip scroll-driven nudge on mobile to avoid jank
-  const nudge = typeof window !== 'undefined' && window.innerWidth >= 768 ? (reverse ? 1 : -1) * (y * 0.08) : 0;
-  return (
-    <section style={{ padding: '40px 0', position: 'relative' }}>
-      <div className="marquee">
-        <div className="marquee-track" style={{
-          animationDirection: reverse ? 'reverse' : 'normal',
-          transform: `translate3d(${nudge}px, 0, 0)`,
-        }}>
-          {loop.map((it, i) => (
-            <span key={i} style={{
-              display: 'inline-flex', alignItems: 'center', gap: 56,
-              fontFamily: "'Bricolage Grotesque', sans-serif",
-              fontSize: 'clamp(44px, 7vw, 104px)', fontWeight: 400,
-              letterSpacing: '-0.035em', lineHeight: 1,
-              color: 'var(--ink)',
-              opacity: i % 2 === 0 ? 0.9 : 0.18,
-              fontStyle: i % 2 === 1 ? 'italic' : 'normal',
-            }}>
-              {it}
-              <span style={{ width: 8, height: 8, borderRadius: 999, background: 'var(--ink-mute)', flexShrink: 0 }}/>
-            </span>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 

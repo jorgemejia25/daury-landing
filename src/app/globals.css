@@ -286,22 +286,6 @@ section { position: relative; padding: clamp(96px, 14vw, 200px) 0; }
   margin: 0;
 }
 
-/* Marquee */
-.marquee {
-  display: flex; overflow: hidden; width: 100%;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-.marquee-track {
-  display: flex; gap: 64px; align-items: center;
-  flex-shrink: 0; animation: marquee 38s linear infinite;
-  padding-right: 64px; white-space: nowrap;
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
-}
-
 /* Card */
 .card {
   background: var(--bg-elev); border: 1px solid var(--rule);

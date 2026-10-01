@@ -5,8 +5,8 @@ import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Daury - Indicaciones claras para cuidar en casa",
-  description: "Daury organiza indicaciones profesionales en rutinas diarias, guías paso a paso, registros rápidos e historiales semanales para cuidadores informales.",
+  title: "Daury - Cuidado compartido, más claro cada día",
+  description: "Daury organiza rutinas, recordatorios, registros y turnos para que las familias compartan el cuidado en casa con más contexto.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

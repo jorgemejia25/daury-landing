@@ -47,7 +47,6 @@ export default function Nav({ lang, setLang, theme, setTheme, t }: NavProps) {
     { href: '#experience', label: t.nav.experience },
     { href: '#story',      label: t.nav.story },
     { href: '#team',       label: t.nav.team },
-    { href: '#survey-invite', label: t.nav.survey },
     { href: '#involved',   label: t.nav.involved },
   ];
 
