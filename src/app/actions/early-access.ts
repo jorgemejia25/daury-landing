@@ -8,6 +8,10 @@ export type EarlyAccessState =
   | { status: "success"; contact: string }
   | { status: "error"; message: string };
 
+// Misma configuración de Resend que el sitio anterior (variables ya cargadas en Vercel).
+const RECIPIENT = process.env.FORM_RECIPIENT_EMAIL ?? "devjorgemejia@gmail.com";
+const FROM = process.env.RESEND_FROM_EMAIL ?? "Daury <onboarding@resend.dev>";
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_RE = /^\+?[\d\s().-]{8,20}$/;
 
@@ -37,10 +41,10 @@ export async function requestEarlyAccess(_prev: EarlyAccessState, formData: Form
     const resend = new Resend(apiKey);
     const isEmail = EMAIL_RE.test(contact);
     const { error } = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL ?? "Daury <onboarding@resend.dev>",
-      to: process.env.EARLY_ACCESS_RECIPIENT ?? "daurygt@gmail.com",
+      from: FROM,
+      to: RECIPIENT,
       ...(isEmail ? { replyTo: contact } : {}),
-      subject: `Acceso anticipado · ${role}`,
+      subject: `Daury — Acceso anticipado (${role})`,
       html: `<h2>Nueva solicitud de acceso anticipado</h2>
 <p><strong>Perfil:</strong> ${escapeHtml(role)}</p>
 <p><strong>Contacto:</strong> ${escapeHtml(contact)}</p>

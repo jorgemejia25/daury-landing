@@ -31,7 +31,7 @@ npm run dev
 | `NEXT_PUBLIC_SITE_URL` | Dominio público (canonical, sitemap, OG). Por defecto `https://daury.app` |
 | `RESEND_API_KEY` | Envío del formulario de acceso anticipado |
 | `RESEND_FROM_EMAIL` | Remitente verificado en Resend |
-| `EARLY_ACCESS_RECIPIENT` | Correo que recibe las solicitudes (por defecto `daurygt@gmail.com`) |
+| `FORM_RECIPIENT_EMAIL` | Correo que recibe las solicitudes (por defecto `devjorgemejia@gmail.com`) |
 
 ## Deploy
 
