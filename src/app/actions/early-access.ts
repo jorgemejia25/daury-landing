@@ -1,7 +1,7 @@
 "use server";
 
 import { Resend } from "resend";
-import { ROLES, type Role } from "@/lib/site";
+import { ROLES, site, type Role } from "@/lib/site";
 
 export type EarlyAccessState =
   | { status: "idle" }
@@ -34,7 +34,7 @@ export async function requestEarlyAccess(_prev: EarlyAccessState, formData: Form
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("[early-access] RESEND_API_KEY no está configurada.");
-    return { status: "error", message: "No pudimos registrarte ahora. Escríbenos a daurygt@gmail.com." };
+    return { status: "error", message: `No pudimos registrarte ahora. Escríbenos a ${site.email}.` };
   }
 
   try {

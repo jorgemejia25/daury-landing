@@ -5,7 +5,7 @@ export const site = {
   description:
     "Daury es la app para cuidar en familia: recordatorios de medicamentos con aviso por voz, lectura de recetas con IA, entrega de turnos entre cuidadores y reportes para el médico. Hecha en Guatemala, en español, para Latinoamérica.",
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://daury.app").replace(/\/$/, ""),
-  email: "daurygt@gmail.com",
+  email: "info@daury.cloud",
   locale: "es_GT",
   themeColor: "#2358E8",
   keywords: [
