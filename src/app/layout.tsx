@@ -1,31 +1,92 @@
-import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import { isValidLocale } from "@/i18n/config";
-import { parseTheme, THEME_COOKIE } from "@/lib/theme";
+import type { Metadata, Viewport } from "next";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { site } from "@/lib/site";
 import "./globals.css";
 
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin", "latin-ext"],
+  weight: "variable",
+  variable: "--font-bricolage",
+  display: "swap",
+});
+
+const geist = Geist({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
+  preload: false,
+});
+
+// Subconjunto de Material Symbols Rounded con solo los íconos usados (~13 KB).
+const icons = localFont({
+  src: "./fonts/material-symbols-rounded.woff2",
+  variable: "--font-icons",
+  weight: "100 700",
+  display: "block",
+});
+
 export const metadata: Metadata = {
-  title: "Daury - Cuidado compartido, más claro cada día",
-  description: "Daury organiza rutinas, recordatorios, registros y turnos para que las familias compartan el cuidado en casa con más contexto.",
+  metadataBase: new URL(site.url),
+  title: {
+    default: site.title,
+    template: `%s · ${site.name}`,
+  },
+  description: site.description,
+  applicationName: site.name,
+  keywords: [...site.keywords],
+  authors: [{ name: "Equipo Daury" }],
+  creator: "Daury",
+  publisher: "Daury",
+  category: "health",
+  alternates: { canonical: "/" },
+  formatDetection: { telephone: false, email: false, address: false },
+  openGraph: {
+    type: "website",
+    locale: site.locale,
+    url: "/",
+    siteName: site.name,
+    title: site.title,
+    description: site.shortDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.title,
+    description: site.shortDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
-  const localeCookie = cookieStore.get("locale")?.value;
-  const activeLocale = localeCookie && isValidLocale(localeCookie) ? localeCookie : "en";
-  const theme = parseTheme(cookieStore.get(THEME_COOKIE)?.value);
+export const viewport: Viewport = {
+  themeColor: site.themeColor,
+  width: "device-width",
+  initialScale: 1,
+  colorScheme: "light",
+};
 
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang={activeLocale} data-theme={theme} suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>{children}</body>
+    <html
+      lang="es"
+      className={`${bricolage.variable} ${geist.variable} ${geistMono.variable} ${icons.variable}`}
+    >
+      <body>
+        {children}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

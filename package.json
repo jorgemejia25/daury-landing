@@ -1,36 +1,27 @@
 {
-  "name": "daury",
-  "version": "0.1.0",
+  "name": "daury-landing",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "card:pdf": "node scripts/export-card.mjs",
-    "survey:responses": "node --env-file=.env.local scripts/read-survey-responses.mjs",
-    "survey:seed": "node --env-file=.env.local scripts/seed-survey-responses.mjs"
+    "lint": "eslint"
   },
   "dependencies": {
-    "aos": "^2.3.4",
-    "convex": "^1.42.1",
-    "framer-motion": "^12.38.0",
-    "next": "16.2.1",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "recharts": "^3.9.2",
-    "resend": "^6.12.3"
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.1.0",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "resend": "^6.38.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/aos": "^3.0.7",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.1",
-    "puppeteer": "^25.0.4",
-    "tailwindcss": "^4",
+    "eslint-config-next": "16.4.6",
     "typescript": "^5"
   }
 }

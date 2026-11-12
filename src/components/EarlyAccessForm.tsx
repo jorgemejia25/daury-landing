@@ -1,129 +1,102 @@
 "use client";
 
-import { useState } from "react";
-import FadeIn from "./motion/FadeIn";
-import { getMessages, type AppLocale } from "@/i18n/config";
+import { useActionState, useEffect, useState } from "react";
+import { track } from "@vercel/analytics";
+import { requestEarlyAccess, type EarlyAccessState } from "@/app/actions/early-access";
+import { ROLES, type Role } from "@/lib/site";
+import { Icon } from "./Icon";
 
-type EarlyAccessFormProps = {
-  locale: AppLocale;
+const ROLE_ICONS: Record<Role, string> = {
+  Familia: "favorite",
+  "Centro de cuidado": "apartment",
+  "Profesional de salud": "medical_services",
 };
 
-export default function EarlyAccessForm({ locale }: EarlyAccessFormProps) {
-  const copy = getMessages(locale).earlyAccess;
+const initial: EarlyAccessState = { status: "idle" };
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [interest, setInterest] = useState("engineering");
+export function EarlyAccessForm() {
+  const [role, setRole] = useState<Role>("Familia");
+  const [state, action, pending] = useActionState(requestEarlyAccess, initial);
 
-  const inputClass =
-    "w-full bg-surface/60 border border-outline-variant/25 rounded-xl px-4 py-3 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-outline/50";
+  useEffect(() => {
+    if (state.status === "success") track("early_access_submitted", { role });
+    // Solo al cambiar el resultado del envío.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  if (state.status === "success") {
+    return (
+      <div className="form-sent" role="status">
+        <span className="form-sent__check">
+          <Icon name="check" size={42} />
+        </span>
+        <b className="form-sent__title">¡Listo, ya estás en la lista!</b>
+        <span className="form-sent__text">Te escribiremos a {state.contact}.</span>
+      </div>
+    );
+  }
 
   return (
-    <section id="contact" className="py-32 px-6 max-md:py-16 max-md:px-4">
-      <FadeIn direction="none" scale>
-      <div className="max-w-4xl mx-auto rounded-[4rem] bg-gradient-to-br from-surface-bright via-white to-surface p-12 md:p-24 text-center relative overflow-hidden border border-white/80 shadow-2xl shadow-slate-900/5 ring-1 ring-outline-variant/10 max-md:rounded-4xl max-md:p-8 sm:max-md:p-12">
-        {/* Mesh accent — matches page mesh; kept light so the card stays white */}
-        <div
-          className="mesh-gradient-overlay pointer-events-none absolute inset-0 opacity-[0.18]"
-          aria-hidden
-        />
+    <form action={action} className="form" noValidate={false}>
+      <b className="form__title">Reserva tu lugar</b>
 
-        <div className="relative z-10 w-full max-w-2xl mx-auto">
-          <div className="mb-10 text-center max-md:mb-6">
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tighter mb-6 text-on-surface text-glow max-md:text-3xl max-md:mb-4">
-              {copy.title}
-            </h2>
-            <p className="text-lg text-on-surface-variant leading-relaxed max-md:text-base">
-              {copy.description}
-            </p>
-          </div>
-
-          <form
-            action="https://formsubmit.co/devjorgemejia@gmail.com"
-            method="POST"
-            className="space-y-6 text-left max-md:space-y-5"
-          >
-            <input type="hidden" name="_subject" value={`Daury - ${copy.submit}`} />
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_template" value="table" />
-            <input type="hidden" name="_next" value="http://localhost:3000/" />
-
-            <div className="grid md:grid-cols-2 gap-6 max-md:gap-5">
-              <div className="space-y-2">
-                <label
-                  htmlFor="name"
-                  className="text-sm font-semibold text-on-surface-variant ml-1"
-                >
-                  {copy.name}
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder={copy.namePlaceholder}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className={inputClass}
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-semibold text-on-surface-variant ml-1"
-                >
-                  {copy.email}
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="john@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className={inputClass}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="interest"
-                className="text-sm font-semibold text-on-surface-variant ml-1"
+      <fieldset className="form__group">
+        <legend className="form__label">Soy…</legend>
+        <input type="hidden" name="role" value={role} />
+        <div role="radiogroup" aria-label="Soy" className="form__roles">
+          {ROLES.map((r) => {
+            const on = r === role;
+            return (
+              <button
+                key={r}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                className="role"
+                data-on={on}
+                onClick={() => setRole(r)}
               >
-                {copy.interest}
-              </label>
-              <select
-                id="interest"
-                name="interest"
-                value={interest}
-                onChange={(e) => setInterest(e.target.value)}
-                required
-                className={`${inputClass} appearance-none`}
-              >
-                {copy.options.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-4 bg-primary text-on-primary rounded-full font-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20 mt-4 max-md:py-3.5 max-md:text-base max-md:mt-2"
-            >
-              {copy.submit}
-            </button>
-          </form>
-
-          <p className="mt-8 text-xs text-on-surface-variant opacity-60 text-center max-md:mt-6">
-            {copy.legal}
-          </p>
+                <span className="role__icon">
+                  <Icon name={ROLE_ICONS[r]} size={24} />
+                </span>
+                <span className="role__label">{r}</span>
+                <Icon name="check_circle" size={24} className="role__check" />
+              </button>
+            );
+          })}
         </div>
+      </fieldset>
+
+      <div className="form__group">
+        <label htmlFor="acceso-contacto" className="form__label">
+          Correo o WhatsApp
+        </label>
+        <input
+          id="acceso-contacto"
+          name="contact"
+          required
+          autoComplete="email"
+          inputMode="email"
+          maxLength={120}
+          placeholder="tu@correo.com"
+          className="form__input"
+          aria-invalid={state.status === "error"}
+          aria-describedby={state.status === "error" ? "acceso-error" : undefined}
+        />
+        {state.status === "error" && (
+          <span id="acceso-error" role="alert" className="form__error">
+            {state.message}
+          </span>
+        )}
       </div>
-      </FadeIn>
-    </section>
+
+      {/* Honeypot anti-spam */}
+      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="sr-only" />
+
+      <button type="submit" className="btn btn--blue btn--block" disabled={pending}>
+        {pending ? "Enviando…" : "Quiero acceso"}
+        <Icon name="arrow_forward" size={24} />
+      </button>
+    </form>
   );
 }
