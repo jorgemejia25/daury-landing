@@ -49,6 +49,10 @@ export function Header() {
     const onScroll = () => {
       const y = window.scrollY || document.documentElement.scrollTop;
       header.dataset.scrolled = String(y > 40);
+      // El color del lienzo sigue al borde visible: azul arriba (hero), azul oscuro abajo (footer),
+      // para que el rebote de iOS y las barras de Safari no muestren otro color.
+      const nearBottom = y + window.innerHeight > document.documentElement.scrollHeight - window.innerHeight;
+      document.documentElement.style.backgroundColor = nearBottom ? "#1740A8" : "";
       let cur: HTMLAnchorElement | null = null;
       links.forEach((a) => {
         const t = document.querySelector(a.getAttribute("href") ?? "");
