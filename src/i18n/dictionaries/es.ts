@@ -1,0 +1,216 @@
+const es = {
+  meta: {
+    title: "Daury · Cuidado familiar organizado",
+    description:
+      "Daury es la app para cuidar en familia: recordatorios de medicamentos con aviso por voz, lectura de recetas con IA, entrega de turnos entre cuidadores y reportes para el médico. Hecha en Guatemala, en español, para Latinoamérica.",
+    shortDescription: "La forma fácil de cuidar a quien quieres, en familia.",
+    keywords: [
+      "Daury",
+      "app para cuidadores",
+      "cuidado de adultos mayores",
+      "recordatorio de medicamentos",
+      "cuidado familiar",
+      "cuidadores Guatemala",
+      "centros geriátricos",
+      "reporte médico",
+      "app de salud en español",
+      "Latinoamérica",
+    ],
+    ogAlt: "Daury: la forma fácil de cuidar a quien quieres, en familia.",
+  },
+  nav: {
+    features: "Funciones",
+    plans: "Planes",
+    faq: "Preguntas",
+    contact: "Contacto",
+    earlyAccess: "Acceso anticipado",
+    howItWorks: "Cómo funciona",
+    openMenu: "Abrir menú",
+    closeMenu: "Cerrar menú",
+    main: "Principal",
+    mobile: "Menú móvil",
+    home: "Daury, ir al inicio",
+    skip: "Saltar al contenido",
+    language: "Idioma",
+  },
+  hero: {
+    title: "Cuidar es como armar un rompecabezas.",
+    lead: "La forma fácil de cuidar a quien quieres, en familia.",
+    primary: "Empieza gratis",
+    secondary: "Cómo funciona",
+  },
+  how: {
+    eyebrow: "Cómo funciona",
+    title: "Un apoyo en cada momento del cuidado",
+    steps: [
+      { title: "Te dice qué sigue y cómo hacerlo", text: "Una actividad a la vez, con pasos claros y en voz alta. Sin jerga médica." },
+      { title: "No cuidas solo", text: "Suma a tu familia, entrega el turno con una nota de voz y pide relevo cuando lo necesites." },
+      { title: "Te avisa lo que cambia", text: "Registras cómo estuvo con un toque. Daury nota patrones y prepara el reporte para el médico." },
+    ],
+  },
+  features: {
+    label: "Funciones",
+    routine: {
+      tag: "Rutina diaria",
+      title: "Cada pastilla, a su hora",
+      text: "Recordatorios con aviso por voz y una guía paso a paso para cada actividad del día.",
+      example: "Ejemplo de rutina",
+      items: ["Losartán", "Caminata 15 min", "Metformina"],
+    },
+    ai: {
+      tag: "Con IA",
+      title: "Una foto a la receta y listo",
+      text: "Daury lee los medicamentos y arma las actividades. Tú solo confirmas.",
+    },
+    family: {
+      tag: "En equipo",
+      title: "Toda la familia, al día",
+      text: "Cada cuidador ve qué sigue y quién ya lo hizo. El cambio de turno se entrega con notas y pendientes.",
+      bubble: "dio la pastilla de las 13:00. Mamá comió bien.",
+    },
+    doctor: {
+      tag: "Para el médico",
+      title: "Llega a la consulta con todo",
+      text: "Adherencia, ánimo e incidentes en un reporte que se envía o se exporta a PDF.",
+      week: "Esta semana",
+      days: "Lun – Dom",
+      send: "Enviar al doctor",
+    },
+    perks: ["En español, para Latinoamérica", "Lectura en voz alta y texto grande", "Datos de salud protegidos"],
+  },
+  stat: {
+    label: "Dato",
+    text: "de quienes cuidan organiza todo solo con la memoria.",
+  },
+  pricing: {
+    title: "Empieza gratis",
+    sub: "Y crece cuando tu familia o tu centro lo necesite.",
+    perMonth: "/mes",
+    freePrice: "Q0",
+    freeCurrency: "GTQ",
+    free: {
+      desc: "Para cualquier familia que quiera empezar.",
+      items: [
+        "Rutinas y recordatorios con aviso por voz",
+        "Guía paso a paso leída en voz alta",
+        "Registro diario de ánimo y actividades",
+        "Modo emergencia con datos y medicación",
+        "Funciona sin internet",
+      ],
+    },
+    plus: {
+      tag: "Familias",
+      desc: "Para familias con varios cuidadores o tratamientos complejos. O $79.90 al año (2 meses gratis).",
+      everything: "Todo lo de Free, más:",
+      items: [
+        "Círculo de cuidado con varios cuidadores",
+        "Entrega de turno con nota de voz y pedir relevo",
+        "Lectura de recetas con IA ampliada",
+        "Patrones detectados y reporte para el médico en PDF",
+      ],
+    },
+    business: {
+      desc: "Clínicas, residencias y centros geriátricos. Hasta 20 pacientes, $3.23 por paciente adicional.",
+      items: [
+        "Roles y permisos para el personal",
+        "Todos los pacientes en un solo lugar",
+        "Continuidad entre turnos y cambios de personal",
+        "Reportes para las familias sin trabajo manual",
+        "Implementación y soporte incluidos",
+      ],
+    },
+    award: {
+      alt: "Equipo de Daury recibiendo el primer lugar de los Premios ILAN de Innovación en Guatemala",
+      badge: "Equipo Daury",
+      tag: "Primer lugar",
+      title: "Ganador del primer lugar en los Premios ILAN de Innovación en Guatemala",
+      text: "Los Premios ILAN a la Innovación Universitaria los otorga la Fundación Israel Latin American Network (ILAN). Reconocen proyectos de estudiantes universitarios por su innovación, su impacto social y su potencial de crecimiento.",
+    },
+  },
+  story: {
+    eyebrow: "Nuestra historia",
+    title: "Daury nació entre amigos",
+    lead: "Somos un grupo de amigos de la Universidad de San Carlos de Guatemala.",
+    p1: "Daury salió de nuestras propias historias: cada persona del equipo ha cuidado o ha visto cuidar a alguien en casa. También salió de lo que vemos en nuestra comunidad, donde cuidar a quien quieres suele hacerse con lo que hay a mano.",
+    p2: "El nombre viene de «Daughter», la canción de Pearl Jam que nos inspiró.",
+    facts: [
+      "Hecho en la USAC, Guatemala",
+      "Inspirado en historias personales del equipo",
+      "Pensado para los problemas de nuestra comunidad",
+    ],
+  },
+  faq: {
+    title: "Preguntas frecuentes",
+    subBefore: "¿No ves la tuya?",
+    subLink: "Escríbenos",
+    subAfter: "y te respondemos.",
+    items: [
+      {
+        q: "¿Puedo probar Daury sin crear una cuenta?",
+        a: "Sí. Puedes entrar como invitado. Tus datos se quedan solo en ese teléfono hasta que crees tu cuenta con Google, Apple, teléfono o correo.",
+      },
+      {
+        q: "¿Necesito internet para usarlo?",
+        a: "No siempre. Daury guarda todo en el teléfono y sincroniza cuando vuelve la conexión.",
+      },
+      {
+        q: "¿Cómo se suma mi familia?",
+        a: "Desde la app compartes un enlace o un código. Cada persona entra al círculo de cuidado con su rol, y el turno se entrega con notas y pendientes.",
+      },
+      {
+        q: "¿Qué recibe el médico?",
+        a: "Un reporte con adherencia, medicación, incidentes y preguntas sugeridas para la consulta. Se envía desde la app o se exporta a PDF.",
+      },
+      {
+        q: "¿Cuándo puedo empezar?",
+        a: "Estamos abriendo el acceso anticipado por etapas. Déjanos tu correo o WhatsApp y te avisamos cuando sea tu turno.",
+      },
+    ],
+  },
+  cta: {
+    tag: "Acceso anticipado",
+    title: "Nadie debería cuidar solo.",
+    lead: "Pide acceso a Daury para tu familia o tu centro de cuidado.",
+  },
+  form: {
+    title: "Reserva tu lugar",
+    iam: "Soy…",
+    roles: { family: "Familia", center: "Centro de cuidado", professional: "Profesional de salud" },
+    contactLabel: "Correo o WhatsApp",
+    placeholder: "tu@correo.com",
+    submit: "Quiero acceso",
+    sending: "Enviando…",
+    successTitle: "¡Listo, ya estás en la lista!",
+    successText: "Te escribiremos a {contact}.",
+    errors: {
+      invalid: "Escribe un correo o un número de WhatsApp válido.",
+      unavailable: "No pudimos registrarte ahora. Escríbenos a {email}.",
+      generic: "Algo salió mal. Intenta de nuevo en un momento.",
+    },
+  },
+  contact: {
+    title: "Hablemos",
+    cards: [
+      { subject: "Consulta de familia", title: "Familias", text: "Dudas sobre cómo empezar, invitar a tu familia o usar la app.", cta: "Escríbenos" },
+      { subject: "Demo plan Business", title: "Clínicas y centros", text: "Conoce el plan Business para centros geriátricos y clínicas.", cta: "Pide una demo" },
+      { subject: "Alianzas y prensa", title: "Alianzas y prensa", text: "Universidades, aseguradoras, medios y organizaciones aliadas.", cta: "Contáctanos" },
+    ],
+  },
+  footer: {
+    claim: "Cuidado familiar organizado. Hecho en Guatemala.",
+    product: "Producto",
+    help: "Ayuda",
+    nav: "Pie de página",
+    country: "Guatemala",
+    madeWith: "Hecho con cariño para quien cuida",
+  },
+  notFound: {
+    meta: "Página no encontrada",
+    title: "Esta pieza no encaja.",
+    text: "La página que buscas no existe o cambió de lugar.",
+    back: "Volver al inicio",
+  },
+};
+
+export default es;
+export type Dictionary = typeof es;

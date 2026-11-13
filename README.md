@@ -10,9 +10,21 @@ Landing de [Daury](https://daury.app): cuidado familiar organizado. Hecho en Gua
 - Formulario de acceso anticipado con Server Action + [Resend](https://resend.com)
 - Animaciones del prototipo con Web Animations API (respeta `prefers-reduced-motion`)
 
+## Idiomas
+
+Español (`/es`), inglés (`/en`), italiano (`/it`), portugués (`/pt`), alemán (`/de`) y ruso (`/ru`).
+`src/proxy.ts` redirige `/` al idioma de cada visitante, en este orden:
+
+1. Idioma elegido en el selector (cookie `NEXT_LOCALE`).
+2. Idioma del navegador (`Accept-Language`).
+3. País del visitante (`x-vercel-ip-country`, geolocalización de Vercel).
+4. Español por defecto.
+
+Los textos están en `src/i18n/dictionaries/*.ts` (el español define la estructura).
+
 ## SEO
 
-Metadata completa (title, description, canonical, Open Graph, Twitter), imagen OG generada,
+Metadata completa por idioma (title, description, canonical, hreflang, Open Graph, Twitter), imagen OG por idioma,
 `sitemap.xml`, `robots.txt`, `manifest.webmanifest`, íconos y datos estructurados JSON-LD
 (Organization, WebSite, SoftwareApplication con planes y FAQPage).
 

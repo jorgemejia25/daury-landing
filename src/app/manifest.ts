@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
+import { getDictionary } from "@/i18n/dictionaries";
 
 export default function manifest(): MetadataRoute.Manifest {
+  const t = getDictionary("es").meta;
   return {
-    name: site.title,
+    name: t.title,
     short_name: site.name,
-    description: site.shortDescription,
+    description: t.shortDescription,
     lang: "es",
     start_url: "/",
     display: "standalone",

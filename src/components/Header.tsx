@@ -4,8 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { Logo } from "./Logo";
 import { navLinks } from "@/lib/site";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
-export function Header() {
+export function Header({ lang, t }: { lang: Locale; t: Dictionary["nav"] }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -80,7 +83,7 @@ export function Header() {
         easing: "cubic-bezier(.16,1,.3,1)",
       });
       const brand = header.querySelector<HTMLElement>(".header__brand");
-      const cta = header.querySelector<HTMLElement>(".header__cta");
+      const cta = header.querySelector<HTMLElement>(".header__actions");
       [brand, ...links, cta].forEach((el, i) =>
         el?.animate(
           [
@@ -111,27 +114,30 @@ export function Header() {
   return (
     <header ref={headerRef} className="header" data-scrolled="false">
       <div className="header__inner">
-        <a href="#top" className="header__brand" aria-label="Daury, ir al inicio" onClick={closeMenu}>
+        <a href="#top" className="header__brand" aria-label={t.home} onClick={closeMenu}>
           <Logo />
         </a>
 
-        <nav ref={navRef} className="header__nav" aria-label="Principal">
+        <nav ref={navRef} className="header__nav" aria-label={t.main}>
           <span ref={pillRef} aria-hidden="true" className="header__pill" />
           {navLinks.map((l) => (
             <a key={l.href} href={l.href} className="header__link">
-              {l.label}
+              {t[l.key]}
             </a>
           ))}
         </nav>
 
-        <a href="#acceso" className="btn btn--white header__cta">
-          Acceso anticipado
-        </a>
+        <div className="header__actions">
+          <LanguageSwitcher lang={lang} label={t.language} variant="header" />
+          <a href="#acceso" className="btn btn--white header__cta">
+            {t.earlyAccess}
+          </a>
+        </div>
 
         <button
           type="button"
           className="header__toggle"
-          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+          aria-label={menuOpen ? t.closeMenu : t.openMenu}
           aria-expanded={menuOpen}
           aria-controls="menu-movil"
           onClick={() => setMenuOpen((v) => !v)}
@@ -140,18 +146,19 @@ export function Header() {
         </button>
 
         <div id="menu-movil" className="header__menu" data-open={menuOpen} inert={!menuOpen}>
-          <nav aria-label="Menú móvil">
+          <nav aria-label={t.mobile}>
             {navLinks.map((l) => (
               <a key={l.href} href={l.href} className="header__menu-link" onClick={closeMenu}>
                 <Icon name={l.icon} size={24} />
-                {l.label}
+                {t[l.key]}
               </a>
             ))}
           </nav>
           <a href="#acceso" className="header__menu-cta" onClick={closeMenu}>
-            Acceso anticipado
+            {t.earlyAccess}
             <Icon name="arrow_forward" size={22} />
           </a>
+          <LanguageSwitcher lang={lang} label={t.language} variant="menu" onPick={closeMenu} />
         </div>
       </div>
     </header>
