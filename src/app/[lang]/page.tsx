@@ -1,47 +1,25 @@
 import { notFound } from "next/navigation";
-import { Header } from "@/components/Header";
-import { MotionController } from "@/components/MotionController";
-import { JsonLd } from "@/components/JsonLd";
-import {
-  Contact,
-  EarlyAccess,
-  Faq,
-  Features,
-  Footer,
-  Hero,
-  HowItWorks,
-  Pricing,
-  Stat,
-  Story,
-} from "@/components/Sections";
+import { SiteJsonLd } from "@/components/seo/JsonLd";
+import { Award, Features, Hero, HowItWorks, PlansTeaser, Stat } from "@/components/sections/home";
+import { CtaBand } from "@/components/sections/cta";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
-export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
+export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   const t = getDictionary(lang);
 
   return (
     <>
-      <a href="#contenido" className="skip-link">
-        {t.nav.skip}
-      </a>
-      <Header lang={lang} t={t.nav} />
-      <main id="contenido">
-        <Hero t={t} />
-        <HowItWorks t={t} />
-        <Features t={t} />
-        <Stat t={t} />
-        <Pricing t={t} />
-        <Story t={t} />
-        <Faq t={t} />
-        <EarlyAccess t={t} lang={lang} />
-        <Contact t={t} />
-      </main>
-      <Footer t={t} lang={lang} />
-      <MotionController />
-      <JsonLd t={t} lang={lang} />
+      <Hero t={t} lang={lang} />
+      <HowItWorks t={t} lang={lang} />
+      <Features t={t} lang={lang} />
+      <Stat t={t} lang={lang} />
+      <Award t={t} lang={lang} />
+      <PlansTeaser t={t} lang={lang} />
+      <CtaBand t={t} lang={lang} />
+      <SiteJsonLd t={t} lang={lang} />
     </>
   );
 }

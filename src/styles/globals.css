@@ -1,0 +1,22 @@
+/*
+ * Hoja de estilos global de Daury.
+ * El orden de los @import define la cascada: tokens → base → componentes → secciones.
+ * Cada archivo incluye sus propias media queries al final.
+ */
+
+@import "./tokens.css";
+@import "./base.css";
+@import "./components/buttons.css";
+@import "./components/logo.css";
+@import "./layout/header.css";
+@import "./layout/language.css";
+@import "./motion.css";
+@import "./components/stack-card.css";
+@import "./sections/home.css";
+@import "./components/phone-mockups.css";
+@import "./sections/cta.css";
+@import "./sections/pricing.css";
+@import "./sections/about.css";
+@import "./sections/contact.css";
+@import "./layout/footer.css";
+@import "./sections/not-found.css";

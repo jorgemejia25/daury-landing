@@ -1,0 +1,33 @@
+/*
+ * Footer
+ * Pie de página azul marino con navegación, idiomas y la palabra gigante.
+ */
+
+/* ───────── Footer ───────── */
+.footer { position: relative; overflow: hidden; margin-top: clamp(40px, 6vw, 80px); padding: clamp(64px, 8vw, 104px) var(--gutter) max(24px, env(safe-area-inset-bottom)); border-radius: 48px 48px 0 0; background: var(--navy); color: #fff; }
+.footer__inner { max-width: 1240px; margin: 0 auto; }
+.footer__top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 48px; }
+.footer__brand { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; max-width: 360px; }
+.footer .logo { color: #fff; }
+.footer__claim { margin: 0; font-size: 18px; line-height: 1.5; color: rgba(255, 255, 255, .68); }
+.footer__mail { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #fff; font-weight: 600; text-decoration: none; transition: background-color .2s; }
+.footer__mail:hover { background: rgba(255, 255, 255, .16); color: #fff; }
+.footer__cols { display: flex; flex-wrap: wrap; gap: 48px clamp(40px, 6vw, 96px); }
+.footer__col { display: flex; flex-direction: column; gap: 10px; }
+.footer__col a { color: rgba(255, 255, 255, .62); text-decoration: none; font-size: 16px; font-weight: 500; transition: color .2s; }
+.footer__col a:hover { color: #fff; }
+.footer__heading { margin-bottom: 6px; font-size: 14px; font-weight: 700; color: #fff; }
+.footer__word {
+  margin: clamp(48px, 7vw, 96px) 0 0; text-align: center; user-select: none;
+  font-family: var(--f-display); font-size: clamp(110px, 27vw, 400px); font-weight: 800;
+  letter-spacing: -.07em; line-height: .78; color: #1b2350;
+}
+.footer__bottom {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;
+  max-width: 1240px; margin: 24px auto 0; font-size: 14px; color: rgba(255, 255, 255, .5);
+}
+
+@media (max-width: 760px) {
+  .footer { border-radius: 32px 32px 0 0; }
+  .footer__bottom { flex-direction: column; }
+}

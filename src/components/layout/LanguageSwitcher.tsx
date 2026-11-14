@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { LOCALE_COOKIE, localeNames, locales, type Locale } from "@/i18n/config";
-import { Icon } from "./Icon";
+import { Icon } from "../ui/Icon";
 
 /** Guarda la elección para que el proxy la respete en las próximas visitas. */
 function remember(locale: Locale) {
@@ -18,6 +19,8 @@ type Props = {
 
 export function LanguageSwitcher({ lang, label, variant, onPick }: Props) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  // Conserva la página actual al cambiar de idioma: /es/about → /en/about.
+  const rest = usePathname().replace(/^\/[^/]+/, "");
 
   // Cierra el desplegable al hacer clic fuera o con Escape.
   useEffect(() => {
@@ -44,7 +47,7 @@ export function LanguageSwitcher({ lang, label, variant, onPick }: Props) {
   const links = locales.map((l) => (
     <a
       key={l}
-      href={`/${l}`}
+      href={`/${l}${rest}`}
       hrefLang={l}
       lang={l}
       aria-current={l === lang ? "true" : undefined}
@@ -78,7 +81,7 @@ export function LanguageSwitcher({ lang, label, variant, onPick }: Props) {
 
   return (
     <nav className={`lang lang--${variant}`} aria-label={label}>
-      {variant === "footer" && <b className="footer__heading">{label}</b>}
+      <b className={variant === "footer" ? "footer__heading" : "lang__heading"}>{label}</b>
       <div className="lang__list">{links}</div>
     </nav>
   );

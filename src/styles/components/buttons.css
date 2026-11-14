@@ -1,0 +1,38 @@
+/*
+ * Botones
+ * Variantes .btn--* y la flecha circular (.arrow).
+ */
+
+/* ───────── Botones ───────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  min-height: 52px; padding: 6px 8px 6px 24px; border: 0; border-radius: 999px;
+  font: 600 16px/1 var(--f-sans); letter-spacing: -.01em; text-decoration: none; white-space: nowrap;
+  cursor: pointer; transition: transform .35s var(--ease), background-color .25s, color .25s, box-shadow .35s var(--ease);
+}
+.btn:not(:has(.arrow)) { padding: 6px 26px; }
+@media (hover: hover) { .btn:hover { transform: translateY(-2px); } }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .7; cursor: progress; transform: none; }
+.btn--sm { min-height: 44px; font-size: 15px; padding-left: 18px; }
+.btn--lg { min-height: 60px; font-size: 17px; padding-left: 28px; }
+.btn--lg:not(:has(.arrow)) { padding: 6px 30px; }
+.btn--block { display: flex; width: 100%; }
+.btn--blue { background: var(--blue); color: #fff; box-shadow: 0 12px 28px -12px rgba(35, 88, 232, .7); }
+.btn--blue:hover { background: var(--blue-600); color: #fff; }
+.btn--white { background: #fff; color: var(--ink); }
+.btn--white:hover { color: var(--blue); }
+.btn--white .arrow { background: var(--blue); color: #fff; }
+.btn--soft { background: var(--surface); color: var(--ink); }
+.btn--soft:hover { color: var(--blue); box-shadow: var(--shadow-soft); }
+.btn--soft .arrow { background: var(--blue-50); color: var(--blue); }
+.btn--ink { background: var(--ink); color: #fff; }
+.btn--ink:hover { background: #1d2550; color: #fff; }
+
+.arrow {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; flex: none;
+  border-radius: 50%; background: rgba(255, 255, 255, .18); color: currentColor;
+  transition: transform .45s var(--spring);
+}
+.btn--sm .arrow { width: 32px; height: 32px; }
+.btn:hover .arrow, a:hover > .arrow { transform: rotate(45deg); }

@@ -1,0 +1,49 @@
+/*
+ * Tokens de diseño
+ * Colores, tipografías, espaciado y sombras. Todo lo demás debe usar estas variables.
+ */
+
+:root {
+  --bg: #f4f3ef;
+  --surface: #ffffff;
+  --soft: #ebeae4;
+  --ink: #0d1333;
+  --ink-2: #3e4360;
+  --muted: #6b6f86;
+
+  --blue: #2358e8;
+  --blue-600: #1a46c2;
+  --blue-300: #8fb0ff;
+  --blue-100: #d6e0fc;
+  --blue-50: #e9effd;
+  --violet: #6b4fe3;
+  --violet-50: #ece8fd;
+  --green: #1c7a43;
+  --green-50: #e0f1e6;
+  --amber: #e9962a;
+  --amber-50: #fbeedb;
+  --red: #c93c3c;
+  --navy: #0d1333;
+
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --ease-card: cubic-bezier(.23, 1, .32, 1);
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
+  --gutter: max(clamp(16px, 5vw, 64px), env(safe-area-inset-left), env(safe-area-inset-right));
+  --pad-y: clamp(80px, 10vw, 140px);
+  --header-h: 76px;
+  --shadow-float: 0 24px 60px -18px rgba(13, 19, 51, .28), 0 4px 14px -6px rgba(13, 19, 51, .12);
+  --shadow-soft: 0 18px 40px -24px rgba(13, 19, 51, .35);
+
+  --f-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --f-sans: var(--font-geist), "Geist", system-ui, sans-serif;
+  --f-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
+
+  color-scheme: light;
+}
+
+/* Bricolage Grotesque no incluye cirílico: en ruso los titulares usan Geist. */
+html[lang="ru"] { --f-display: var(--font-geist), "Geist", system-ui, sans-serif; }
+
+@media (max-width: 760px) {
+  :root { --header-h: 64px; }
+}

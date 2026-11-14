@@ -23,6 +23,9 @@
 # local SQLite survey storage
 /data/
 
+# material temporal de referencia (app móvil, capturas)
+/temp/
+
 # misc
 .DS_Store
 *.pem

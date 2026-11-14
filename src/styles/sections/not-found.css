@@ -1,0 +1,7 @@
+/*
+ * 404
+ * Página no encontrada.
+ */
+
+/* ───────── 404 ───────── */
+.nf { display: grid; place-items: center; min-height: 80vh; padding: calc(var(--header-h) + 48px) var(--gutter) 48px; }

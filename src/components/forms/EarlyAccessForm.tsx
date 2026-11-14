@@ -2,11 +2,11 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { track } from "@vercel/analytics";
-import { requestEarlyAccess, type EarlyAccessState } from "@/app/actions/early-access";
+import { requestEarlyAccess, type EarlyAccessState } from "@/actions/early-access";
 import { ROLES, type Role } from "@/lib/site";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
-import { Icon } from "./Icon";
+import { Icon } from "../ui/Icon";
 
 const ROLE_ICONS: Record<Role, string> = {
   family: "favorite",

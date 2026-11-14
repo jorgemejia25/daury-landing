@@ -7,7 +7,10 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { site } from "@/lib/site";
 import { isLocale, locales, ogLocales, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import "../globals.css";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Motion } from "@/components/layout/Motion";
+import "@/styles/globals.css";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin", "latin-ext"],
@@ -96,6 +99,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
+  const t = getDictionary(lang);
 
   return (
     <html
@@ -103,7 +107,13 @@ export default async function RootLayout({ children, params }: Props) {
       className={`${bricolage.variable} ${geist.variable} ${geistMono.variable} ${icons.variable}`}
     >
       <body>
-        {children}
+        <a href="#contenido" className="skip-link">
+          {t.nav.skip}
+        </a>
+        <Header lang={lang} t={t.nav} />
+        <main id="contenido">{children}</main>
+        <Footer t={t} lang={lang} />
+        <Motion />
         <Analytics />
         <SpeedInsights />
       </body>

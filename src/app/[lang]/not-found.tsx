@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { Arrow } from "@/components/ui/Arrow";
+import { site } from "@/lib/site";
 
 export default function NotFound() {
   const params = useParams<{ lang?: string }>();
@@ -11,18 +13,17 @@ export default function NotFound() {
   const t = getDictionary(lang).notFound;
 
   return (
-    <main className="hero" style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
-      <title>{`${t.meta} · Daury`}</title>
+    <section className="nf">
+      <title>{`${t.meta} · ${site.name}`}</title>
       <meta name="robots" content="noindex" />
-      <div className="hero__inner">
+      <div className="hero__head">
         <h1 className="hero__title">{t.title}</h1>
         <p className="hero__lead">{t.text}</p>
-        <div className="hero__ctas">
-          <Link href={`/${lang}`} className="btn btn--white btn--lg">
-            {t.back}
-          </Link>
-        </div>
+        <Link href={`/${lang}`} className="btn btn--blue btn--lg">
+          {t.back}
+          <Arrow />
+        </Link>
       </div>
-    </main>
+    </section>
   );
 }

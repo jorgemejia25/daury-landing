@@ -1,0 +1,27 @@
+/*
+ * Movimiento
+ * Revelado al hacer scroll, entrada del hero y respeto a prefers-reduced-motion.
+ */
+
+/* ───────── Movimiento: revelado ───────── */
+.motion [data-reveal]:not([data-reveal="stagger"]):not(.is-in) { opacity: 0; transform: translateY(40px); }
+.motion [data-reveal]:not([data-reveal="stagger"]) { transition: opacity .9s var(--ease), transform 1s var(--ease); }
+.motion [data-reveal="stagger"] > * { transition: opacity .8s var(--ease), transform .9s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
+.motion [data-reveal="stagger"]:not(.is-in) > * { opacity: 0; transform: translateY(40px); }
+[data-speed] { will-change: translate; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__in { animation: rise 1s var(--ease) both; }
+  .hero__in:nth-child(2) { animation-delay: .08s; }
+  .hero__in:nth-child(3) { animation-delay: .16s; }
+  .hero__in:nth-child(4) { animation-delay: .24s; }
+  .hero__in:nth-child(5) { animation-delay: .32s; }
+  .hero__stage.hero__in { animation-delay: .3s; animation-duration: 1.2s; }
+  .hero__ctas.hero__in { animation-delay: .45s; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(36px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
