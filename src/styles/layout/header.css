@@ -19,7 +19,7 @@
   transition: box-shadow .4s var(--ease), background-color .4s;
 }
 .header[data-scrolled="true"] .header__bar { background: rgba(255, 255, 255, .9); box-shadow: 0 14px 40px -20px rgba(13, 19, 51, .35); }
-.header__brand { display: flex; border-radius: 14px; text-decoration: none; }
+.header__brand { display: flex; border-radius: 999px; text-decoration: none; }
 .header__brand:hover .logo__badge { transform: rotate(-10deg) scale(1.06); }
 .header__nav { display: flex; align-items: center; gap: 4px; }
 .header__link {

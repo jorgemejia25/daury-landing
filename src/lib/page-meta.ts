@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { isLocale, locales } from "@/i18n/config";
+import { isLocale, locales, ogLocales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { site } from "@/lib/site";
 
@@ -11,6 +11,7 @@ export async function pageMetadata(params: Promise<{ lang: string }>, key: PageK
   if (!isLocale(lang)) return {};
   const m = getDictionary(lang).pages[key];
   const path = `/${key}`;
+  const image = `/${lang}/opengraph-image/og`;
   return {
     title: m.title,
     description: m.description,
@@ -21,6 +22,21 @@ export async function pageMetadata(params: Promise<{ lang: string }>, key: PageK
         "x-default": path,
       },
     },
-    openGraph: { type: "website", siteName: site.name, title: m.title, description: m.description, url: `/${lang}${path}` },
+    openGraph: {
+      type: "website",
+      locale: ogLocales[lang],
+      alternateLocale: locales.filter((l) => l !== lang).map((l) => ogLocales[l]),
+      siteName: site.name,
+      title: m.title,
+      description: m.description,
+      url: `/${lang}${path}`,
+      images: [{ url: image, width: 1200, height: 630, alt: `${site.name}: ${m.title}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: m.title,
+      description: m.description,
+      images: [{ url: image, alt: `${site.name}: ${m.title}` }],
+    },
   };
 }
