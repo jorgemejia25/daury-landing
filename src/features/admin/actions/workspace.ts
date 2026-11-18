@@ -32,6 +32,8 @@ async function saveAttempt(input: SaveRequest): Promise<MutationResult> {
       const board = await requireReference("boards", data.boardId);
       if (!(board?.data.columnOrder as string[])?.includes(data.status as string)) throw new Error("El estado no pertenece al tablero seleccionado.");
       data.comments = previous?.data.comments ?? [];
+      // El formulario no envía el orden manual: se conserva el de la columna.
+      if (data.rank === undefined && typeof previous?.data.rank === "number") data.rank = previous.data.rank;
       const existingChecklist = (previous?.data.checklist ?? []) as { id: string; createdBy?: string; createdAt?: string }[];
       data.checklist = (data.checklist as { id: string; title: string; done: boolean }[]).map((item) => {
         const original = existingChecklist.find((entry) => entry.id === item.id);

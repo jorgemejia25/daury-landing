@@ -80,7 +80,7 @@ export function TaskCardBody({ task, done, today }: { task: Entity<"tasks">; don
 }
 
 /** Datos de una tarea tal como los espera la Server Action, con otro estado. */
-export function taskPayload(task: Entity<"tasks">, status = task.status) {
+export function taskPayload(task: Entity<"tasks">, status = task.status, rank = task.rank) {
   return {
     title: task.title,
     description: task.description,
@@ -94,5 +94,6 @@ export function taskPayload(task: Entity<"tasks">, status = task.status) {
     points: task.points,
     articleId: task.articleId,
     checklist: task.checklist.map(({ id, title, done }) => ({ id, title, done })),
+    ...(rank === undefined ? {} : { rank }),
   };
 }

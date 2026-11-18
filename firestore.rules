@@ -95,7 +95,8 @@ service cloud.firestore {
           && d.tags is list && d.tags.size() <= 12 && (d.archived || parentAvailable('folders', d.folderId)))
         || (kind == 'wikiContent' && fields(['body']) && label(d.body, 100000)
           && existsAfter(reference('wikiPages', id)) && d.revision == getAfter(reference('wikiPages', id)).data.revision)
-        || (kind == 'tasks' && fields(['title', 'description', 'boardId', 'status', 'priority', 'type', 'assignee', 'dueDate', 'tags', 'points', 'articleId', 'checklist', 'comments'])
+        || (kind == 'tasks' && (fields(['title', 'description', 'boardId', 'status', 'priority', 'type', 'assignee', 'dueDate', 'tags', 'points', 'articleId', 'checklist', 'comments']) || fields(['title', 'description', 'boardId', 'status', 'priority', 'type', 'assignee', 'dueDate', 'tags', 'points', 'articleId', 'checklist', 'comments', 'rank']))
+          && (!('rank' in d) || d.rank is number)
           && label(d.title, 200) && d.description is string && d.description.size() <= 12000
           && d.boardId is string && d.boardId != '' && d.status is string
           && d.priority in ['high', 'medium', 'low'] && d.type in ['task', 'bug', 'story', 'epic']

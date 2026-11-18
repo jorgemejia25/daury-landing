@@ -19,7 +19,7 @@ export const canvasSize = 4000;
 export type Folder = { name: string; parentId: string; color: WorkspaceColor };
 export type Page = { title: string; description: string; folderId: string; tags: string[] };
 export type Comment = { id: string; body: string; author: string; createdAt: string };
-export type WorkTask = { title: string; description: string; boardId: string; status: string; priority: "high" | "medium" | "low"; type: "task" | "bug" | "story" | "epic"; assignee: string; dueDate: string; tags: string[]; points: number; articleId: string; checklist: { id: string; title: string; done: boolean; createdBy?: string; createdAt?: string }[]; comments: Comment[] };
+export type WorkTask = { title: string; description: string; boardId: string; status: string; priority: "high" | "medium" | "low"; type: "task" | "bug" | "story" | "epic"; assignee: string; dueDate: string; tags: string[]; points: number; articleId: string; checklist: { id: string; title: string; done: boolean; createdBy?: string; createdAt?: string }[]; comments: Comment[] ; /** Orden manual dentro de la columna (menor = arriba); sin valor, por fecha de creación. */ rank?: number };
 export type WorkEvent = { title: string; description: string; calendarId: string; allDay: boolean; start: string; end: string; location: string; articleId: string; meetUrl?: string };
 export type WorkspaceData = { boards: Board; tasks: WorkTask; calendars: Calendar; events: WorkEvent; folders: Folder; wikiPages: Page; wikiContent: { body: string }; whiteboards: Whiteboard; stickyNotes: StickyNote; financeEntries: import("./finance").FinanceData };
 export type Metadata = { revision: number; archived: boolean; createdAt: string; updatedAt: string; createdBy: string; updatedBy: string };
@@ -56,6 +56,10 @@ function tags(value: unknown) {
   if (!Array.isArray(value) || value.length > 12 || value.some((tag) => typeof tag !== "string" || !tag.trim() || tag.length > 40)) throw new Error("Usa hasta 12 etiquetas de 40 caracteres.");
   return [...new Set((value as string[]).map((tag) => tag.trim()))];
 }
+function rank(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("El orden de la tarea no es válido.");
+  return value;
+}
 export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C, input: unknown): WorkspaceData[C] & { body?: string } {
   const data = object(input);
   const color = () => choice(data.color, colors.map((color) => color.value));
@@ -89,7 +93,7 @@ export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C,
     if (!Array.isArray(data.checklist) || data.checklist.length > 30) throw new Error("Usa hasta 30 subtareas.");
     const checklist = data.checklist.map((item) => { const row = object(item); validId(row.id); if (typeof row.done !== "boolean") throw new Error("Subtarea inválida."); return { id: row.id, title: text(row, "title", 200, true), done: row.done }; });
     if (new Set(checklist.map((item) => item.id)).size !== checklist.length) throw new Error("Las subtareas tienen identificadores repetidos.");
-    result = { title: text(data, "title", 200, true), description: text(data, "description", 12000), boardId: reference(data, "boardId", true), status: reference(data, "status", true), priority: choice(data.priority, ["high", "medium", "low"]), type: choice(data.type, ["task", "bug", "story", "epic"]), assignee, dueDate, tags: tags(data.tags), points: data.points, articleId: reference(data, "articleId"), checklist, comments: [] };
+    result = { title: text(data, "title", 200, true), description: text(data, "description", 12000), boardId: reference(data, "boardId", true), status: reference(data, "status", true), priority: choice(data.priority, ["high", "medium", "low"]), type: choice(data.type, ["task", "bug", "story", "epic"]), assignee, dueDate, tags: tags(data.tags), points: data.points, articleId: reference(data, "articleId"), checklist, comments: [], ...(data.rank === undefined ? {} : { rank: rank(data.rank) }) };
   } else {
     if (typeof data.allDay !== "boolean") throw new Error("Selecciona el tipo de evento.");
     const start = text(data, "start", 40, true), end = text(data, "end", 40, true);
