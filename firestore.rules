@@ -80,9 +80,12 @@ service cloud.firestore {
           && d.columns.keys().hasAll(d.columnOrder) && d.columnOrder.hasOnly(d.columns.keys()))
         || (kind == 'whiteboards' && fields(['name', 'description', 'color'])
           && label(d.name, 120) && d.description is string && d.description.size() <= 3000 && color(d.color))
-        || (kind == 'stickyNotes' && fields(['whiteboardId', 'text', 'color', 'x', 'y'])
+        || (kind == 'stickyNotes' && (fields(['whiteboardId', 'text', 'color', 'x', 'y']) || (fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size'])
+            && d.kind in ['note', 'text', 'pen', 'rect', 'ellipse', 'arrow'] && d.size in ['sm', 'md', 'lg']
+            && d.w is int && d.w >= 0 && d.w <= 4000 && d.h is int && d.h >= 0 && d.h <= 4000
+            && d.points is list && d.points.size() <= 1000))
           && d.whiteboardId is string && d.whiteboardId != '' && d.text is string && d.text.size() <= 500
-          && d.color in ['yellow', 'pink', 'blue', 'green', 'violet']
+          && d.color in ['yellow', 'pink', 'blue', 'green', 'violet', 'ink', 'coral', 'amber']
           && d.x is int && d.x >= 0 && d.x <= 4000 && d.y is int && d.y >= 0 && d.y <= 4000
           && (d.archived || parentAvailable('whiteboards', d.whiteboardId)))
         || (kind == 'calendars' && fields(['name', 'description', 'color'])

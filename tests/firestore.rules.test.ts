@@ -63,6 +63,13 @@ describe("acceso a los espacios compartidos", () => {
     await assertFails(setDoc(doc(db, "stickyNotes", "decimal"), { ...note, y: 10.5 }));
     await assertFails(setDoc(doc(db, "stickyNotes", "largo"), { ...note, text: "x".repeat(501) }));
     await assertFails(deleteDoc(doc(db, "whiteboards", sampleWhiteboard.id)));
+    const shape = { ...note, kind: "rect", w: 240, h: 160, points: [], size: "md", color: "ink" };
+    await assertSucceeds(setDoc(doc(db, "stickyNotes", "figura"), shape));
+    await assertSucceeds(setDoc(doc(db, "stickyNotes", "trazo"), { ...shape, kind: "pen", points: [0, 0, 10, 12, 30, 4] }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "tipo-raro"), { ...shape, kind: "star" }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "sin-tamano"), Object.fromEntries(Object.entries(shape).filter(([key]) => key !== "w"))));
+    await assertFails(setDoc(doc(db, "stickyNotes", "trazo-largo"), { ...shape, kind: "pen", points: Array(1001).fill(1) }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "talla"), { ...shape, size: "xl" }));
   });
   test("las tareas admiten un orden manual numérico opcional", async () => {
     const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();
