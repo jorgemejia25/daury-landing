@@ -2,7 +2,7 @@
 
 import { workspaceStore, WorkspaceConflict, type RestDocument } from "../server/firestore-rest";
 import { adminAllowedEmails } from "../lib/access";
-import { canvasSize, stickyColors, validId } from "../lib/workspace";
+import { canvasSize, elementColorValues, validId } from "../lib/workspace";
 import type { BulkAction, BulkKind, BulkResult } from "../lib/bulk";
 
 const MAX_ITEMS = 100;
@@ -15,7 +15,7 @@ const priorities = ["high", "medium", "low"];
 async function bulkAttempt(kind: BulkKind, ids: string[], action: BulkAction): Promise<BulkResult & { retryable?: boolean }> {
   try {
     if (kind !== "tasks" && kind !== "events" && kind !== "stickyNotes") throw new Error("Colección no válida.");
-    if (kind === "stickyNotes" && !["delete", "stickyPositions", "stickyColor", "stickyText"].includes(action.type)) throw new Error("Acción no válida.");
+    if (kind === "stickyNotes" && !["delete", "stickyPositions", "stickyColor", "stickyText", "stickyBox"].includes(action.type)) throw new Error("Acción no válida.");
     if (kind !== "stickyNotes" && action.type.startsWith("sticky")) throw new Error("Acción no válida.");
     if (!Array.isArray(ids) || !ids.length) throw new Error("Selecciona al menos un elemento.");
     if (ids.length > MAX_ITEMS) throw new Error(`Selecciona como máximo ${MAX_ITEMS} elementos a la vez.`);
@@ -84,13 +84,22 @@ async function bulkAttempt(kind: BulkKind, ids: string[], action: BulkAction): P
           break;
         }
         case "stickyColor":
-          if (!stickyColors.some((color) => color.value === action.value)) throw new Error("Color no válido.");
+          if (!elementColorValues.includes(action.value)) throw new Error("Color no válido.");
           if (data.color !== action.value) writes.push(touch(doc, { color: action.value }));
           break;
         case "stickyText":
           if (unique.length !== 1 || typeof action.value !== "string" || action.value.length > 500) throw new Error("Escribe hasta 500 caracteres.");
-          if (data.text !== action.value) writes.push(touch(doc, { text: action.value }));
+          if (action.h !== undefined && (data.kind === undefined || !Number.isInteger(action.h) || action.h < 0 || action.h > canvasSize)) throw new Error("El tamaño no es válido.");
+          if (data.text !== action.value || (action.h !== undefined && data.h !== action.h)) writes.push(touch(doc, { text: action.value, ...(action.h === undefined ? {} : { h: action.h }) }));
           break;
+        case "stickyBox": {
+          const id = doc.name.split("/").pop()!;
+          const box = Array.isArray(action.boxes) ? action.boxes.find((item) => item?.id === id) : undefined;
+          const valid = (value: unknown) => Number.isInteger(value) && Number(value) >= 0 && Number(value) <= canvasSize;
+          if (data.kind === undefined || !box || ![box.x, box.y, box.w, box.h].every(valid)) throw new Error("El tamaño no es válido.");
+          if (data.x !== box.x || data.y !== box.y || data.w !== box.w || data.h !== box.h) writes.push(touch(doc, { x: box.x, y: box.y, w: box.w, h: box.h }));
+          break;
+        }
         case "calendar": {
           if (kind !== "events") throw new Error("Acción no válida.");
           if (data.archived) throw new Error("Restaura los eventos archivados antes de moverlos.");

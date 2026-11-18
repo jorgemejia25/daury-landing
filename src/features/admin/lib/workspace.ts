@@ -12,9 +12,16 @@ export type Calendar = { name: string; description: string; color: WorkspaceColo
 /** Pizarra de brainstorm. */
 export type Whiteboard = { name: string; description: string; color: WorkspaceColor };
 export const stickyColors = [{ value: "yellow", label: "Amarillo" }, { value: "pink", label: "Rosa" }, { value: "blue", label: "Azul" }, { value: "green", label: "Verde" }, { value: "violet", label: "Violeta" }] as const;
-export type StickyColor = typeof stickyColors[number]["value"];
-/** Post-it sobre una pizarra; x e y en píxeles del lienzo (0–4000). */
-export type StickyNote = { whiteboardId: string; text: string; color: StickyColor; x: number; y: number };
+/** Colores de trazo para texto, lápiz, figuras y flechas. */
+export const strokeColors = [{ value: "ink", label: "Tinta" }, { value: "blue", label: "Azul" }, { value: "coral", label: "Coral" }, { value: "green", label: "Verde" }, { value: "violet", label: "Violeta" }, { value: "amber", label: "Ámbar" }] as const;
+export type StickyColor = typeof stickyColors[number]["value"] | typeof strokeColors[number]["value"];
+export const elementColorValues: string[] = [...new Set([...stickyColors, ...strokeColors].map((item) => item.value))];
+/** Tipos de elemento de la pizarra; sin `kind` (datos anteriores) es un post-it. */
+export const elementKinds = ["note", "text", "pen", "rect", "ellipse", "arrow"] as const;
+export type ElementKind = typeof elementKinds[number];
+export const textSizes = ["sm", "md", "lg"] as const;
+/** Elemento sobre una pizarra; x e y en píxeles del lienzo (0–4000). Lápiz y flecha guardan puntos relativos a x, y. */
+export type StickyNote = { whiteboardId: string; text: string; color: StickyColor; x: number; y: number; kind?: ElementKind; w?: number; h?: number; points?: number[]; size?: typeof textSizes[number] };
 export const canvasSize = 4000;
 export type Folder = { name: string; parentId: string; color: WorkspaceColor };
 export type Page = { title: string; description: string; folderId: string; tags: string[] };
@@ -77,7 +84,13 @@ export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C,
   } else if (collection === "stickyNotes") {
     const point = (key: string) => { const value = data[key]; if (!Number.isInteger(value) || Number(value) < 0 || Number(value) > canvasSize) throw new Error("La posición del post-it no es válida."); return Number(value); };
     if (typeof data.text !== "string") throw new Error("El texto del post-it no es válido.");
-    result = { whiteboardId: reference(data, "whiteboardId", true), text: text(data, "text", 500), color: choice(data.color, stickyColors.map((item) => item.value)), x: point("x"), y: point("y") };
+    const base = { whiteboardId: reference(data, "whiteboardId", true), text: text(data, "text", 500), color: choice(data.color, elementColorValues), x: point("x"), y: point("y") };
+    if (data.kind === undefined) result = base;
+    else {
+      const points = data.points;
+      if (!Array.isArray(points) || points.length > 1000 || points.length % 2 || points.some((value) => !Number.isInteger(value) || Math.abs(value) > canvasSize)) throw new Error("El trazo no es válido.");
+      result = { ...base, kind: choice(data.kind, elementKinds), w: point("w"), h: point("h"), points: points as number[], size: choice(data.size, textSizes) };
+    }
   } else if (collection === "calendars") {
     result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color() };
   } else if (collection === "folders") {

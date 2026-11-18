@@ -72,6 +72,16 @@ describe("acciones reales contra Firestore", () => {
     expect((await bulkWorkspaceAction("stickyNotes", [note.id, second.id], { type: "stickyText", value: "x" })).ok).toBe(false);
     expect((await bulkWorkspaceAction("tasks", [note.id], { type: "stickyColor", value: "green" })).ok).toBe(false);
     expect(await bulkWorkspaceAction("stickyNotes", [note.id], { type: "archive" })).toMatchObject({ ok: false });
+    const shape = succeeded(await saveWorkspaceItem({ collection: "stickyNotes", data: { whiteboardId: board.id, text: "", color: "ink", x: 40, y: 40, kind: "rect", w: 200, h: 120, points: [], size: "md" } }));
+    const pen = succeeded(await saveWorkspaceItem({ collection: "stickyNotes", data: { whiteboardId: board.id, text: "", color: "blue", x: 10, y: 10, kind: "pen", w: 40, h: 30, points: [0, 0, 20, 15, 40, 30], size: "md" } }));
+    expect((await read("stickyNotes", pen.id)).points).toEqual([0, 0, 20, 15, 40, 30]);
+    expect((await saveWorkspaceItem({ collection: "stickyNotes", data: { whiteboardId: board.id, text: "", color: "blue", x: 10, y: 10, kind: "pen", w: 40, h: 30, points: [0, 0, 1], size: "md" } })).ok).toBe(false);
+    expect(await bulkWorkspaceAction("stickyNotes", [shape.id], { type: "stickyBox", boxes: [{ id: shape.id, x: 48, y: 48, w: 320, h: 200 }] })).toEqual({ ok: true, count: 1 });
+    expect([(await read("stickyNotes", shape.id)).w, (await read("stickyNotes", shape.id)).h]).toEqual([320, 200]);
+    expect((await bulkWorkspaceAction("stickyNotes", [note.id], { type: "stickyBox", boxes: [{ id: note.id, x: 0, y: 0, w: 10, h: 10 }] })).ok).toBe(false);
+    expect(await bulkWorkspaceAction("stickyNotes", [shape.id], { type: "stickyText", value: "Inicio", h: 140 })).toEqual({ ok: true, count: 1 });
+    expect(await bulkWorkspaceAction("stickyNotes", [shape.id, pen.id], { type: "stickyColor", value: "coral" })).toEqual({ ok: true, count: 2 });
+    expect(await bulkWorkspaceAction("stickyNotes", [shape.id, pen.id], { type: "delete" })).toEqual({ ok: true, count: 2 });
     expect(await bulkWorkspaceAction("stickyNotes", [note.id, second.id], { type: "delete" })).toEqual({ ok: true, count: 2 });
   });
   test("las acciones masivas mueven, archivan, restauran y eliminan tareas y eventos en un solo commit", async () => {

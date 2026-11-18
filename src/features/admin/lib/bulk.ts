@@ -11,5 +11,7 @@ export type BulkAction =
   /** Post-its: varias posiciones en un solo commit, color o texto. */
   | { type: "stickyPositions"; positions: { id: string; x: number; y: number }[] }
   | { type: "stickyColor"; value: string }
-  | { type: "stickyText"; value: string };
+  | { type: "stickyText"; value: string; h?: number }
+  /** Tamaño y posición de figuras y textos. */
+  | { type: "stickyBox"; boxes: { id: string; x: number; y: number; w: number; h: number }[] };
 export type BulkResult = { ok: true; count: number } | { ok: false; error: string };
