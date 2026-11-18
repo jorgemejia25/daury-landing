@@ -1,16 +1,15 @@
 "use client";
 
-import { Menu, MenuCheckboxItem, MenuContent, MenuGroup, MenuGroupLabel, MenuItem, MenuItemIndicator, MenuSeparator, MenuTrigger } from "@ui-sdk/react/menu";
 import { Tabs, TabsPanel } from "@ui-sdk/react/tabs";
-import { CalendarDays, Check, ChevronDown, ChevronLeft, ChevronRight, Grid3x3, List, Plus, Settings2 } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Grid3x3, List, Plus } from "lucide-react";
 import { Button } from "@/ui/atoms/Button";
 import { IconButton } from "@/ui/atoms/IconButton";
-import { StatusDot } from "@/ui/atoms/StatusDot";
 import type { Tone } from "@/ui/lib/tones";
 import { Card } from "@/ui/molecules/Card";
 import { EmptyState } from "@/ui/molecules/EmptyState";
 import { ScreenHeader } from "@/ui/molecules/ScreenHeader";
 import { SegmentedTabs } from "@/ui/molecules/SegmentedTabs";
+import { SelectField } from "@/ui/molecules/SelectField";
 import { formatDate, isMonth, monthDays, shiftMonth } from "@/features/admin/lib/dates";
 import { compareEvents, eventBounds, eventsInMonth, occursOn, type CalendarCategory, type CalendarItem } from "@/features/admin/lib/planning";
 import { calendarTone } from "@/features/admin/lib/presentation";
@@ -43,7 +42,7 @@ type CalendarViewProps = {
 const selectable = (event: CalendarItem) => !event.taskId && !event.id.includes(":");
 
 /** Calendarios con vistas mes y agenda, navegación por meses y filtro de calendarios (estado en la URL). */
-export function CalendarView({ categories: sourceCategories, events, today, actions, onOpenEvent, onCreateDay, onManageCalendars, bulk }: CalendarViewProps) {
+export function CalendarView({ categories: sourceCategories, events, today, actions, onOpenEvent, onCreateDay, bulk }: CalendarViewProps) {
   const categories = [...sourceCategories, deadlineCategory];
   const { params, update } = useAdminQuery();
   const monthParam = params.get("month") ?? "";
@@ -63,13 +62,6 @@ export function CalendarView({ categories: sourceCategories, events, today, acti
   const agendaDays = [...new Set(visibleEvents.map(agendaStart))].sort();
   const selection = useSelection(bulk && view === "agenda" ? visibleEvents.filter(selectable).map((event) => event.id) : []);
   const openOrToggle = (id: string) => (selection.count ? selection.toggle(id) : onOpenEvent?.(id));
-  const filterLabel = selected.length === categories.length ? "Todos los calendarios" : selected.length === 0 ? "Ningún calendario" : `${selected.length} de ${categories.length} calendarios`;
-
-  function toggle(id: string, checked: boolean) {
-    const next = checked ? [...selected, id] : selected.filter((value) => value !== id);
-    update({ calendars: next.length === categories.length ? null : next.join(",") || "-" });
-  }
-
   return (
     <section>
       <ScreenHeader eyebrow="Calendarios" title="Agenda del equipo" subtitle="Hitos, reuniones, contenido y fechas límite en un solo lugar." right={actions} />
@@ -86,44 +78,16 @@ export function CalendarView({ categories: sourceCategories, events, today, acti
             <h2 className={styles.monthLabel} aria-live="polite">{label}</h2>
           </div>
           <div className={styles.toolbarEnd}>
-            <Menu
-              onCheckedChange={(checked, details) => toggle(details.value, checked)}
-              onAction={(value) => {
-                if (value === "all") update({ calendars: null });
-                if (value === "manage") onManageCalendars?.();
-              }}
-            >
-              <MenuTrigger className={styles.filterTrigger} aria-label={`Calendarios visibles: ${filterLabel}`}>
-                <span className={styles.filterDots} aria-hidden="true">
-                  {categories.filter((category) => selected.includes(category.id)).slice(0, 4).map((category) => <StatusDot key={category.id} tone={toneFor(category)} size={8} />)}
-                </span>
-                {filterLabel}
-                <ChevronDown size={15} strokeWidth={2.2} aria-hidden="true" />
-              </MenuTrigger>
-              <MenuContent className={styles.filterMenu} align="end" sideOffset={6}>
-                <MenuGroup>
-                  <MenuGroupLabel className={styles.menuLabel}>Calendarios</MenuGroupLabel>
-                  {categories.map((category) => (
-                    <MenuCheckboxItem key={category.id} value={category.id} checked={selected.includes(category.id)} className={styles.menuItem} data-tone={toneFor(category)}>
-                      <span className={styles.menuCheck}>
-                        <MenuItemIndicator keepMounted>
-                          <Check size={14} strokeWidth={3} aria-hidden="true" />
-                        </MenuItemIndicator>
-                      </span>
-                      {category.name}
-                    </MenuCheckboxItem>
-                  ))}
-                </MenuGroup>
-                <MenuSeparator className={styles.menuSeparator} />
-                <MenuItem value="all" className={styles.menuItem} disabled={selected.length === categories.length}>Mostrar todos</MenuItem>
-                {onManageCalendars ? (
-                  <MenuItem value="manage" className={styles.menuItem}>
-                    <Settings2 size={17} strokeWidth={2.2} aria-hidden="true" />
-                    Administrar calendarios
-                  </MenuItem>
-                ) : null}
-              </MenuContent>
-            </Menu>
+            <div className="w-[230px] max-[600.02px]:w-full">
+              <SelectField
+                label="Calendario visible"
+                hideLabel
+                size="compact"
+                value={selected.length === 1 && ids !== null ? selected[0] : "all"}
+                options={[{ value: "all", label: "Todos los calendarios" }, ...categories.map((category) => ({ value: category.id, label: category.name }))]}
+                onChange={(value) => update({ calendars: value === "all" ? null : value })}
+              />
+            </div>
             <SegmentedTabs
               label="Vista del calendario"
               options={[

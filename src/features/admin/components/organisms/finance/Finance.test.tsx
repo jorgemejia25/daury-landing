@@ -69,8 +69,19 @@ test("las pestañas conservan los filtros y admiten navegación por teclado", as
   await user.type(screen.getByRole("searchbox", { name: "Buscar movimientos" }), "Hosting");
   const movements = screen.getByRole("tab", { name: "Movimientos" }); movements.focus();
   await user.keyboard("{ArrowRight}");
+  expect(screen.getByRole("tab", { name: "Gastos previstos" }).getAttribute("aria-selected")).toBe("true");
+  await user.keyboard("{ArrowRight}");
   expect(screen.getByRole("tab", { name: "Previsión mensual" }).getAttribute("aria-selected")).toBe("true");
-  await user.keyboard("{ArrowLeft}");
+  await user.keyboard("{ArrowLeft}{ArrowLeft}");
   expect(screen.getByRole("tab", { name: "Movimientos" }).getAttribute("aria-selected")).toBe("true");
   expect((screen.getByRole("searchbox", { name: "Buscar movimientos" }) as HTMLInputElement).value).toBe("Hosting");
+});
+
+test("gastos previstos lista lo pendiente de los próximos 12 meses y permite marcarlo pagado", async () => {
+  render(<FinanceWorkspace />); const user = userEvent.setup();
+  await user.click(screen.getByRole("tab", { name: "Gastos previstos" }));
+  expect(screen.getByRole("heading", { name: "Gastos previstos" })).toBeTruthy();
+  const pay = screen.queryAllByRole("button", { name: /^Marcar pagado / });
+  expect(pay.length).toBeLessThanOrEqual(12);
+  for (const button of pay) expect(button.getAttribute("aria-label")).toMatch(/\d{4}-\d{2}-\d{2}$/);
 });
