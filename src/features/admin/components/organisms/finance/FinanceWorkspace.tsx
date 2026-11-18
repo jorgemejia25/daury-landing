@@ -8,6 +8,7 @@ import { Button } from "@/ui/atoms/Button";
 import { Chip } from "@/ui/atoms/Chip";
 import { IconButton } from "@/ui/atoms/IconButton";
 import { Card } from "@/ui/molecules/Card";
+import { Skeleton } from "@/ui/atoms/Skeleton";
 import { EmptyState } from "@/ui/molecules/EmptyState";
 import { ScreenHeader } from "@/ui/molecules/ScreenHeader";
 import { SearchField } from "@/ui/molecules/SearchField";
@@ -37,7 +38,8 @@ export function FinanceWorkspace() {
   async function run(action: () => Promise<{ ok: boolean; error?: string }>) { if (busy) return; setBusy(true); setError(""); try { const result = await action(); if (!result.ok) setError(result.error ?? "No se pudo guardar."); } catch { setError("No se pudo guardar. Revisa tu conexión."); } finally { setBusy(false); } }
   return <section className={styles.workspace}>
     <ScreenHeader title="Gastos e ingresos" subtitle="Costos de Daury, pagos previstos y entradas de dinero." right={<Button icon={<Plus size={18} aria-hidden="true" />} render={<Link href="/admin/gastos/nuevo" />}>Nuevo movimiento</Button>} />
-    <WorkspaceStatus loading={data.loading} errors={[data.error, error]} />
+    <WorkspaceStatus loading={false} errors={[data.error, error]} />
+    {data.loading ? <FinanceSkeleton /> : <>
     <div className={styles.yearBar}><div className={styles.year}><IconButton aria-label="Año anterior" variant="plain" disabled={year <= 1900} onClick={() => update({ year: String(year - 1) })}><ChevronLeft size={19} aria-hidden="true" /></IconButton><h2>{year}</h2><IconButton aria-label="Año siguiente" variant="plain" disabled={year >= 2200} onClick={() => update({ year: String(year + 1) })}><ChevronRight size={19} aria-hidden="true" /></IconButton></div><Button size="sm" variant={archived ? "soft" : "text"} aria-pressed={archived} icon={<Archive size={15} aria-hidden="true" />} onClick={() => update({ archived: archived ? null : "yes" })}>{archived ? "Ver activos" : "Ver archivados"}</Button></div>
     {!archived ? <>
       <div className={styles.summary}>{(["USD", "GTQ"] as Currency[]).map((unit) => { const totals = financeTotals(occurrences, unit); return <Card key={unit}><span className={styles.currency}>{unit === "USD" ? "Dólares · USD" : "Quetzales · GTQ"}</span><div className={styles.totals}><div><span>Costos del año</span><strong>{money(totals.expense, unit)}</strong><small>Pagado {money(totals.paidExpense, unit)} · Pendiente {money(totals.expense - totals.paidExpense, unit)}</small></div><div><span>Ingresos del año</span><strong>{money(totals.income, unit)}</strong><small>Cobrado {money(totals.paidIncome, unit)}</small></div><div><span>Balance previsto</span><strong data-negative={totals.balance < 0 || undefined}>{money(totals.balance, unit)}</strong><small>Ingresos menos costos programados</small></div></div></Card>; })}</div>
@@ -53,5 +55,42 @@ export function FinanceWorkspace() {
         </TabsPanel>
       </Tabs>
     </> : <Card><h3>Planes y movimientos archivados</h3><ul className={styles.movements}>{data.items.filter((entry) => entry.archived).map((entry) => <li key={entry.id} className={styles.movement}><div className={styles.info}><b>{entry.title}</b><small>{money(entry.amount, entry.currency)} · Creado por {personName(entry.createdBy)}</small></div><Button size="sm" variant="secondary" disabled={busy} icon={<ArchiveRestore size={16} aria-hidden="true" />} onClick={() => run(() => archiveFinanceEntry(entry.id, entry.revision, false))}>Restaurar</Button></li>)}</ul>{!data.items.some((entry) => entry.archived) ? <p className={styles.hint}>No hay movimientos archivados.</p> : null}</Card>}
+    </>}
   </section>;
+}
+
+/** Esqueleto con la forma de la página: año, totales por moneda, pestañas, filtros y movimientos. */
+function FinanceSkeleton() {
+  return (
+    <div role="status" aria-label="Cargando gastos e ingresos" aria-busy="true">
+      <div className={styles.yearBar}>
+        <div className="flex items-center gap-[12px]"><Skeleton width={36} height={36} radius={9} /><Skeleton width={72} height={28} radius={8} /><Skeleton width={36} height={36} radius={9} /></div>
+        <Skeleton width={128} height={32} radius={8} />
+      </div>
+      <div className={styles.summary}>
+        {[0, 1].map((card) => (
+          <Card key={card}>
+            <Skeleton width={120} height={12} radius={6} />
+            <div className="grid grid-cols-2 gap-[22px] mt-[24px]">
+              {[0, 1].map((stat) => <div key={stat} className="flex flex-col gap-[8px]"><Skeleton width="55%" height={12} radius={6} /><Skeleton width="80%" height={28} radius={8} /><Skeleton width="70%" height={12} radius={6} /></div>)}
+              <div className="col-span-full flex flex-col gap-[8px] pt-[18px] border-t border-rule"><Skeleton width="30%" height={12} radius={6} /><Skeleton width="45%" height={28} radius={8} /></div>
+            </div>
+          </Card>
+        ))}
+      </div>
+      <div className="mt-[38px] mb-[20px]"><Skeleton width={300} height={38} radius={9} /></div>
+      <div className={styles.filters}>{[0, 1, 2, 3, 4].map((field) => <Skeleton key={field} height={40} radius={9} />)}</div>
+      <Card padding="none">
+        <div className={styles.sectionHead}><Skeleton width={200} height={18} radius={6} /><Skeleton width={24} height={14} radius={6} /></div>
+        {[0, 1, 2, 3].map((row) => (
+          <div key={row} className={styles.movement}>
+            <Skeleton width={42} height={42} radius={14} />
+            <div className="flex flex-col gap-[8px] flex-1"><Skeleton width="40%" height={14} radius={6} /><Skeleton width="60%" height={12} radius={6} /></div>
+            <div className="flex flex-col items-end gap-[8px]"><Skeleton width={90} height={16} radius={6} /><Skeleton width={64} height={20} radius={6} /></div>
+            <Skeleton width={128} height={32} radius={8} />
+          </div>
+        ))}
+      </Card>
+    </div>
+  );
 }
