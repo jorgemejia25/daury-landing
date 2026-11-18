@@ -43,7 +43,7 @@ export function BoardWorkspace() {
   const router = useRouter();
   const today = localDate(new Date());
   const archived = params.get("archived") === "yes";
-  const options = boards.items.filter((board) => archived || !board.archived).toSorted((a, b) => a.name.localeCompare(b.name, "es"));
+  const options = boards.items.filter((board) => archived || !board.archived).toSorted((a, b) => a.createdAt.localeCompare(b.createdAt) || a.name.localeCompare(b.name, "es")); // Orden de creación: los tableros nuevos quedan al final.
   const board = options.find((item) => item.id === params.get("board")) ?? options[0];
   const tasks = useWorkspace("tasks", "boardId", board?.id);
   /** Movimientos de arrastrar y soltar que aún no confirma Firestore. */
