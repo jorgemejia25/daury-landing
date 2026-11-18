@@ -28,7 +28,7 @@ Firebase Authentication and Cloud Firestore so authorized collaborators can edit
 the wiki in the browser. Setup steps are in `docs/firebase-setup.md`.
 Keep the existing content as a migration source until cloud data and permissions
 are verified. Enforce write permissions in Firestore rules as well as in the UI.
-Google login is restricted to the six emails in `src/features/wiki/lib/access.ts` and
+Google login is restricted to the seven emails in `src/features/wiki/lib/access.ts` and
 `firestore.rules`. Keep the lists identical. Server pages must require a verified
 session before returning private content, including RSC responses. Firestore rules
 allow only those Google-verified identities in the seven workspace collections.

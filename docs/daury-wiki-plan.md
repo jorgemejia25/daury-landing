@@ -12,7 +12,7 @@ documento conservan el plan de origen y las verificaciones de sus primeras etapa
 El usuario solicitó migrar a Firebase para que colaboradores puedan editar desde
 la wiki sin depender de cambios hechos por Jorge en el repositorio. El destino
 es Firebase Authentication más Cloud Firestore. La decisión posterior restringe
-el acceso a seis cuentas Google, sin un sistema de roles o registro abierto.
+el acceso a siete cuentas Google, sin un sistema de roles o registro abierto.
 La preparación y el paso a paso están en `docs/firebase-setup.md`.
 La base en la nube, las reglas y el login están configurados. Los formularios
 consultan y guardan en Firestore; el contenido inicial ya fue importado. La prueba interactiva del login Google sigue pendiente en navegador.

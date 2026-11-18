@@ -19,9 +19,9 @@ beforeAll(async () => {
 });
 afterAll(async () => { await env?.cleanup(); });
 describe("acceso a los espacios compartidos", () => {
-  test("la lista del servidor y de las reglas contiene exactamente las mismas seis cuentas", () => {
+  test("la lista del servidor y de las reglas contiene exactamente las mismas siete cuentas", () => {
     const emails = [...rules.matchAll(/'([^']+@gmail\.com)'/g)].map((match) => match[1]);
-    expect(emails.sort()).toEqual([...adminAllowedEmails].sort()); expect(new Set(emails).size).toBe(6);
+    expect(emails.sort()).toEqual([...adminAllowedEmails].sort()); expect(new Set(emails).size).toBe(7);
   });
   test.each(adminAllowedEmails)("%s puede crear, consultar y editar, conservando el creador", async (email) => {
     const db = env.authenticatedContext(email, { ...claims, email }).firestore();

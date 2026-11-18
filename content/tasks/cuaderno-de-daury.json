@@ -1,0 +1,223 @@
+{
+  "source": "Pizarra «Cuaderno de Daury» (Claude): 01 · Tareas y responsables y 11 · Pendientes por resolver",
+  "articleId": "doc-cuaderno-de-daury",
+  "boards": [
+    {
+      "id": "plan-equipo",
+      "name": "Plan del equipo",
+      "description": "Investigación, negocio y temas legales que salieron de la última reunión y de los pendientes del cuaderno.",
+      "color": "blue"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "cuaderno-encuesta-profesionales",
+      "board": "plan-equipo",
+      "title": "Encuesta Van Westendorp a profesionales de salud",
+      "description": "Encuesta de precios a médicos, geriatras y clínicas para validar Daury Profesional y Business.\n\nMeta: **30 médicos y 10 clínicas**.",
+      "assignee": "fatimacerezo2411@gmail.com",
+      "priority": "high",
+      "type": "task",
+      "tags": ["investigación", "precios"],
+      "checklist": ["Preparar el cuestionario", "Conseguir 30 respuestas de médicos", "Conseguir 10 respuestas de clínicas", "Resumir los resultados"]
+    },
+    {
+      "id": "cuaderno-analisis-competencia",
+      "board": "plan-equipo",
+      "title": "Análisis de competencia",
+      "description": "Partir de Doctocliq, 98point6 y Medisafe.\n\nEn la pizarra quedó a cargo de «Dante / equipo»: asignar a la persona correcta.",
+      "assignee": "",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["investigación", "competencia"],
+      "checklist": ["Doctocliq", "98point6", "Medisafe"]
+    },
+    {
+      "id": "cuaderno-revisar-documento",
+      "board": "plan-equipo",
+      "title": "Revisar el documento completo y el resumen de Fátima",
+      "description": "Todo el equipo revisa el documento completo y el resumen que dejó Fátima.",
+      "assignee": "",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["equipo"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-posts-diciembre",
+      "board": "redes",
+      "title": "Crear los posts planificados del mes",
+      "description": "Preparar los posts del mes para iniciar redes en diciembre.\n\n- Solo en español; inglés cuando haya más usuarios.\n- Seguir la guía de marca oficial (tipografías y paleta).\n- Toda cifra lleva fuente y año; ningún texto mide menos de 30 px.",
+      "assignee": "valeryalarconra@gmail.com",
+      "priority": "high",
+      "type": "task",
+      "tags": ["redes", "contenido"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-concepto-instagram",
+      "board": "redes",
+      "title": "Enviar el primer concepto de Daury para Instagram y el PDF de calendario",
+      "description": "Primer concepto visual de la cuenta de Instagram y el calendario en PDF.",
+      "assignee": "acariaaas.07@gmail.com",
+      "priority": "high",
+      "type": "task",
+      "tags": ["redes", "diseño"],
+      "checklist": ["Concepto de Instagram", "PDF de calendario"]
+    },
+    {
+      "id": "cuaderno-combinar-calendarios",
+      "board": "redes",
+      "title": "Combinar ambos calendarios y coordinar el primer post serio",
+      "description": "Valery y Adriana combinan sus calendarios de contenido y coordinan el primer post serio.",
+      "assignee": "valeryalarconra@gmail.com",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["redes", "contenido"],
+      "checklist": ["Unir los dos calendarios", "Definir el primer post serio"]
+    },
+    {
+      "id": "cuaderno-ilustraciones-mascota",
+      "board": "redes",
+      "title": "Generar ilustraciones de la mascota con la guía de marca",
+      "description": "Valery y Adriana generan ilustraciones de la mascota siguiendo la guía de marca.",
+      "assignee": "acariaaas.07@gmail.com",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["marca", "mascota"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-nombre-mascota",
+      "board": "redes",
+      "title": "Lluvia de ideas para bautizar a la mascota",
+      "description": "El nombre debe funcionar en español y en inglés. Ideas hasta ahora: Daurisito o Tauri.",
+      "assignee": "",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["marca", "mascota"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-whatsapp-jorge",
+      "board": "redes",
+      "title": "Habilitar el número de WhatsApp de Jorge como contacto de las redes",
+      "description": "Decisión de la reunión: usar el número de Jorge al inicio; después un chip de Guatemala.",
+      "assignee": "devjorgemejia@gmail.com",
+      "priority": "high",
+      "type": "task",
+      "tags": ["redes", "whatsapp"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-chip-whatsapp-business",
+      "board": "redes",
+      "title": "Comprar chip de Guatemala / WhatsApp Business",
+      "description": "Más adelante, para dejar de usar el número de Jorge. Responsable por definir.\n\nIdea a futuro: automatizar WhatsApp con plantillas (instancia de respond.io).",
+      "assignee": "",
+      "priority": "low",
+      "type": "task",
+      "tags": ["redes", "whatsapp"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-unificar-cifras",
+      "board": "plan-equipo",
+      "title": "Unificar cifras de Business y del capital",
+      "description": "Business: $116 + $3.23 por paciente (justificación de precios y pitch v12) frente a Starter $90, Growth $200 y Enterprise $450 (formulario).\n\nCapital: $9,220 (plan, sin salarios) frente a $36.3K (formulario, con salarios).",
+      "assignee": "",
+      "priority": "high",
+      "type": "task",
+      "tags": ["pendiente", "finanzas"],
+      "checklist": ["Precio de Business", "Capital solicitado"]
+    },
+    {
+      "id": "cuaderno-quienes-firman",
+      "board": "plan-equipo",
+      "title": "Definir quiénes firman",
+      "description": "El pitch dice 8 personas y el formulario de participantes, 5.",
+      "assignee": "",
+      "priority": "high",
+      "type": "task",
+      "tags": ["pendiente", "legal"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-autoria-logo",
+      "board": "plan-equipo",
+      "title": "Revisar la autoría del logo con el abogado",
+      "description": "Sus metadatos sugieren que una IA pudo crearlo. Importa para registrar la marca (clases 9, 42 y 44).",
+      "assignee": "",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["pendiente", "legal", "marca"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-instrumento-inversion",
+      "board": "plan-equipo",
+      "title": "Definir el instrumento de inversión",
+      "description": "Acciones, nota convertible o SAFE. No hay fuentes guatemaltecas sobre su validez: confirmarlo con el abogado.",
+      "assignee": "",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["pendiente", "legal", "inversión"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-antes-porcentajes",
+      "board": "plan-equipo",
+      "title": "Revisar bases del reconocimiento, normas de USAC y uso en tesis",
+      "description": "Hacerlo antes de acordar los porcentajes del acuerdo de fundadores. No firmar exclusividad antes de ese acuerdo.",
+      "assignee": "",
+      "priority": "high",
+      "type": "task",
+      "tags": ["pendiente", "legal"],
+      "checklist": ["Bases del reconocimiento", "Normas de USAC", "Uso en tesis"]
+    },
+    {
+      "id": "cuaderno-pagos-sin-tarjeta",
+      "board": "plan-equipo",
+      "title": "Evaluar pagos sin tarjeta",
+      "description": "Efectivo, transferencia o recarga. Muchos usuarios no tienen tarjeta y las tiendas cobran 15–30 %.",
+      "assignee": "",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["pendiente", "negocio"],
+      "checklist": ["Efectivo", "Transferencia", "Recarga"]
+    },
+    {
+      "id": "cuaderno-competencia-profesional",
+      "board": "plan-equipo",
+      "title": "Investigar la competencia de Daury Profesional",
+      "description": "El paper solo cubre apps familiares. Referencia: Doctocliq $19, $29 y $49 al mes.",
+      "assignee": "",
+      "priority": "low",
+      "type": "task",
+      "tags": ["pendiente", "investigación"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-validar-business",
+      "board": "plan-equipo",
+      "title": "Validar Business con un piloto en 2 centros",
+      "description": "Ningún centro ha confirmado todavía.",
+      "assignee": "",
+      "priority": "medium",
+      "type": "task",
+      "tags": ["pendiente", "negocio"],
+      "checklist": []
+    },
+    {
+      "id": "cuaderno-video-demo-ingles",
+      "board": "plan-equipo",
+      "title": "Video demo con audio en inglés",
+      "description": "Falta la versión del video demo con audio en inglés.",
+      "assignee": "",
+      "priority": "low",
+      "type": "task",
+      "tags": ["pendiente", "pitch"],
+      "checklist": []
+    }
+  ]
+}

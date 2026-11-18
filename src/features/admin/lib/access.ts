@@ -5,6 +5,7 @@ export const adminAllowedEmails = [
   "yury.alexander2005@gmail.com",
   "fatimacerezo2411@gmail.com",
   "devjorgemejia@gmail.com",
+  "estebantrampej@gmail.com",
 ] as const;
 
 export type AdminUser = { uid: string; email: string; name: string };
