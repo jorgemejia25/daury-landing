@@ -3,7 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CalendarPlus, Plus, Settings2 } from "lucide-react";
+import { Archive, ArchiveRestore, CalendarPlus, Plus, Settings2, ChevronDown } from "lucide-react";
+import { BulkBar } from "../../molecules/BulkBar";
+import { bulkWorkspaceAction } from "@/features/admin/actions/bulk";
+import type { BulkAction } from "@/features/admin/lib/bulk";
 import { Button } from "@/ui/atoms/Button";
 import { ActionMenu } from "@/ui/molecules/ActionMenu";
 import { EmptyState } from "@/ui/molecules/EmptyState";
@@ -19,12 +22,14 @@ import styles from "./Calendar.styles";
 /** Calendarios compartidos: vista mes/agenda, creación de eventos y administración de calendarios. */
 export function CalendarWorkspace({ today }: { today: string }) {
   const calendars = useWorkspace("calendars"), events = useWorkspace("events"), tasks = useWorkspace("tasks"), boards = useWorkspace("boards"), finance = useWorkspace("financeEntries");
-  const { params } = useAdminQuery();
+  const { params, update } = useAdminQuery();
+  const archived = params.get("archived") === "yes";
+  const [bulkBusy, setBulkBusy] = useState(false), [bulkError, setBulkError] = useState("");
   const router = useRouter();
   const [actionError] = useState("");
   const active = calendars.items.filter((calendar) => !calendar.archived);
   const visibleEvents: CalendarItem[] = events.items
-    .filter((event) => !event.archived && active.some((calendar) => calendar.id === event.calendarId))
+    .filter((event) => event.archived === archived && active.some((calendar) => calendar.id === event.calendarId))
     .map((event) => ({ ...event, attribution: event }));
   const deadlines: CalendarItem[] = tasks.items
     .filter((task) => {
@@ -50,10 +55,12 @@ export function CalendarWorkspace({ today }: { today: string }) {
         onAction={(value) => {
           if (value === "calendar") router.push(newCalendarHref());
           if (value === "manage") router.push(manageCalendarsHref());
+          if (value === "archived") update({ archived: archived ? null : "yes", view: archived ? null : "agenda" });
         }}
         actions={[
           { value: "calendar", label: "Nuevo calendario", icon: <CalendarPlus size={16} strokeWidth={2} aria-hidden="true" /> },
           { value: "manage", label: "Administrar calendarios", icon: <Settings2 size={16} strokeWidth={2} aria-hidden="true" /> },
+          { value: "archived", label: archived ? "Ver eventos activos" : "Ver eventos archivados", icon: <Archive size={16} strokeWidth={2} aria-hidden="true" />, separatorBefore: true },
         ]}
       />
     </div>
@@ -65,7 +72,30 @@ export function CalendarWorkspace({ today }: { today: string }) {
       <CalendarView
         today={today}
         categories={[...active.map((calendar) => ({ id: calendar.id, name: calendar.name, color: calendar.color, attribution: calendar })), ...(finance.items.some((item) => !item.archived) ? [{ id: "finance-expense", name: "Egresos de Daury", color: "coral" as const }, { id: "finance-income", name: "Ingresos de Daury", color: "green" as const }] : [])]}
-        events={[...visibleEvents, ...deadlines, ...financialEvents]}
+        events={archived ? visibleEvents : [...visibleEvents, ...deadlines, ...financialEvents]}
+        bulk={(selection) => {
+          async function run(action: BulkAction) {
+            if (bulkBusy || !selection.count) return;
+            setBulkBusy(true); setBulkError("");
+            try {
+              const result = await bulkWorkspaceAction("events", selection.selected, action);
+              if (result.ok) selection.clear(); else setBulkError(result.error);
+            } catch { setBulkError("No se pudo completar la acción. Revisa tu conexión."); }
+            finally { setBulkBusy(false); }
+          }
+          return (
+            <BulkBar count={selection.count} noun={["evento", "eventos"]} busy={bulkBusy} error={bulkError} onClear={selection.clear} onDelete={() => run({ type: "delete" })}>
+              {archived ? (
+                <Button size="sm" variant="secondary" disabled={bulkBusy} icon={<ArchiveRestore size={14} aria-hidden="true" />} onClick={() => run({ type: "restore" })}>Restaurar</Button>
+              ) : (
+                <>
+                  <ActionMenu label="Mover a calendario" size="sm" trigger={<>Mover a <ChevronDown size={14} aria-hidden="true" /></>} onAction={(value) => run({ type: "calendar", value })} actions={active.map((calendar) => ({ value: calendar.id, label: calendar.name, disabled: bulkBusy }))} />
+                  <Button size="sm" variant="secondary" disabled={bulkBusy} icon={<Archive size={14} aria-hidden="true" />} onClick={() => run({ type: "archive" })}>Archivar</Button>
+                </>
+              )}
+            </BulkBar>
+          );
+        }}
         actions={actions}
         onOpenEvent={openEditor}
         onCreateDay={active.length ? createEvent : undefined}

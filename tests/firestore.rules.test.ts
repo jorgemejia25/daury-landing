@@ -31,13 +31,16 @@ describe("acceso a los espacios compartidos", () => {
       await assertSucceeds(setDoc(ref, initial)); await assertSucceeds(getDoc(ref)); await assertSucceeds(getDocs(collection(db, name)));
       await assertSucceeds(updateDoc(ref, { revision: 2, archived: true }));
       expect((await getDoc(ref)).data()?.createdBy).toBe(email);
-      await assertFails(deleteDoc(ref));
+      // Solo tareas y eventos admiten borrado permanente (acciones masivas); el resto se archiva.
+      if (name === "tasks" || name === "events") await assertSucceeds(deleteDoc(ref));
+      else await assertFails(deleteDoc(ref));
     }
   });
   test("las cuentas externas, anónimas y de otro proveedor no pueden leer ni escribir", async () => {
     for (const context of [env.unauthenticatedContext(), env.authenticatedContext("outside", { ...claims, email: "outside@gmail.com" }), env.authenticatedContext("not-verified", { ...claims, email: adminAllowedEmails[0], email_verified: false }), env.authenticatedContext("password", { ...claims, email: adminAllowedEmails[0], firebase: { sign_in_provider: "password", identities: {} } })]) {
       const db = context.firestore();
       for (const name of [...workspaceCollections, "wikiContent", "workspaceGuards", "financeEntries"]) { await assertFails(getDocs(collection(db, name))); await assertFails(setDoc(doc(db, name, "outside"), data(sampleBoard))); }
+      await assertFails(deleteDoc(doc(db, "tasks", sampleTask.id))); await assertFails(deleteDoc(doc(db, "events", sampleEvent.id)));
     }
   });
   test("rechaza la suplantación o modificación del creador y versiones obsoletas", async () => {

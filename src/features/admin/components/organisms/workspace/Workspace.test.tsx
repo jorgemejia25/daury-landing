@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { sampleBoard, sampleTask, sampleCalendar, sampleEvent, sampleFolder, samplePage } from "@/features/admin/lib/workspace.fixtures";
 const { save, comment, archive, push, replace } = vi.hoisted(() => ({ save: vi.fn(), comment: vi.fn(), archive: vi.fn(), push: vi.fn(), replace: vi.fn() }));
 vi.mock("@/features/admin/actions/workspace", () => ({ saveWorkspaceItem: save, addTaskComment: comment, archiveWorkspaceItem: archive }));
+vi.mock("@/features/admin/actions/bulk", () => ({ bulkWorkspaceAction: vi.fn(async () => ({ ok: true, count: 0 })) }));
 vi.mock("next/navigation", async () => ({ useRouter: () => ({ push, replace }), useSearchParams: (await import("@/test/search-params")).useTestSearchParams }));
 vi.mock("@/features/admin/hooks/useWorkspace", () => ({
   useWorkspace: (kind: string) => ({ items: ({ boards: [sampleBoard], tasks: [sampleTask], calendars: [sampleCalendar], events: [sampleEvent], folders: [sampleFolder], wikiPages: [samplePage] } as Record<string, unknown[]>)[kind] ?? [], loading: false, error: "" }),

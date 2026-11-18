@@ -20,6 +20,7 @@ import { StatusDot } from "@/ui/atoms/StatusDot";
 import type { Tone } from "@/ui/lib/tones";
 import type { Entity } from "@/features/admin/lib/workspace";
 import { TaskCardBody } from "./TaskCard";
+import { SelectBox } from "../../molecules/BulkBar";
 import styles from "./Board.styles";
 
 type KanbanColumnsProps = {
@@ -32,6 +33,8 @@ type KanbanColumnsProps = {
   onMove: (task: Entity<"tasks">, status: string) => void;
   /** Acción bajo cada tarjeta (restaurar, en archivados). */
   extra?: (task: Entity<"tasks">) => React.ReactNode;
+  /** Selección para acciones masivas; con algo seleccionado, un clic en la tarjeta la marca en vez de abrirla. */
+  selection?: { has: (id: string) => boolean; toggle: (id: string) => void; active: boolean };
 };
 
 /** Con el teclado, ← y → llevan la tarjeta a la columna vecina. */
@@ -47,10 +50,20 @@ const columnKeys: KeyboardCoordinateGetter = (event, { context: { droppableRects
   return { x: rect.left + rect.width / 2, y: rect.top + 80 };
 };
 
-function DraggableCard({ task, done, today, editable, onOpen, extra }: { task: Entity<"tasks">; done: boolean; today: string; editable: boolean; onOpen: () => void; extra?: React.ReactNode }) {
+function DraggableCard({ task, done, today, editable, onOpen, extra, selection }: { task: Entity<"tasks">; done: boolean; today: string; editable: boolean; onOpen: () => void; extra?: React.ReactNode; selection?: KanbanColumnsProps["selection"] }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: task.id, data: { task }, disabled: !editable });
+  const checked = Boolean(selection?.has(task.id));
+  const open = () => (selection?.active ? selection.toggle(task.id) : onOpen());
   return (
-    <div className={styles.cardWrap}>
+    <div className={`${styles.cardWrap} group relative`}>
+      {selection ? (
+        <SelectBox
+          checked={checked}
+          onChange={() => selection.toggle(task.id)}
+          label={`Seleccionar ${task.title}`}
+          className={`absolute z-[2] top-[11px] right-[11px] ${checked || selection.active ? "opacity-100" : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100 max-[960px]:opacity-100"}`}
+        />
+      ) : null}
       <div
         ref={setNodeRef}
         {...attributes}
@@ -63,12 +76,14 @@ function DraggableCard({ task, done, today, editable, onOpen, extra }: { task: E
         className={styles.card}
         data-done={done || undefined}
         data-dragging={isDragging || undefined}
-        onClick={onOpen}
+        data-selected={checked || undefined}
+        style={checked ? { borderColor: "var(--blue)", boxShadow: "0 0 0 1px var(--blue)" } : undefined}
+        onClick={open}
         onKeyDown={(event) => {
           listeners?.onKeyDown?.(event);
           if (event.key === "Enter" && !isDragging && !event.defaultPrevented) {
             event.preventDefault();
-            onOpen();
+            open();
           }
         }}
       >
@@ -79,7 +94,7 @@ function DraggableCard({ task, done, today, editable, onOpen, extra }: { task: E
   );
 }
 
-function Column({ id, board, tasks, today, editable, onOpen, onCreate, extra }: Omit<KanbanColumnsProps, "onMove" | "tasks"> & { id: string; tasks: Entity<"tasks">[] }) {
+function Column({ id, board, tasks, today, editable, onOpen, onCreate, extra, selection }: Omit<KanbanColumnsProps, "onMove" | "tasks"> & { id: string; tasks: Entity<"tasks">[] }) {
   const column = board.columns[id];
   const { setNodeRef, isOver } = useDroppable({ id, disabled: !editable });
   const tone: Tone = column.done ? "green" : board.color;
@@ -99,7 +114,7 @@ function Column({ id, board, tasks, today, editable, onOpen, onCreate, extra }: 
       </header>
       <div className={styles.cards}>
         {tasks.map((task) => (
-          <DraggableCard key={task.id} task={task} done={column.done} today={today} editable={editable} onOpen={() => onOpen(task)} extra={extra?.(task)} />
+          <DraggableCard key={task.id} task={task} done={column.done} today={today} editable={editable} onOpen={() => onOpen(task)} extra={extra?.(task)} selection={selection} />
         ))}
         {tasks.length === 0 ? <p className={styles.columnEmpty}>{isOver ? "Suelta aquí" : "Sin tareas"}</p> : null}
       </div>

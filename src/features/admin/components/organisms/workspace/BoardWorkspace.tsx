@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { saveWorkspaceItem } from "@/features/admin/actions/workspace";
 import { Tabs, TabsPanel } from "@ui-sdk/react/tabs";
-import { Archive, ArchiveRestore, Columns3, List, Plus, Settings2, SquareKanban, SquarePlus } from "lucide-react";
+import { Archive, ArchiveRestore, Columns3, List, Plus, Settings2, SquareKanban, SquarePlus, ChevronDown } from "lucide-react";
 import { Avatar } from "@/ui/atoms/Avatar";
 import { Button } from "@/ui/atoms/Button";
 import { Chip } from "@/ui/atoms/Chip";
@@ -25,6 +25,10 @@ import { memberOptions, personName } from "@/features/admin/lib/people";
 import { normalizeText } from "@/features/admin/lib/text";
 import type { Entity } from "@/features/admin/lib/workspace";
 import { KanbanColumns } from "./KanbanColumns";
+import { BulkBar, SelectBox } from "../../molecules/BulkBar";
+import { useSelection } from "@/features/admin/hooks/useSelection";
+import { bulkWorkspaceAction } from "@/features/admin/actions/bulk";
+import type { BulkAction } from "@/features/admin/lib/bulk";
 import { editBoardHref, newBoardHref, newTaskHref, taskHref } from "@/features/admin/lib/routes";
 import { dueState, priorityMeta, taskPayload } from "./TaskCard";
 import { toggleArchive, WorkspaceStatus } from "./WorkspaceParts";
@@ -67,6 +71,17 @@ export function BoardWorkspace() {
         ? priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
         : b.createdAt.localeCompare(a.createdAt),
   );
+  const selection = useSelection(ordered.map((task) => task.id));
+  const [bulkBusy, setBulkBusy] = useState(false), [bulkError, setBulkError] = useState("");
+  async function runBulk(action: BulkAction) {
+    if (bulkBusy || !selection.count) return;
+    setBulkBusy(true); setBulkError("");
+    try {
+      const result = await bulkWorkspaceAction("tasks", selection.selected, action);
+      if (result.ok) selection.clear(); else setBulkError(result.error);
+    } catch { setBulkError("No se pudo completar la acción. Revisa tu conexión."); }
+    finally { setBulkBusy(false); }
+  }
   const isDone = (task: Entity<"tasks">) => Boolean(board?.columns[task.status]?.done);
   const completed = boardTasks.filter(isDone).length;
   const overdue = boardTasks.filter((task) => !isDone(task) && task.dueDate && task.dueDate < today).length;
@@ -273,18 +288,24 @@ export function BoardWorkspace() {
                   onCreate={createTask}
                   onMove={move}
                   extra={restore}
+                  selection={{ has: selection.has, toggle: selection.toggle, active: selection.count > 0 }}
                 />
               )}
             </TabsPanel>
             <TabsPanel value="list">
               {ordered.length ? (
                 <Card padding="none" as="ul" className={"m-0 p-0 list-none"}>
-                  {ordered.map((task, index) => {
+                  <li className="flex items-center gap-[12px] py-[10px] pl-[16px] pr-[12px] text-ink-soft text-[12px] font-semibold">
+                    <SelectBox checked={selection.all} indeterminate={selection.some} onChange={selection.toggleAll} label="Seleccionar todas las tareas visibles" />
+                    <span>{selection.count ? `${selection.count} seleccionadas` : "Seleccionar todas"}</span>
+                  </li>
+                  {ordered.map((task) => {
                     const column = board.columns[task.status];
                     const due = dueState(task.dueDate, today, Boolean(column?.done));
                     return (
-                      <li key={task.id} className={styles.listRow} data-divider={index > 0 || undefined}>
-                        <button type="button" className={styles.listButton} disabled={!editable} onClick={() => openTask(task)} aria-label={`Abrir tarea ${task.title}`}>
+                      <li key={task.id} className={styles.listRow} data-divider style={selection.has(task.id) ? { background: "var(--blue-soft)" } : undefined}>
+                        <SelectBox checked={selection.has(task.id)} onChange={() => selection.toggle(task.id)} label={`Seleccionar ${task.title}`} className="ml-[16px]" />
+                        <button type="button" className={styles.listButton} disabled={!editable && !selection.count} onClick={() => (selection.count ? selection.toggle(task.id) : openTask(task))} aria-label={`Abrir tarea ${task.title}`}>
                           <StatusDot tone={priorityMeta[task.priority].tone} size={10} />
                           <span className={styles.listTitle}>{task.title}</span>
                           <Chip size="sm" tone={column?.done ? "green" : "neutral"}>{column?.name ?? "Sin estado"}</Chip>
@@ -311,6 +332,20 @@ export function BoardWorkspace() {
         </EmptyState>
       ) : null}
 
+      {board ? (
+        <BulkBar count={selection.count} noun={["tarea", "tareas"]} busy={bulkBusy} error={bulkError} onClear={selection.clear} onDelete={() => runBulk({ type: "delete" })}>
+          {archived ? (
+            <Button size="sm" variant="secondary" disabled={bulkBusy} icon={<ArchiveRestore size={14} aria-hidden="true" />} onClick={() => runBulk({ type: "restore" })}>Restaurar</Button>
+          ) : (
+            <>
+              <ActionMenu label="Mover a columna" size="sm" trigger={<>Mover a <ChevronDown size={14} aria-hidden="true" /></>} onAction={(value) => runBulk({ type: "status", value })} actions={board.columnOrder.map((id) => ({ value: id, label: board.columns[id]?.name ?? id, disabled: bulkBusy }))} />
+              <ActionMenu label="Cambiar prioridad" size="sm" trigger={<>Prioridad <ChevronDown size={14} aria-hidden="true" /></>} onAction={(value) => runBulk({ type: "priority", value })} actions={priorityOrder.map((value) => ({ value, label: priorityMeta[value as "high"].label, disabled: bulkBusy }))} />
+              <ActionMenu label="Asignar responsable" size="sm" trigger={<>Responsable <ChevronDown size={14} aria-hidden="true" /></>} onAction={(value) => runBulk({ type: "assignee", value: value === "none" ? "" : value })} actions={[...memberOptions.filter((option) => option.value).map((option) => ({ value: option.value, label: option.label, disabled: bulkBusy })), { value: "none", label: "Sin responsable", separatorBefore: true, disabled: bulkBusy }]} />
+              <Button size="sm" variant="secondary" disabled={bulkBusy} icon={<Archive size={14} aria-hidden="true" />} onClick={() => runBulk({ type: "archive" })}>Archivar</Button>
+            </>
+          )}
+        </BulkBar>
+      ) : null}
     </section>
   );
 }

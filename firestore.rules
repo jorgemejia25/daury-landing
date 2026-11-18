@@ -116,6 +116,8 @@ service cloud.firestore {
         && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && (collection == 'wikiContent' ? request.resource.data.revision > resource.data.revision : request.resource.data.revision == resource.data.revision + 1);
+      // Borrado permanente solo de tareas y eventos (acciones masivas del admin); lo demás se archiva.
+      allow delete: if authorized() && collection in ['tasks', 'events'];
     }
   }
 }
