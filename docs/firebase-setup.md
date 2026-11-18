@@ -52,7 +52,7 @@ sin firma por una configuración accidental.
 
 ## Permisos de Firestore
 
-Las mismas seis cuentas, con correo verificado y proveedor Google, pueden leer,
+Las mismas siete cuentas, con correo verificado y proveedor Google, pueden leer,
 crear y editar documentos de `boards`, `tasks`, `calendars`, `events`, `folders`, `wikiPages` y `wikiContent`. El resto de
 colecciones y las subcolecciones quedan denegadas. Una cuenta anónima, externa,
 no verificada o autenticada con otro proveedor no tiene acceso.

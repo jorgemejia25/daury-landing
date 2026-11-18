@@ -14,7 +14,7 @@
 Colecciones: `boards`, `tasks`, `calendars`, `events`, `folders`, `wikiPages` y `wikiContent`.
 Los metadatos de artículos viven en `wikiPages`; el cuerpo Markdown está en `wikiContent` con el mismo ID. Así, los listados no descargan todos los textos.
 
-Cada documento conserva `createdBy`, `createdAt`, `updatedBy`, `updatedAt`, `revision` y `archived`. La creación y la última modificación se atribuyen a la sesión autenticada, ignorando valores de autoría enviados por el cliente. Las reglas impiden suplantar o cambiar al creador y limitan el acceso a las seis cuentas Google autorizadas.
+Cada documento conserva `createdBy`, `createdAt`, `updatedBy`, `updatedAt`, `revision` y `archived`. La creación y la última modificación se atribuyen a la sesión autenticada, ignorando valores de autoría enviados por el cliente. Las reglas impiden suplantar o cambiar al creador y limitan el acceso a las siete cuentas Google autorizadas.
 
 Las mutaciones son Server Actions. Verifican la sesión y realizan commits atómicos Firestore REST con el ID token del usuario, por lo que también se aplican las reglas de la base. Se utilizan precondiciones de versión y verificaciones de las lecturas, siguiendo el mecanismo optimista del SDK web; no se llama a BeginTransaction. Los documentos internos `workspaceGuards` protegen las consultas de hijos frente a creaciones concurrentes. No utilizan una cuenta de servicio ni las credenciales de la CLI. Los conflictos transitorios de transacción se reintentan hasta tres veces; una revisión obsoleta muestra un error y conserva el borrador.
 

@@ -7,6 +7,7 @@ const names: Record<string, string> = {
   "yury.alexander2005@gmail.com": "Yury Alexander",
   "fatimacerezo2411@gmail.com": "Fátima Cerezo",
   "devjorgemejia@gmail.com": "Jorge Mejía",
+  "estebantrampej@gmail.com": "Esteban Trampe",
 };
 
 export function personName(email: string) {
