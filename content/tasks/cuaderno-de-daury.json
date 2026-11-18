@@ -1,5 +1,5 @@
 {
-  "source": "Pizarra «Cuaderno de Daury» (Claude): 01 · Tareas y responsables y 11 · Pendientes por resolver",
+  "source": "Pizarra «Cuaderno de Daury» (Claude): 01 · Tareas y responsables y 11 · Pendientes por resolver · reasignado según la transcripción de la reunión",
   "articleId": "doc-cuaderno-de-daury",
   "boards": [
     {
@@ -7,30 +7,51 @@
       "name": "Plan del equipo",
       "description": "Investigación, negocio y temas legales que salieron de la última reunión y de los pendientes del cuaderno.",
       "color": "blue"
+    },
+    {
+      "id": "plan-b2b",
+      "name": "Plan B2B",
+      "description": "Daury para médicos, clínicas y centros: validación, alianzas y Daury Profesional. No entra al MVP; se valida en paralelo.",
+      "color": "violet"
     }
   ],
   "tasks": [
     {
       "id": "cuaderno-encuesta-profesionales",
-      "board": "plan-equipo",
+      "board": "plan-b2b",
       "title": "Encuesta Van Westendorp a profesionales de salud",
       "description": "Encuesta de precios a médicos, geriatras y clínicas para validar Daury Profesional y Business.\n\nMeta: **30 médicos y 10 clínicas**.",
       "assignee": "fatimacerezo2411@gmail.com",
       "priority": "high",
       "type": "task",
-      "tags": ["investigación", "precios"],
-      "checklist": ["Preparar el cuestionario", "Conseguir 30 respuestas de médicos", "Conseguir 10 respuestas de clínicas", "Resumir los resultados"]
+      "tags": [
+        "investigación",
+        "precios"
+      ],
+      "checklist": [
+        "Preparar el cuestionario",
+        "Conseguir 30 respuestas de médicos",
+        "Conseguir 10 respuestas de clínicas",
+        "Resumir los resultados"
+      ]
     },
     {
       "id": "cuaderno-analisis-competencia",
-      "board": "plan-equipo",
-      "title": "Análisis de competencia",
-      "description": "Partir de Doctocliq, 98point6 y Medisafe.\n\nEn la pizarra quedó a cargo de «Dante / equipo»: asignar a la persona correcta.",
-      "assignee": "",
+      "board": "plan-b2b",
+      "title": "Análisis de competencia de Daury Profesional",
+      "description": "Revisar empresas que ya intentaron algo similar: herramientas para que el médico dé seguimiento al paciente entre consultas. Cómo les ha funcionado y por qué los médicos siguen con el papel.\n\nPartir de Doctocliq, 98point6 y Medisafe. El estudio actual (paper) solo cubre apps familiares. Referencia de precios: Doctocliq $19, $29 y $49 al mes.\n\nAcordado en la reunión: es requisito para validar Daury Profesional como idea a futuro, y conviene compartirlo en el grupo antes de la próxima reunión.",
+      "assignee": "estebantrampej@gmail.com",
       "priority": "medium",
       "type": "task",
-      "tags": ["investigación", "competencia"],
-      "checklist": ["Doctocliq", "98point6", "Medisafe"]
+      "tags": [
+        "investigación",
+        "competencia"
+      ],
+      "checklist": [
+        "Doctocliq",
+        "98point6",
+        "Medisafe"
+      ]
     },
     {
       "id": "cuaderno-revisar-documento",
@@ -40,7 +61,9 @@
       "assignee": "",
       "priority": "medium",
       "type": "task",
-      "tags": ["equipo"],
+      "tags": [
+        "equipo"
+      ],
       "checklist": []
     },
     {
@@ -51,7 +74,10 @@
       "assignee": "valeryalarconra@gmail.com",
       "priority": "high",
       "type": "task",
-      "tags": ["redes", "contenido"],
+      "tags": [
+        "redes",
+        "contenido"
+      ],
       "checklist": []
     },
     {
@@ -62,8 +88,14 @@
       "assignee": "acariaaas.07@gmail.com",
       "priority": "high",
       "type": "task",
-      "tags": ["redes", "diseño"],
-      "checklist": ["Concepto de Instagram", "PDF de calendario"]
+      "tags": [
+        "redes",
+        "diseño"
+      ],
+      "checklist": [
+        "Concepto de Instagram",
+        "PDF de calendario"
+      ]
     },
     {
       "id": "cuaderno-combinar-calendarios",
@@ -73,18 +105,27 @@
       "assignee": "valeryalarconra@gmail.com",
       "priority": "medium",
       "type": "task",
-      "tags": ["redes", "contenido"],
-      "checklist": ["Unir los dos calendarios", "Definir el primer post serio"]
+      "tags": [
+        "redes",
+        "contenido"
+      ],
+      "checklist": [
+        "Unir los dos calendarios",
+        "Definir el primer post serio"
+      ]
     },
     {
       "id": "cuaderno-ilustraciones-mascota",
       "board": "redes",
       "title": "Generar ilustraciones de la mascota con la guía de marca",
-      "description": "Valery y Adriana generan ilustraciones de la mascota siguiendo la guía de marca.",
-      "assignee": "acariaaas.07@gmail.com",
+      "description": "Generar ilustraciones de la mascota con la guía de marca oficial (tipografías y paleta exacta). Valery lo tomó en la reunión; Adriana aporta su concepto inicial de Instagram.",
+      "assignee": "valeryalarconra@gmail.com",
       "priority": "medium",
       "type": "task",
-      "tags": ["marca", "mascota"],
+      "tags": [
+        "marca",
+        "mascota"
+      ],
       "checklist": []
     },
     {
@@ -95,7 +136,10 @@
       "assignee": "",
       "priority": "medium",
       "type": "task",
-      "tags": ["marca", "mascota"],
+      "tags": [
+        "marca",
+        "mascota"
+      ],
       "checklist": []
     },
     {
@@ -106,7 +150,10 @@
       "assignee": "devjorgemejia@gmail.com",
       "priority": "high",
       "type": "task",
-      "tags": ["redes", "whatsapp"],
+      "tags": [
+        "redes",
+        "whatsapp"
+      ],
       "checklist": []
     },
     {
@@ -117,7 +164,10 @@
       "assignee": "",
       "priority": "low",
       "type": "task",
-      "tags": ["redes", "whatsapp"],
+      "tags": [
+        "redes",
+        "whatsapp"
+      ],
       "checklist": []
     },
     {
@@ -128,8 +178,14 @@
       "assignee": "",
       "priority": "high",
       "type": "task",
-      "tags": ["pendiente", "finanzas"],
-      "checklist": ["Precio de Business", "Capital solicitado"]
+      "tags": [
+        "pendiente",
+        "finanzas"
+      ],
+      "checklist": [
+        "Precio de Business",
+        "Capital solicitado"
+      ]
     },
     {
       "id": "cuaderno-quienes-firman",
@@ -139,7 +195,10 @@
       "assignee": "",
       "priority": "high",
       "type": "task",
-      "tags": ["pendiente", "legal"],
+      "tags": [
+        "pendiente",
+        "legal"
+      ],
       "checklist": []
     },
     {
@@ -150,7 +209,11 @@
       "assignee": "",
       "priority": "medium",
       "type": "task",
-      "tags": ["pendiente", "legal", "marca"],
+      "tags": [
+        "pendiente",
+        "legal",
+        "marca"
+      ],
       "checklist": []
     },
     {
@@ -161,7 +224,11 @@
       "assignee": "",
       "priority": "medium",
       "type": "task",
-      "tags": ["pendiente", "legal", "inversión"],
+      "tags": [
+        "pendiente",
+        "legal",
+        "inversión"
+      ],
       "checklist": []
     },
     {
@@ -172,8 +239,15 @@
       "assignee": "",
       "priority": "high",
       "type": "task",
-      "tags": ["pendiente", "legal"],
-      "checklist": ["Bases del reconocimiento", "Normas de USAC", "Uso en tesis"]
+      "tags": [
+        "pendiente",
+        "legal"
+      ],
+      "checklist": [
+        "Bases del reconocimiento",
+        "Normas de USAC",
+        "Uso en tesis"
+      ]
     },
     {
       "id": "cuaderno-pagos-sin-tarjeta",
@@ -183,29 +257,28 @@
       "assignee": "",
       "priority": "medium",
       "type": "task",
-      "tags": ["pendiente", "negocio"],
-      "checklist": ["Efectivo", "Transferencia", "Recarga"]
-    },
-    {
-      "id": "cuaderno-competencia-profesional",
-      "board": "plan-equipo",
-      "title": "Investigar la competencia de Daury Profesional",
-      "description": "El paper solo cubre apps familiares. Referencia: Doctocliq $19, $29 y $49 al mes.",
-      "assignee": "",
-      "priority": "low",
-      "type": "task",
-      "tags": ["pendiente", "investigación"],
-      "checklist": []
+      "tags": [
+        "pendiente",
+        "negocio"
+      ],
+      "checklist": [
+        "Efectivo",
+        "Transferencia",
+        "Recarga"
+      ]
     },
     {
       "id": "cuaderno-validar-business",
-      "board": "plan-equipo",
+      "board": "plan-b2b",
       "title": "Validar Business con un piloto en 2 centros",
       "description": "Ningún centro ha confirmado todavía.",
       "assignee": "",
       "priority": "medium",
       "type": "task",
-      "tags": ["pendiente", "negocio"],
+      "tags": [
+        "pendiente",
+        "negocio"
+      ],
       "checklist": []
     },
     {
@@ -216,7 +289,42 @@
       "assignee": "",
       "priority": "low",
       "type": "task",
-      "tags": ["pendiente", "pitch"],
+      "tags": [
+        "pendiente",
+        "pitch"
+      ],
+      "checklist": []
+    },
+    {
+      "id": "b2b-alianzas-clinicas",
+      "board": "plan-b2b",
+      "title": "Alianzas y descuentos con clínicas para el plan Plus",
+      "description": "Propuesta de Fátima para el inicio, sin plan profesional: clínicas y profesionales recomiendan Daury a sus pacientes y les ofrecen un descuento en Plus. Prioridad para el pitch.\n\nEs la Fase 1 de la ruta para médicos y clínicas.",
+      "assignee": "",
+      "priority": "high",
+      "type": "task",
+      "tags": [
+        "b2b",
+        "alianzas"
+      ],
+      "checklist": [
+        "Definir el descuento para Plus",
+        "Lista de clínicas y profesionales a contactar",
+        "Material para presentar Daury al médico"
+      ]
+    },
+    {
+      "id": "b2b-daury-profesional",
+      "board": "plan-b2b",
+      "title": "Daury Profesional (idea a futuro)",
+      "description": "No entra al MVP: primero vender bien a un solo mercado.\n\nPara médicos independientes y profesionales de salud que dan seguimiento a sus pacientes:\n- El médico genera un link o código con las indicaciones y el paciente las carga sin escanear papel.\n- Con permiso del paciente, ve tomas de medicamento, síntomas y signos vitales.\n- Monetización tipo Duolingo for Schools: cobrar a profesionales, no depender solo del 2–3 % que paga Plus.\n\nSe valida con la encuesta a profesionales y el análisis de competencia.",
+      "assignee": "",
+      "priority": "low",
+      "type": "epic",
+      "tags": [
+        "b2b",
+        "futuro"
+      ],
       "checklist": []
     }
   ]

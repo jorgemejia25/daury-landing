@@ -3,11 +3,12 @@ import { adminAllowedEmails } from "./access";
 /** Nombres para mostrar de las cuentas autorizadas (derivados del correo; solo presentación). */
 const names: Record<string, string> = {
   "valeryalarconra@gmail.com": "Valery Alarcón",
+  "acariaaas.07@gmail.com": "Adriana Carías",
   "daniel1ajedrez@gmail.com": "Daniel",
   "yury.alexander2005@gmail.com": "Yury Alexander",
   "fatimacerezo2411@gmail.com": "Fátima Cerezo",
   "devjorgemejia@gmail.com": "Jorge Mejía",
-  "estebantrampej@gmail.com": "Esteban Trampe",
+  "estebantrampej@gmail.com": "Dante (Esteban Trampe)",
 };
 
 export function personName(email: string) {
