@@ -1,0 +1,30 @@
+/*
+ * Base para superficies con el design system de la app.
+ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/24px var(--f-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--blue); -webkit-tap-highlight-color: transparent; }
+button { -webkit-tap-highlight-color: transparent; }
+svg { flex: none; }
+img { max-width: 100%; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 12px; }
+::selection { background: var(--blue); color: var(--white); }
+:where([data-slot][hidden]:not([hidden="until-found"])) { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation: none !important;
+  }
+}

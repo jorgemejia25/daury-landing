@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { AboutHero, AboutJourney, Values } from "@/components/sections/about";
-import { CtaBand } from "@/components/sections/cta";
+import { AboutHero, AboutJourney, Values } from "@/features/landing/components/organisms/sections/about";
+import { CtaBand } from "@/features/landing/components/organisms/sections/cta";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { pageMetadata } from "@/lib/page-meta";

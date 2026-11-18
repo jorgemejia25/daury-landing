@@ -1,0 +1,22 @@
+/* Keyframes referenced by Tailwind animation utilities. */
+@keyframes tw-Skeleton-cabe-pulse {
+  from { opacity: 1; }
+  to { opacity: 0.55; }
+}
+
+@keyframes tw-LoginPanel-3fca-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes landing-rise { from { opacity: 0; transform: translateY(36px); } }
+
+@keyframes landing-pscan { to { top: 86%; } }
+
+@keyframes landing-pfloat { to { translate: 0 -10px; } }
+
+@keyframes landing-lang-in { from { opacity: 0; transform: translateY(-8px) scale(.98); } }
+
+@keyframes landing-spin { to { rotate: 360deg; } }
+
+@keyframes landing-pop { from { opacity: 0; transform: scale(.9); } }

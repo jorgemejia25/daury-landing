@@ -7,9 +7,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { site } from "@/lib/site";
 import { isLocale, locales, ogLocales, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { Motion } from "@/components/layout/Motion";
+import { Header } from "@/features/landing/components/organisms/Header";
+import { Footer } from "@/features/landing/components/organisms/Footer";
+import { Motion } from "@/features/landing/components/templates/Motion";
 import "@/styles/globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -107,7 +107,7 @@ export default async function RootLayout({ children, params }: Props) {
       className={`${bricolage.variable} ${geist.variable} ${geistMono.variable} ${icons.variable}`}
     >
       <body>
-        <a href="#contenido" className="skip-link">
+        <a href="#contenido" className={"l-skip-link absolute left-[16px] top-[-100px] z-[200] [padding:12px_18px] rounded-[14px] bg-ink [color:#fff] font-bold no-underline [&:focus]:top-[16px]"}>
           {t.nav.skip}
         </a>
         <Header lang={lang} t={t.nav} />

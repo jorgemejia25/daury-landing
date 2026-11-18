@@ -1,0 +1,9 @@
+{
+  "areas": [
+    { "id": "producto", "name": "Producto" },
+    { "id": "diseno", "name": "Diseño" },
+    { "id": "tecnologia", "name": "Tecnología" },
+    { "id": "operacion", "name": "Operación" }
+  ],
+  "tasks": []
+}

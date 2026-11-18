@@ -1,0 +1,250 @@
+/*
+ * Tokens del design system de la app Daury (fuente: daury/mobile/src/ui/tokens).
+ * Fondo cálido, tinta casi negra y un acento fuerte por rol:
+ * azul (acción), coral (peligro), verde (hecho), violeta (familia/plan), ámbar (aviso).
+ * Cada acento tiene una variante "soft" para fondos.
+ *
+ * Los nombres --bg, --ink, --blue… coinciden con los de la landing para que
+ * los átomos compartidos (Logo) funcionen en ambos contextos.
+ */
+:root {
+  /* Superficies y tinta */
+  --bg: #f3f1ec;
+  --surface: #ffffff;
+  --bg-2: #eeebe3;
+  --soft: var(--bg-2);
+  --rule: #e8e5dd;
+  --rule-strong: #d9d5ca;
+  --ink: #15161d;
+  --ink-2: #3c3d47;
+  --ink-soft: #5e5f6a;
+  --ink-mute: #9a9aa3;
+  --muted: var(--ink-soft);
+  --white: #ffffff;
+  --skeleton: #e9e8e3;
+  --surface-2: #faf9f6;
+  --rule-hover: #bfbdb5;
+  --switch-off: #d6d4cc;
+  --glass: rgba(255, 255, 255, 0.86);
+  --backdrop: rgba(16, 18, 24, 0.45);
+  --danger-ink: #a82c2c;
+  --danger-line: #f0c9c6;
+  --shadow-xs: 0 1px 2px rgba(15, 16, 29, 0.05);
+
+  /* Sidebar: misma familia de superficies que el contenido */
+  --side-bg: #f8f6f1;
+  --side-ink: var(--ink-2);
+  --side-mute: var(--ink-soft);
+  --side-hover: rgba(21, 22, 29, 0.05);
+  --side-active: #ffffff;
+  --side-active-ink: var(--ink);
+  --side-active-ring: inset 0 0 0 1px var(--rule), 0 1px 2px rgba(15, 16, 29, 0.06);
+  --side-rule: var(--rule);
+
+  /* Acentos */
+  --blue: #2358e8;
+  --blue-bright: #4c7bff;
+  --blue-deep: #1740a8;
+  --blue-600: var(--blue-deep);
+  --blue-soft: #eaf0fe;
+  --blue-50: var(--blue-soft);
+  --coral: #e04b4b;
+  --coral-soft: #fbedec;
+  --red: var(--coral);
+  --green: #2e9e5b;
+  --green-deep: #1c7a43;
+  --green-soft: #e7f4ec;
+  --violet: #7257e8;
+  --violet-soft: #efebfc;
+  --amber: #c98a2b;
+  --amber-deep: #b8791e;
+  --amber-soft: #f7efe0;
+  --night: #101218;
+
+  /* Layout del admin */
+  --page-max: 1440px;
+  --page-pad: clamp(16px, 2.6vw, 36px);
+
+  /* Radios (BorderRadius) */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 12px;
+  --r-xl: 14px;
+  --r-xxl: 18px;
+  --r-pill: 999px;
+  /* Campos de 48 px: misma proporción que el BigTextField de la app (18 px en 64 px). */
+  --r-field: 9px;
+  --r-area: 9px;
+  --r-tile: 10px;
+
+  /* Espaciado (Spacing) */
+  --s-xs: 4px;
+  --s-sm: 8px;
+  --s-md: 12px;
+  --s-lg: 16px;
+  --s-xl: 20px;
+  --s-xxl: 24px;
+  --s-xxxl: 28px;
+  --s-section: 40px;
+
+  /* Layout */
+  --button-h: 48px;
+  --button-h-md: 40px;
+  /* Altura única de controles de una línea (campos, selects, segmentados, botones md). */
+  --control-h: 40px;
+  --button-h-sm: 32px;
+  --tile: 40px;
+  --screen-pad: 20px;
+  --sidebar-w: 248px;
+  --topbar-h: 56px;
+  --tabbar-h: 64px;
+
+  /* Sombras (Shadows) */
+  --shadow-soft: var(--shadow-xs);
+  --shadow-pop: 0 18px 40px -8px rgba(15, 16, 29, 0.22);
+  --shadow-blue: 0 1px 2px rgba(23, 64, 168, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-coral: 0 12px 24px -8px rgba(224, 75, 75, 0.4);
+  --shadow-green: 0 1px 2px rgba(28, 122, 67, 0.25);
+  --shadow-bar: 0 -6px 16px rgba(15, 16, 29, 0.06);
+  --shadow-float: var(--shadow-pop);
+  /* Menús y calendarios emergentes: sombra corta y un borde fino, sin halo. */
+  --shadow-menu: 0 0 0 1px rgba(15, 16, 29, 0.06), 0 12px 32px -12px rgba(15, 16, 29, 0.22);
+  /* Segmento activo e interruptores (toggleActive de la app). */
+  --shadow-toggle: 0 1px 4px rgba(0, 0, 0, 0.09);
+  /* Anillo de foco de los campos (UI Kit: borde azul + 4 px azul suave). */
+  --focus-ring: 0 0 0 3px rgba(35, 88, 232, 0.16);
+
+  /* Movimiento */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --press-scale: 0.98;
+
+  /* Tipografía */
+  --f-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
+  --f-sans: var(--font-geist), "Geist", system-ui, sans-serif;
+  --f-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, monospace;
+
+  color-scheme: light;
+}
+
+/*
+ * Modo oscuro: superficies grafito escalonadas (fondo < superficie < elevada),
+ * bordes visibles y acentos más luminosos para mantener el contraste AA.
+ * Se activa con data-theme="dark" o, en modo Sistema, con la preferencia del equipo.
+ */
+:root[data-theme="dark"] {
+  --bg: #0d0e12;
+  --surface: #15161c;
+  --surface-2: #1a1b22;
+  --bg-2: #1e1f27;
+  --rule: #262731;
+  --rule-strong: #343541;
+  --rule-hover: #4a4b58;
+  --ink: #ececf1;
+  --ink-2: #c8c9d2;
+  --ink-soft: #9798a6;
+  --ink-mute: #696a78;
+  --skeleton: #21222a;
+  --switch-off: #3a3b47;
+  --glass: rgba(13, 14, 18, 0.82);
+  --backdrop: rgba(0, 0, 0, 0.6);
+  --danger-ink: #ff9a95;
+  --danger-line: rgba(240, 106, 106, 0.35);
+
+  --blue: #4f7cff;
+  --blue-bright: #7598ff;
+  --blue-deep: #a9bfff;
+  --blue-soft: rgba(79, 124, 255, 0.16);
+  --coral: #f06a6a;
+  --coral-soft: rgba(240, 106, 106, 0.14);
+  --green: #3dbb72;
+  --green-deep: #74d79d;
+  --green-soft: rgba(61, 187, 114, 0.14);
+  --violet: #9d89ff;
+  --violet-soft: rgba(157, 137, 255, 0.16);
+  --amber: #e0a53e;
+  --amber-deep: #f0c070;
+  --amber-soft: rgba(224, 165, 62, 0.15);
+
+  --side-bg: #111217;
+  --side-ink: var(--ink-2);
+  --side-mute: var(--ink-soft);
+  --side-hover: rgba(255, 255, 255, 0.05);
+  --side-active: rgba(255, 255, 255, 0.08);
+  --side-active-ink: #ffffff;
+  --side-active-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --side-rule: var(--rule);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-pop: 0 18px 44px -10px rgba(0, 0, 0, 0.7);
+  --shadow-menu: 0 0 0 1px var(--rule-strong), 0 14px 36px -12px rgba(0, 0, 0, 0.75);
+  --shadow-blue: 0 1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-green: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-bar: 0 -1px 0 var(--rule);
+  --focus-ring: 0 0 0 3px rgba(79, 124, 255, 0.3);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0e12;
+    --surface: #15161c;
+    --surface-2: #1a1b22;
+    --bg-2: #1e1f27;
+    --rule: #262731;
+    --rule-strong: #343541;
+    --rule-hover: #4a4b58;
+    --ink: #ececf1;
+    --ink-2: #c8c9d2;
+    --ink-soft: #9798a6;
+    --ink-mute: #696a78;
+    --skeleton: #21222a;
+    --switch-off: #3a3b47;
+    --glass: rgba(13, 14, 18, 0.82);
+    --backdrop: rgba(0, 0, 0, 0.6);
+    --danger-ink: #ff9a95;
+    --danger-line: rgba(240, 106, 106, 0.35);
+
+    --blue: #4f7cff;
+    --blue-bright: #7598ff;
+    --blue-deep: #a9bfff;
+    --blue-soft: rgba(79, 124, 255, 0.16);
+    --coral: #f06a6a;
+    --coral-soft: rgba(240, 106, 106, 0.14);
+    --green: #3dbb72;
+    --green-deep: #74d79d;
+    --green-soft: rgba(61, 187, 114, 0.14);
+    --violet: #9d89ff;
+    --violet-soft: rgba(157, 137, 255, 0.16);
+    --amber: #e0a53e;
+    --amber-deep: #f0c070;
+    --amber-soft: rgba(224, 165, 62, 0.15);
+
+    --side-bg: #111217;
+    --side-ink: var(--ink-2);
+    --side-mute: var(--ink-soft);
+    --side-hover: rgba(255, 255, 255, 0.05);
+    --side-active: rgba(255, 255, 255, 0.08);
+    --side-active-ink: #ffffff;
+    --side-active-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --side-rule: var(--rule);
+
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-pop: 0 18px 44px -10px rgba(0, 0, 0, 0.7);
+    --shadow-menu: 0 0 0 1px var(--rule-strong), 0 14px 36px -12px rgba(0, 0, 0, 0.75);
+    --shadow-blue: 0 1px 2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    --shadow-green: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-bar: 0 -1px 0 var(--rule);
+    --focus-ring: 0 0 0 3px rgba(79, 124, 255, 0.3);
+    color-scheme: dark;
+  }
+}
+
+
+@media (max-width: 960px) {
+  :root {
+    --topbar-h: 56px;
+  }
+}
