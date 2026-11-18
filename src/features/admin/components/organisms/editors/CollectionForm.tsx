@@ -11,32 +11,31 @@ import { FormPage } from "./FormPage";
 import { useEditorSave } from "./useEditorSave";
 
 type CalendarFormProps = { kind: "calendars"; initial?: Entity<"calendars">; folders?: never };
-type WhiteboardFormProps = { kind: "whiteboards"; initial?: Entity<"whiteboards">; folders?: never };
 type FolderFormProps = { kind: "folders"; initial?: Entity<"folders">; folders: Entity<"folders">[]; defaults?: { parentId?: string } };
-type Props = (CalendarFormProps | WhiteboardFormProps | FolderFormProps) & { onClose: () => void; onSaved: (id: string) => void };
+type Props = (CalendarFormProps | FolderFormProps) & { onClose: () => void; onSaved: (id: string) => void };
 
-/** Calendarios, pizarras y carpetas: nombre, color y, en carpetas, la carpeta superior. */
+/** Calendarios y carpetas: nombre, color y, en carpetas, la carpeta superior. */
 export function CollectionForm(props: Props) {
   const { kind, initial, onClose, onSaved } = props;
   const { draft, set, latest } = useDraft(() => ({
     name: initial?.name ?? "",
-    description: kind !== "folders" ? (props.initial?.description ?? "") : "",
+    description: kind === "calendars" ? (props.initial?.description ?? "") : "",
     color: (initial?.color ?? "blue") as string,
     parentId: kind === "folders" ? (props.initial?.parentId ?? props.defaults?.parentId ?? "") : "",
   }));
   const editor = useEditorSave(kind, initial);
   const [snapshot, setSnapshot] = useState(() => JSON.stringify(latest.current));
   const dirty = useMemo(() => JSON.stringify(draft) !== snapshot, [draft, snapshot]);
-  const section = kind === "calendars" ? "Calendarios" : kind === "whiteboards" ? "Brainstorm" : "Documentación";
-  const noun = kind === "calendars" ? "calendario" : kind === "whiteboards" ? "pizarra" : "carpeta";
+  const section = kind === "calendars" ? "Calendarios" : "Documentación";
+  const noun = kind === "calendars" ? "calendario" : "carpeta";
   const forbidden = kind === "folders" && initial ? folderDescendants(props.folders, initial.id) : new Set<string>();
 
   return (
     <FormPage
       title={`${initial ? "Editar" : "Crear"} ${noun}`}
-      breadcrumb={<><span>{section}</span><ChevronRight size={13} aria-hidden="true" /><b>{initial?.name ?? (kind === "calendars" ? "Nuevo calendario" : kind === "whiteboards" ? "Nueva pizarra" : "Nueva carpeta")}</b></>}
-      backLabel={kind === "calendars" ? "Volver a calendarios" : kind === "whiteboards" ? "Volver a brainstorm" : "Volver a documentación"}
-      section={kind === "calendars" ? "Calendario" : kind === "whiteboards" ? "Pizarra" : "Carpeta"}
+      breadcrumb={<><span>{section}</span><ChevronRight size={13} aria-hidden="true" /><b>{initial?.name ?? (kind === "calendars" ? "Nuevo calendario" : "Nueva carpeta")}</b></>}
+      backLabel={kind === "calendars" ? "Volver a calendarios" : "Volver a documentación"}
+      section={kind === "calendars" ? "Calendario" : "Carpeta"}
       saveLabel={`Guardar ${noun}`}
       initial={initial}
       stale={editor.stale}
@@ -44,10 +43,10 @@ export function CollectionForm(props: Props) {
       error={editor.error}
       dirty={dirty}
       onClose={onClose}
-      onSave={() => { const { name, description, color, parentId } = latest.current; void editor.save(kind !== "folders" ? { name, description, color } : { name, color, parentId }, (id) => { setSnapshot(JSON.stringify(latest.current)); onSaved(id); }); }}
+      onSave={() => { const { name, description, color, parentId } = latest.current; void editor.save(kind === "calendars" ? { name, description, color } : { name, color, parentId }, (id) => { setSnapshot(JSON.stringify(latest.current)); onSaved(id); }); }}
     >
-      <TextField label="Nombre" value={draft.name} onChange={(value) => set("name", value)} required maxLength={120} placeholder={kind === "calendars" ? "Ej.: Reuniones del equipo" : kind === "whiteboards" ? "Ej.: Nombre de la mascota" : "Ej.: Marketing"} />
-      {kind !== "folders" ? <TextField label="Descripción" value={draft.description} onChange={(value) => set("description", value)} multiline maxLength={3000} /> : null}
+      <TextField label="Nombre" value={draft.name} onChange={(value) => set("name", value)} required maxLength={120} placeholder={kind === "calendars" ? "Ej.: Reuniones del equipo" : "Ej.: Marketing"} />
+      {kind === "calendars" ? <TextField label="Descripción" value={draft.description} onChange={(value) => set("description", value)} multiline maxLength={3000} /> : null}
       {kind === "folders" ? (
         <SelectField
           label="Carpeta superior"

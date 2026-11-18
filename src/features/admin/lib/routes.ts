@@ -14,5 +14,3 @@ export const newCalendarHref = () => "/admin/calendarios/nuevo";
 export const editCalendarHref = (id: string) => `/admin/calendarios/${encodeURIComponent(id)}`;
 export const manageCalendarsHref = () => "/admin/calendarios/administrar";
 export const brainstormHref = (id?: string) => (id ? `/admin/brainstorm?pizarra=${encodeURIComponent(id)}` : "/admin/brainstorm");
-export const newWhiteboardHref = () => "/admin/brainstorm/nueva";
-export const editWhiteboardHref = (id: string) => `/admin/brainstorm/${encodeURIComponent(id)}`;
