@@ -7,5 +7,9 @@ export type BulkAction =
   | { type: "status"; value: string }
   | { type: "priority"; value: string }
   | { type: "assignee"; value: string }
-  | { type: "calendar"; value: string };
+  | { type: "calendar"; value: string }
+  /** Post-its: varias posiciones en un solo commit, color o texto. */
+  | { type: "stickyPositions"; positions: { id: string; x: number; y: number }[] }
+  | { type: "stickyColor"; value: string }
+  | { type: "stickyText"; value: string };
 export type BulkResult = { ok: true; count: number } | { ok: false; error: string };
