@@ -14,7 +14,8 @@ const priorities = ["high", "medium", "low"];
  */
 async function bulkAttempt(kind: BulkKind, ids: string[], action: BulkAction): Promise<BulkResult & { retryable?: boolean }> {
   try {
-    if (kind !== "tasks" && kind !== "events") throw new Error("Colección no válida.");
+    if (kind !== "tasks" && kind !== "events" && kind !== "stickyNotes") throw new Error("Colección no válida.");
+    if (kind === "stickyNotes" && action.type !== "delete") throw new Error("Acción no válida.");
     if (!Array.isArray(ids) || !ids.length) throw new Error("Selecciona al menos un elemento.");
     if (ids.length > MAX_ITEMS) throw new Error(`Selecciona como máximo ${MAX_ITEMS} elementos a la vez.`);
     const unique = [...new Set(ids)];

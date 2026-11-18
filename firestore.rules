@@ -71,13 +71,20 @@ service cloud.firestore {
           && label(d.category, 60) && d.notes is string && d.notes.size() <= 3000 && d.paidDates is list && d.paidDates.size() <= 1200 && d.paidDates.toSet().size() == d.paidDates.size() && financePayments()
           && (request.method == 'create' ? d.paidDates.size() == 0 : (resource.data.paidDates.size() == 0 || !d.diff(resource.data).affectedKeys().hasAny(['amount', 'currency', 'kind', 'date', 'frequency']))))
         || (kind == 'workspaceGuards' && fields(['parentKind', 'parentId'])
-          && d.parentKind in ['boards', 'calendars', 'folders'] && label(d.parentId, 80))
+          && d.parentKind in ['boards', 'calendars', 'folders', 'whiteboards'] && label(d.parentId, 80))
         || (kind == 'boards' && (fields(['name', 'description', 'color', 'columns', 'columnOrder']) || fields(['name', 'description', 'color', 'columns', 'columnOrder', 'position']))
           && (!('position' in d) || (d.position is int && d.position >= 1 && d.position <= 99))
           && label(d.name, 120) && d.description is string && d.description.size() <= 3000 && color(d.color)
           && d.columns is map && d.columnOrder is list && d.columnOrder.size() >= 1 && d.columnOrder.size() <= 12
           && d.columnOrder.toSet().size() == d.columnOrder.size()
           && d.columns.keys().hasAll(d.columnOrder) && d.columnOrder.hasOnly(d.columns.keys()))
+        || (kind == 'whiteboards' && fields(['name', 'description', 'color'])
+          && label(d.name, 120) && d.description is string && d.description.size() <= 3000 && color(d.color))
+        || (kind == 'stickyNotes' && fields(['whiteboardId', 'text', 'color', 'x', 'y'])
+          && d.whiteboardId is string && d.whiteboardId != '' && d.text is string && d.text.size() <= 500
+          && d.color in ['yellow', 'pink', 'blue', 'green', 'violet']
+          && d.x is int && d.x >= 0 && d.x <= 4000 && d.y is int && d.y >= 0 && d.y <= 4000
+          && (d.archived || parentAvailable('whiteboards', d.whiteboardId)))
         || (kind == 'calendars' && fields(['name', 'description', 'color'])
           && label(d.name, 120) && d.description is string && d.description.size() <= 3000 && color(d.color))
         || (kind == 'folders' && fields(['name', 'parentId', 'color'])
@@ -109,7 +116,7 @@ service cloud.firestore {
       );
     }
     match /{collection}/{document} {
-      allow read: if collection in ['boards', 'tasks', 'calendars', 'events', 'folders', 'wikiPages', 'wikiContent', 'workspaceGuards', 'financeEntries'] && authorized();
+      allow read: if collection in ['boards', 'tasks', 'calendars', 'events', 'folders', 'wikiPages', 'whiteboards', 'stickyNotes', 'wikiContent', 'workspaceGuards', 'financeEntries'] && authorized();
       allow create: if authorized() && shape(collection, document)
         && request.resource.data.revision == 1 && request.resource.data.archived == false
         && request.resource.data.createdBy == request.auth.token.email.lower()
@@ -118,8 +125,8 @@ service cloud.firestore {
         && request.resource.data.createdBy == resource.data.createdBy
         && request.resource.data.createdAt == resource.data.createdAt
         && (collection == 'wikiContent' ? request.resource.data.revision > resource.data.revision : request.resource.data.revision == resource.data.revision + 1);
-      // Borrado permanente solo de tareas y eventos (acciones masivas del admin); lo demás se archiva.
-      allow delete: if authorized() && collection in ['tasks', 'events'];
+      // Borrado permanente solo de tareas, eventos y post-its; lo demás se archiva.
+      allow delete: if authorized() && collection in ['tasks', 'events', 'stickyNotes'];
     }
   }
 }

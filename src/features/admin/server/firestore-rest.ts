@@ -28,7 +28,7 @@ export function decodeValue(value: Value): unknown {
 }
 const decodeFields = (fields: Record<string, Value>) => Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, decodeValue(value)]));
 export type RestDocument = { name: string; data: Record<string, unknown>; updateTime: string };
-const allowedCollections = new Set(["boards", "tasks", "calendars", "events", "folders", "wikiPages", "wikiContent", "workspaceGuards", "financeEntries"]);
+const allowedCollections = new Set(["boards", "tasks", "calendars", "events", "folders", "wikiPages", "whiteboards", "stickyNotes", "wikiContent", "workspaceGuards", "financeEntries"]);
 export async function workspaceStore() {
   const user = await requireAdminSession();
   const token = (await cookies()).get(adminSessionCookie)?.value;
@@ -79,7 +79,7 @@ export async function workspaceStore() {
       const writes = [...input];
       const parents = new Map<string, { parentKind: string; parentId: string }>();
       for (const write of input) {
-        const relation = write.collection === "tasks" ? ["boards", "boardId"] : write.collection === "events" ? ["calendars", "calendarId"] : write.collection === "wikiPages" ? ["folders", "folderId"] : write.collection === "folders" ? ["folders", "parentId"] : null;
+        const relation = write.collection === "tasks" ? ["boards", "boardId"] : write.collection === "events" ? ["calendars", "calendarId"] : write.collection === "stickyNotes" ? ["whiteboards", "whiteboardId"] : write.collection === "wikiPages" ? ["folders", "folderId"] : write.collection === "folders" ? ["folders", "parentId"] : null;
         if (relation) for (const source of [write.previous?.data, write.data]) {
           const id = source?.[relation[1]];
           if (typeof id === "string" && id) parents.set(guardId(relation[0], id), { parentKind: relation[0], parentId: id });

@@ -4,13 +4,13 @@ import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestE
 import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { adminAllowedEmails } from "../src/features/admin/lib/access";
 import { sampleFinance } from "../src/features/admin/lib/finance.fixtures";
-import { sampleBoard, sampleTask, sampleCalendar, sampleEvent, sampleFolder, samplePage } from "../src/features/admin/lib/workspace.fixtures";
+import { sampleBoard, sampleTask, sampleCalendar, sampleEvent, sampleFolder, samplePage, sampleWhiteboard, sampleSticky } from "../src/features/admin/lib/workspace.fixtures";
 import { workspaceCollections } from "../src/features/admin/lib/workspace";
 
 let env: RulesTestEnvironment;
 const rules = readFileSync("firestore.rules", "utf8");
 const claims = { email_verified: true, firebase: { sign_in_provider: "google.com" as const, identities: {} } };
-const samples = { boards: sampleBoard, tasks: sampleTask, calendars: sampleCalendar, events: sampleEvent, folders: sampleFolder, wikiPages: samplePage };
+const samples = { boards: sampleBoard, tasks: sampleTask, calendars: sampleCalendar, events: sampleEvent, folders: sampleFolder, wikiPages: samplePage, whiteboards: sampleWhiteboard, stickyNotes: sampleSticky };
 const data = (sample: object) => Object.fromEntries(Object.entries(sample).filter(([key]) => key !== "id"));
 beforeAll(async () => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Estas pruebas requieren el emulador, nunca producción.");
@@ -32,7 +32,7 @@ describe("acceso a los espacios compartidos", () => {
       await assertSucceeds(updateDoc(ref, { revision: 2, archived: true }));
       expect((await getDoc(ref)).data()?.createdBy).toBe(email);
       // Solo tareas y eventos admiten borrado permanente (acciones masivas); el resto se archiva.
-      if (name === "tasks" || name === "events") await assertSucceeds(deleteDoc(ref));
+      if (name === "tasks" || name === "events" || name === "stickyNotes") await assertSucceeds(deleteDoc(ref));
       else await assertFails(deleteDoc(ref));
     }
   });
@@ -52,6 +52,17 @@ describe("acceso a los espacios compartidos", () => {
     await assertFails(updateDoc(ref, { revision: 1, updatedBy: email }));
     await assertSucceeds(updateDoc(ref, { revision: 2, updatedBy: email }));
     const saved = (await getDoc(ref)).data()!; expect(saved.createdBy).toBe(sampleBoard.createdBy); expect(saved.updatedBy).toBe(email);
+  });
+  test("los post-its validan color, posición, texto y pizarra", async () => {
+    const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();
+    const note = { ...data(sampleSticky), createdBy: email, updatedBy: email };
+    await assertSucceeds(setDoc(doc(db, "stickyNotes", "nota-ok"), { ...note, text: "" }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "sin-pizarra"), { ...note, whiteboardId: "missing" }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "color-raro"), { ...note, color: "black" }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "fuera"), { ...note, x: 4001 }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "decimal"), { ...note, y: 10.5 }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "largo"), { ...note, text: "x".repeat(501) }));
+    await assertFails(deleteDoc(doc(db, "whiteboards", sampleWhiteboard.id)));
   });
   test("los tableros admiten una posición opcional de 1 a 99 en las pestañas", async () => {
     const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();

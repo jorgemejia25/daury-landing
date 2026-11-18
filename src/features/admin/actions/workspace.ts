@@ -41,6 +41,7 @@ async function saveAttempt(input: SaveRequest): Promise<MutationResult> {
     }
     if (kind === "events") { await requireReference("calendars", data.calendarId); await requireReference("wikiPages", data.articleId); }
     if (kind === "wikiPages") await requireReference("folders", data.folderId);
+    if (kind === "stickyNotes" && !(await requireReference("whiteboards", data.whiteboardId))) throw new Error("La pizarra no existe o está archivada.");
     if (kind === "folders") {
       let parent = data.parentId as string; const visited = new Set([id]);
       for (let depth = 0; parent; depth++) { if (visited.has(parent) || depth >= 12) throw new Error("La carpeta no puede contenerse a sí misma ni superar 12 niveles."); visited.add(parent); const ancestor = await requireReference("folders", parent); parent = ancestor?.data.parentId as string; }
@@ -69,8 +70,8 @@ async function archiveAttempt(kind: WorkspaceCollection, id: string, revision: n
       const [folders, pages] = await Promise.all([store.list("folders", "parentId", id), store.list("wikiPages", "folderId", id)]);
       if ([...folders, ...pages].some((item) => !item.data.archived)) throw new Error("Mueve o archiva el contenido de esta carpeta primero.");
     }
-    const relation = kind === "tasks" ? ["boards", data.boardId] : kind === "events" ? ["calendars", data.calendarId] : kind === "wikiPages" ? ["folders", data.folderId] : kind === "folders" ? ["folders", data.parentId] : null;
-    if (!archived && relation?.[1]) { const parent = await store.get(relation[0] as string, relation[1] as string); if (!parent || parent.data.archived) throw new Error("Restaura primero el tablero, calendario o carpeta que lo contiene."); if (kind === "tasks" && !(parent.data.columnOrder as string[]).includes(data.status as string)) throw new Error("Restaura primero la columna original de esta tarea."); }
+    const relation = kind === "tasks" ? ["boards", data.boardId] : kind === "events" ? ["calendars", data.calendarId] : kind === "stickyNotes" ? ["whiteboards", data.whiteboardId] : kind === "wikiPages" ? ["folders", data.folderId] : kind === "folders" ? ["folders", data.parentId] : null;
+    if (!archived && relation?.[1]) { const parent = await store.get(relation[0] as string, relation[1] as string); if (!parent || parent.data.archived) throw new Error("Restaura primero el tablero, calendario, pizarra o carpeta que lo contiene."); if (kind === "tasks" && !(parent.data.columnOrder as string[]).includes(data.status as string)) throw new Error("Restaura primero la columna original de esta tarea."); }
     const nextRevision = revision + 1;
     await store.commit([{ collection: kind, id, previous, data: { ...data, archived, revision: nextRevision, updatedAt: new Date().toISOString(), updatedBy: store.user.email } }]);
     return { ok: true, id, revision: nextRevision };
