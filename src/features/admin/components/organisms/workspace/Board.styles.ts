@@ -33,8 +33,7 @@ const styles = {
   "metaIcons": "tw-Board-47c8-metaIcons flex items-center justify-end gap-[8px] text-ink-soft font-medium text-[11.5px] leading-[1] font-sans [font-variant-numeric:tabular-nums] [&_>_span:not([class])]:inline-flex [&_>_span:not([class])]:items-center [&_>_span:not([class])]:gap-[3px] [&_>_span[data-complete]]:[color:var(--green-deep)]",
   "due": "tw-Board-47c8-due inline-flex items-center gap-[4px] [padding:2px_6px] rounded-[5px] [background:var(--tone-soft)] [color:var(--tone-ink)] font-medium text-[11.5px] leading-[1.3] font-sans whitespace-nowrap [&[data-tone=neutral]]:[background:transparent] [&[data-tone=neutral]]:text-ink-soft [&[data-tone=neutral]]:px-0",
   "points": "tw-Board-47c8-points [padding:1px_5px] [border:1px_solid_var(--rule)] rounded-[5px] font-medium text-[10.5px] leading-[1.4] font-mono",
-  "assignee": "tw-Board-47c8-assignee inline-flex",
-  "unassigned": "tw-Board-47c8-unassigned w-[20px] h-[20px] [border:1.5px_dashed_var(--rule-hover)] rounded-full",
+  "unassigned": "tw-Board-47c8-unassigned flex-none w-[18px] h-[18px] [border:1.5px_dashed_var(--rule-hover)] rounded-full",
   "listRow": "tw-Board-47c8-listRow flex items-center gap-[8px] pr-[12px] [&[data-divider]]:[border-top:1px_solid_var(--rule)]",
   "listButton": "tw-Board-47c8-listButton [flex:1] flex items-center gap-[12px] min-w-0 min-h-[46px] [padding:6px_16px] [border:0] [background:transparent] text-ink text-left cursor-pointer [&:hover]:[background:var(--surface-2)] [&:focus-visible]:[outline-offset:-3px] max-[600.02px]:flex-wrap",
   "listTitle": "tw-Board-47c8-listTitle [flex:1] min-w-0 font-medium text-[14px] leading-[1.3] font-sans overflow-hidden text-ellipsis whitespace-nowrap"

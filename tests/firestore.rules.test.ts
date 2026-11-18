@@ -53,6 +53,14 @@ describe("acceso a los espacios compartidos", () => {
     await assertSucceeds(updateDoc(ref, { revision: 2, updatedBy: email }));
     const saved = (await getDoc(ref)).data()!; expect(saved.createdBy).toBe(sampleBoard.createdBy); expect(saved.updatedBy).toBe(email);
   });
+  test("los tableros admiten una posición opcional de 1 a 99 en las pestañas", async () => {
+    const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();
+    const board = { ...data(sampleBoard), createdBy: email, updatedBy: email };
+    await assertSucceeds(setDoc(doc(db, "boards", "con-posicion"), { ...board, position: 1 }));
+    await assertFails(setDoc(doc(db, "boards", "posicion-cero"), { ...board, position: 0 }));
+    await assertFails(setDoc(doc(db, "boards", "posicion-texto"), { ...board, position: "1" }));
+    await assertFails(setDoc(doc(db, "boards", "posicion-alta"), { ...board, position: 100 }));
+  });
   test("rechaza referencias a tableros, estados y calendarios inexistentes", async () => {
     const db = env.authenticatedContext("creator", { ...claims, email: sampleBoard.createdBy }).firestore();
     await assertFails(setDoc(doc(db, "tasks", "orphan"), { ...data(sampleTask), boardId: "missing" }));

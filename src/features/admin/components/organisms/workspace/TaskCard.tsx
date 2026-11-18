@@ -60,10 +60,20 @@ export function TaskCardBody({ task, done, today }: { task: Entity<"tasks">; don
           {task.checklist.length ? <span data-complete={finished === task.checklist.length || undefined}><ListChecks size={14} strokeWidth={2.2} aria-hidden="true" />{finished}/{task.checklist.length}</span> : null}
           {task.comments.length ? <span><MessageSquare size={14} strokeWidth={2.2} aria-hidden="true" />{task.comments.length}</span> : null}
           {task.points ? <span className={styles.points}>{task.points}</span> : null}
-          {task.assignee
-            ? <span className={styles.assignee} title={personName(task.assignee)}><Avatar name={personName(task.assignee)} size={20} tone="violet" /></span>
-            : <span className={styles.unassigned} title="Sin asignar" aria-label="Sin asignar" />}
         </span>
+      </span>
+      <span className="flex items-center gap-[7px] min-w-0 ml-[11px] pt-[8px] border-t border-rule text-[12px] leading-[1.3]">
+        {task.assignee ? (
+          <>
+            <Avatar name={personName(task.assignee)} size={18} tone="violet" />
+            <span className="min-w-0 truncate font-medium text-[var(--ink-2)]"><span className="sr-only">Asignada a </span>{personName(task.assignee)}</span>
+          </>
+        ) : (
+          <>
+            <span className={styles.unassigned} aria-hidden="true" />
+            <span className="text-ink-soft">Sin asignar</span>
+          </>
+        )}
       </span>
     </>
   );
