@@ -80,7 +80,8 @@ service cloud.firestore {
           && d.columns.keys().hasAll(d.columnOrder) && d.columnOrder.hasOnly(d.columns.keys()))
         || (kind == 'whiteboards' && fields(['name', 'description', 'color'])
           && label(d.name, 120) && d.description is string && d.description.size() <= 3000 && color(d.color))
-        || (kind == 'stickyNotes' && (fields(['whiteboardId', 'text', 'color', 'x', 'y']) || (fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size'])
+        || (kind == 'stickyNotes' && (fields(['whiteboardId', 'text', 'color', 'x', 'y']) || ((fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size'])
+              || (fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size', 'from', 'to']) && d.from is string && d.from.size() <= 80 && d.to is string && d.to.size() <= 80))
             && d.kind in ['note', 'text', 'pen', 'rect', 'ellipse', 'arrow'] && d.size in ['sm', 'md', 'lg']
             && d.w is int && d.w >= 0 && d.w <= 4000 && d.h is int && d.h >= 0 && d.h <= 4000
             && d.points is list && d.points.size() <= 1000))

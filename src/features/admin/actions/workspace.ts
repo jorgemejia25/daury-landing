@@ -16,9 +16,12 @@ async function saveAttempt(input: SaveRequest): Promise<MutationResult> {
     store = await workspaceStore();
     const request = object(input); collectionName(request.collection);
     const kind = request.collection;
+    // Revisión 0 con id: crear con un id generado en el navegador (para mostrarlo al instante).
+    // El commit exige que el documento no exista, así que nunca sobrescribe.
+    const creating = request.id === undefined || request.revision === 0;
     const id = request.id === undefined ? randomUUID() : request.id; validId(id);
-    const previous = request.id === undefined ? null : await store.get(kind, id);
-    if (request.id !== undefined) checkRevision(previous, request.revision);
+    const previous = creating ? null : await store.get(kind, id);
+    if (!creating) checkRevision(previous, request.revision);
     if (previous?.data.archived) throw new Error("Restaura el elemento antes de editarlo.");
     const parsed = parseWorkspaceData(kind, request.data);
     const data = { ...parsed } as Record<string, unknown>;

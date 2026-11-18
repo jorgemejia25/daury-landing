@@ -81,6 +81,18 @@ describe("acciones reales contra Firestore", () => {
     expect((await bulkWorkspaceAction("stickyNotes", [note.id], { type: "stickyBox", boxes: [{ id: note.id, x: 0, y: 0, w: 10, h: 10 }] })).ok).toBe(false);
     expect(await bulkWorkspaceAction("stickyNotes", [shape.id], { type: "stickyText", value: "Inicio", h: 140 })).toEqual({ ok: true, count: 1 });
     expect(await bulkWorkspaceAction("stickyNotes", [shape.id, pen.id], { type: "stickyColor", value: "coral" })).toEqual({ ok: true, count: 2 });
+    const clientId = "0192a0b1-7c3d-7e4f-8a9b-0c1d2e3f4a5b";
+    expect(succeeded(await saveWorkspaceItem({ collection: "stickyNotes", id: clientId, revision: 0, data: { ...sampleSticky, whiteboardId: board.id } })).id).toBe(clientId);
+    expect((await saveWorkspaceItem({ collection: "stickyNotes", id: clientId, revision: 0, data: { ...sampleSticky, whiteboardId: board.id, text: "pisar" } })).ok).toBe(false);
+    expect((await read("stickyNotes", clientId)).text).toBe(sampleSticky.text);
+    const arrow = succeeded(await saveWorkspaceItem({ collection: "stickyNotes", data: { whiteboardId: board.id, text: "", color: "ink", x: 0, y: 0, kind: "arrow", w: 100, h: 10, points: [0, 0, 100, 10], size: "md", from: shape.id, to: clientId } }));
+    expect([(await read("stickyNotes", arrow.id)).from, (await read("stickyNotes", arrow.id)).to]).toEqual([shape.id, clientId]);
+    expect(await bulkWorkspaceAction("stickyNotes", [arrow.id], { type: "stickyArrow", x: 10, y: 20, w: 50, h: 30, points: [0, 30, 50, 0], from: "", to: shape.id })).toEqual({ ok: true, count: 1 });
+    const rebound = await read("stickyNotes", arrow.id);
+    expect([rebound.x, rebound.points, rebound.from, rebound.to]).toEqual([10, [0, 30, 50, 0], "", shape.id]);
+    expect((await bulkWorkspaceAction("stickyNotes", [shape.id], { type: "stickyArrow", x: 0, y: 0, w: 1, h: 1, points: [0, 0, 1, 1], from: "", to: "" })).ok).toBe(false);
+    expect((await bulkWorkspaceAction("stickyNotes", [arrow.id], { type: "stickyArrow", x: 0, y: 0, w: 1, h: 1, points: [0, 0, 1], from: "", to: "" })).ok).toBe(false);
+    expect(await bulkWorkspaceAction("stickyNotes", [arrow.id, clientId], { type: "delete" })).toEqual({ ok: true, count: 2 });
     expect(await bulkWorkspaceAction("stickyNotes", [shape.id, pen.id], { type: "delete" })).toEqual({ ok: true, count: 2 });
     expect(await bulkWorkspaceAction("stickyNotes", [note.id, second.id], { type: "delete" })).toEqual({ ok: true, count: 2 });
   });

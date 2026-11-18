@@ -21,7 +21,7 @@ test("muestra la pizarra con sus post-its y crea uno del color elegido", async (
   fireEvent.keyDown(document.body, { key: "n" });
   await user.click(await screen.findByRole("button", { name: "Color rosa" }));
   await user.click(screen.getByRole("button", { name: "Nuevo post-it" }));
-  await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "stickyNotes", data: expect.objectContaining({ whiteboardId: sampleWhiteboard.id, text: "", color: "pink" }) }));
+  await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "stickyNotes", id: expect.any(String), revision: 0, data: expect.objectContaining({ whiteboardId: sampleWhiteboard.id, text: "", color: "pink" }) }));
 });
 
 test("con el teclado selecciona todo, mueve en la cuadrícula y elimina en bloque", async () => {
@@ -66,9 +66,21 @@ test("las herramientas tienen atajo y dibujan rectángulos y textos en el lienzo
   fireEvent.pointerDown(stage, { button: 0, clientX: 100, clientY: 100, pointerId: 1 });
   fireEvent.pointerMove(stage, { clientX: 300, clientY: 220, pointerId: 1 });
   fireEvent.pointerUp(stage, { pointerId: 1 });
-  await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "stickyNotes", data: expect.objectContaining({ kind: "rect", color: "ink", x: 96, y: 96, w: 216, h: 120, points: [] }) }));
+  await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "stickyNotes", id: expect.any(String), revision: 0, data: expect.objectContaining({ kind: "rect", color: "ink", x: 96, y: 96, w: 216, h: 120, points: [] }) }));
   await waitFor(() => expect(screen.getByRole("button", { name: "Seleccionar" }).getAttribute("aria-pressed")).toBe("true"));
   fireEvent.keyDown(document.body, { key: "t" });
   fireEvent.pointerDown(stage, { button: 0, clientX: 400, clientY: 300, pointerId: 2 });
-  await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "stickyNotes", data: expect.objectContaining({ kind: "text", size: "md", w: 260 }) }));
+  await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "stickyNotes", id: expect.any(String), revision: 0, data: expect.objectContaining({ kind: "text", size: "md", w: 260 }) }));
+});
+
+test("una flecha que sale de un post-it queda unida a él", async () => {
+  render(<BrainstormWorkspace />);
+  const note = document.querySelector(`[data-note="${sampleSticky.id}"]`) as HTMLElement;
+  const stage = note.parentElement as HTMLElement;
+  fireEvent.keyDown(document.body, { key: "a" });
+  await waitFor(() => expect(screen.getByRole("button", { name: "Flecha" }).getAttribute("aria-pressed")).toBe("true"));
+  fireEvent.pointerDown(note, { button: 0, clientX: 150, clientY: 120, pointerId: 3 });
+  fireEvent.pointerMove(stage, { clientX: 600, clientY: 400, pointerId: 3 });
+  fireEvent.pointerUp(stage, { pointerId: 3 });
+  await waitFor(() => expect(save).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ kind: "arrow", from: sampleSticky.id, to: "" }) })));
 });

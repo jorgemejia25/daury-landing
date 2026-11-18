@@ -15,7 +15,7 @@ const priorities = ["high", "medium", "low"];
 async function bulkAttempt(kind: BulkKind, ids: string[], action: BulkAction): Promise<BulkResult & { retryable?: boolean }> {
   try {
     if (kind !== "tasks" && kind !== "events" && kind !== "stickyNotes") throw new Error("Colección no válida.");
-    if (kind === "stickyNotes" && !["delete", "stickyPositions", "stickyColor", "stickyText", "stickyBox"].includes(action.type)) throw new Error("Acción no válida.");
+    if (kind === "stickyNotes" && !["delete", "stickyPositions", "stickyColor", "stickyText", "stickyBox", "stickyArrow"].includes(action.type)) throw new Error("Acción no válida.");
     if (kind !== "stickyNotes" && action.type.startsWith("sticky")) throw new Error("Acción no válida.");
     if (!Array.isArray(ids) || !ids.length) throw new Error("Selecciona al menos un elemento.");
     if (ids.length > MAX_ITEMS) throw new Error(`Selecciona como máximo ${MAX_ITEMS} elementos a la vez.`);
@@ -92,6 +92,15 @@ async function bulkAttempt(kind: BulkKind, ids: string[], action: BulkAction): P
           if (action.h !== undefined && (data.kind === undefined || !Number.isInteger(action.h) || action.h < 0 || action.h > canvasSize)) throw new Error("El tamaño no es válido.");
           if (data.text !== action.value || (action.h !== undefined && data.h !== action.h)) writes.push(touch(doc, { text: action.value, ...(action.h === undefined ? {} : { h: action.h }) }));
           break;
+        case "stickyArrow": {
+          const valid = (value: unknown) => Number.isInteger(value) && Number(value) >= 0 && Number(value) <= canvasSize;
+          const ends = [action.from, action.to];
+          if (unique.length !== 1 || data.kind !== "arrow" || ![action.x, action.y, action.w, action.h].every(valid)) throw new Error("La flecha no es válida.");
+          if (!Array.isArray(action.points) || action.points.length !== 4 || action.points.some((value) => !Number.isInteger(value) || Math.abs(value) > canvasSize)) throw new Error("La flecha no es válida.");
+          if (ends.some((end) => typeof end !== "string" || (end !== "" && (validId(end), false)))) throw new Error("La flecha no es válida.");
+          writes.push(touch(doc, { x: action.x, y: action.y, w: action.w, h: action.h, points: action.points, from: action.from, to: action.to }));
+          break;
+        }
         case "stickyBox": {
           const id = doc.name.split("/").pop()!;
           const box = Array.isArray(action.boxes) ? action.boxes.find((item) => item?.id === id) : undefined;

@@ -21,7 +21,7 @@ export const elementKinds = ["note", "text", "pen", "rect", "ellipse", "arrow"] 
 export type ElementKind = typeof elementKinds[number];
 export const textSizes = ["sm", "md", "lg"] as const;
 /** Elemento sobre una pizarra; x e y en píxeles del lienzo (0–4000). Lápiz y flecha guardan puntos relativos a x, y. */
-export type StickyNote = { whiteboardId: string; text: string; color: StickyColor; x: number; y: number; kind?: ElementKind; w?: number; h?: number; points?: number[]; size?: typeof textSizes[number] };
+export type StickyNote = { whiteboardId: string; text: string; color: StickyColor; x: number; y: number; kind?: ElementKind; w?: number; h?: number; points?: number[]; size?: typeof textSizes[number]; /** Flechas: elementos que unen (siguen al moverlos). */ from?: string; to?: string };
 export const canvasSize = 4000;
 export type Folder = { name: string; parentId: string; color: WorkspaceColor };
 export type Page = { title: string; description: string; folderId: string; tags: string[] };
@@ -89,7 +89,8 @@ export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C,
     else {
       const points = data.points;
       if (!Array.isArray(points) || points.length > 1000 || points.length % 2 || points.some((value) => !Number.isInteger(value) || Math.abs(value) > canvasSize)) throw new Error("El trazo no es válido.");
-      result = { ...base, kind: choice(data.kind, elementKinds), w: point("w"), h: point("h"), points: points as number[], size: choice(data.size, textSizes) };
+      const bound = data.from !== undefined || data.to !== undefined ? { from: reference(data, "from"), to: reference(data, "to") } : {};
+      result = { ...base, kind: choice(data.kind, elementKinds), w: point("w"), h: point("h"), points: points as number[], size: choice(data.size, textSizes), ...bound };
     }
   } else if (collection === "calendars") {
     result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color() };
