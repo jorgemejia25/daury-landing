@@ -43,7 +43,7 @@ export function BoardWorkspace() {
   const router = useRouter();
   const today = localDate(new Date());
   const archived = params.get("archived") === "yes";
-  const options = boards.items.filter((board) => archived || !board.archived).toSorted((a, b) => a.createdAt.localeCompare(b.createdAt) || a.name.localeCompare(b.name, "es")); // Orden de creación: los tableros nuevos quedan al final.
+  const options = boards.items.filter((board) => archived || !board.archived).toSorted((a, b) => (a.position ?? 100) - (b.position ?? 100) || a.createdAt.localeCompare(b.createdAt) || a.name.localeCompare(b.name, "es")); // Posición elegida; sin ella, orden de creación.
   const board = options.find((item) => item.id === params.get("board")) ?? options[0];
   const tasks = useWorkspace("tasks", "boardId", board?.id);
   /** Movimientos de arrastrar y soltar que aún no confirma Firestore. */
@@ -309,7 +309,7 @@ export function BoardWorkspace() {
                           <StatusDot tone={priorityMeta[task.priority].tone} size={10} />
                           <span className={styles.listTitle}>{task.title}</span>
                           <Chip size="sm" tone={column?.done ? "green" : "neutral"}>{column?.name ?? "Sin estado"}</Chip>
-                          {task.assignee ? <Avatar name={personName(task.assignee)} size={26} tone="violet" /> : null}
+                          <span className="flex items-center gap-[6px] flex-none w-[150px] min-w-0 text-[12.5px] max-[760px]:w-auto">{task.assignee ? <><Avatar name={personName(task.assignee)} size={22} tone="violet" /><span className="truncate text-[var(--ink-2)]">{personName(task.assignee)}</span></> : <span className="text-ink-soft">Sin asignar</span>}</span>
                           {due ? <Chip size="sm" tone={due.tone}>{due.label}</Chip> : null}
                         </button>
                         {restore(task)}

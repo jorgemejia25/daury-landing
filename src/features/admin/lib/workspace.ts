@@ -7,7 +7,7 @@ export type WorkspaceCollection = typeof workspaceCollections[number];
 export const colors = [{ value: "blue", label: "Azul" }, { value: "violet", label: "Violeta" }, { value: "green", label: "Verde" }, { value: "amber", label: "Ámbar" }, { value: "coral", label: "Coral" }] as const;
 export type WorkspaceColor = typeof colors[number]["value"];
 export type Column = { name: string; done: boolean };
-export type Board = { name: string; description: string; color: WorkspaceColor; columns: Record<string, Column>; columnOrder: string[] };
+export type Board = { name: string; description: string; color: WorkspaceColor; columns: Record<string, Column>; columnOrder: string[]; /** Lugar en las pestañas del kanban (1 = primero); sin valor, va después por fecha de creación. */ position?: number };
 export type Calendar = { name: string; description: string; color: WorkspaceColor };
 export type Folder = { name: string; parentId: string; color: WorkspaceColor };
 export type Page = { title: string; description: string; folderId: string; tags: string[] };
@@ -59,7 +59,8 @@ export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C,
     if (!Array.isArray(order) || order.length < 1 || order.length > 12 || new Set(order).size !== order.length || Object.keys(columns).length !== order.length) throw new Error("El tablero necesita entre 1 y 12 columnas diferentes.");
     const normalized: Record<string, Column> = {};
     for (const id of order) { validId(id); const column = object(columns[id]); if (typeof column.done !== "boolean") throw new Error("Revisa las columnas completadas."); normalized[id] = { name: text(column, "name", 60, true), done: column.done }; }
-    result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color(), columns: normalized, columnOrder: order };
+    if (data.position !== undefined && (!Number.isInteger(data.position) || Number(data.position) < 1 || Number(data.position) > 99)) throw new Error("La posición del tablero debe ser de 1 a 99.");
+    result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color(), columns: normalized, columnOrder: order, ...(data.position === undefined ? {} : { position: Number(data.position) }) };
   } else if (collection === "calendars") {
     result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color() };
   } else if (collection === "folders") {

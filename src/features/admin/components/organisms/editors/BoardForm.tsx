@@ -5,6 +5,7 @@ import { ArrowDown, ArrowUp, Check, ChevronRight, Circle, Plus, X } from "lucide
 import { Button } from "@/ui/atoms/Button";
 import { IconButton } from "@/ui/atoms/IconButton";
 import { ColorField } from "@/ui/molecules/ColorField";
+import { NumberField } from "@/ui/molecules/NumberField";
 import { TextField } from "@/ui/molecules/TextField";
 import { colors, defaultColumns, type Board, type Entity } from "@/features/admin/lib/workspace";
 import { EditorSection } from "./EditorSection";
@@ -21,8 +22,9 @@ export function BoardForm({ initial, onClose, onSaved }: BoardFormProps) {
   const [color, setColor] = useState<string>(initial?.color ?? "blue");
   const [columns, setColumns] = useState<Board["columns"]>(() => structuredClone(initial?.columns ?? defaultColumns.columns));
   const [order, setOrder] = useState<string[]>(() => [...(initial?.columnOrder ?? defaultColumns.columnOrder)]);
+  const [position, setPosition] = useState(initial?.position ?? 0);
   const editor = useEditorSave("boards", initial);
-  const current = useMemo(() => ({ name, description, color, columns, columnOrder: order }), [name, description, color, columns, order]);
+  const current = useMemo(() => ({ name, description, color, columns, columnOrder: order, ...(position ? { position } : {}) }), [name, description, color, columns, order, position]);
   const [snapshot, setSnapshot] = useState(() => JSON.stringify(current));
   const dirty = JSON.stringify(current) !== snapshot;
 
@@ -102,6 +104,7 @@ export function BoardForm({ initial, onClose, onSaved }: BoardFormProps) {
       <TextField label="Nombre" value={name} onChange={setName} maxLength={120} required placeholder="Ej.: Lanzamiento de la app" />
       <TextField label="Descripción" value={description} onChange={setDescription} multiline maxLength={3000} placeholder="Para qué sirve este tablero" />
       <ColorField label="Color" value={color} options={colors} onChange={setColor} />
+      <NumberField label="Posición en las pestañas (0 = automática)" value={position} min={0} max={99} onChange={setPosition} />
     </FormPage>
   );
 }

@@ -72,7 +72,8 @@ service cloud.firestore {
           && (request.method == 'create' ? d.paidDates.size() == 0 : (resource.data.paidDates.size() == 0 || !d.diff(resource.data).affectedKeys().hasAny(['amount', 'currency', 'kind', 'date', 'frequency']))))
         || (kind == 'workspaceGuards' && fields(['parentKind', 'parentId'])
           && d.parentKind in ['boards', 'calendars', 'folders'] && label(d.parentId, 80))
-        || (kind == 'boards' && fields(['name', 'description', 'color', 'columns', 'columnOrder'])
+        || (kind == 'boards' && (fields(['name', 'description', 'color', 'columns', 'columnOrder']) || fields(['name', 'description', 'color', 'columns', 'columnOrder', 'position']))
+          && (!('position' in d) || (d.position is int && d.position >= 1 && d.position <= 99))
           && label(d.name, 120) && d.description is string && d.description.size() <= 3000 && color(d.color)
           && d.columns is map && d.columnOrder is list && d.columnOrder.size() >= 1 && d.columnOrder.size() <= 12
           && d.columnOrder.toSet().size() == d.columnOrder.size()
