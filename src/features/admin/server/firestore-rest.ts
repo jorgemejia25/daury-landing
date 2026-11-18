@@ -75,7 +75,7 @@ export async function workspaceStore() {
       const result = await request(":runQuery", { method: "POST", body: JSON.stringify({ structuredQuery: { from: [{ collectionId: collection }], where: { fieldFilter: { field: { fieldPath: field }, op: "EQUAL", value: { stringValue: value } } } } }) });
       return (result ?? []).filter((item: { document?: unknown }) => item.document).map((item: { document: Parameters<typeof document>[0] }) => { const value = document(item.document); return remember(value.name, value)!; });
     },
-    async commit(input: { collection: string; id: string; data: Record<string, unknown>; previous: RestDocument | null }[]) {
+    async commit(input: { collection: string; id: string; data: Record<string, unknown>; previous: RestDocument | null; remove?: boolean }[]) {
       const writes = [...input];
       const parents = new Map<string, { parentKind: string; parentId: string }>();
       for (const write of input) {
@@ -92,7 +92,10 @@ export async function workspaceStore() {
       const names = new Set(writes.map((write) => name(write.collection, write.id)));
       const verify = [...reads].filter(([key]) => !names.has(key)).map(([key, item]) => ({ verify: key, currentDocument: item ? { updateTime: item.updateTime } : { exists: false } }));
       // Los guards cambian con cada mutación de un hijo, protegiendo las consultas vacías.
-      await request(":commit", { method: "POST", body: JSON.stringify({ writes: [...writes.map((write) => ({ update: { name: name(write.collection, write.id), fields: encodeFields(write.data) }, currentDocument: write.previous ? { updateTime: write.previous.updateTime } : { exists: false } })), ...verify] }) });
+      await request(":commit", { method: "POST", body: JSON.stringify({ writes: [...writes.map((write) => "remove" in write && write.remove && write.previous
+        // Borrado permanente: solo si el documento no cambió desde que se leyó.
+        ? { delete: name(write.collection, write.id), currentDocument: { updateTime: write.previous.updateTime } }
+        : { update: { name: name(write.collection, write.id), fields: encodeFields(write.data) }, currentDocument: write.previous ? { updateTime: write.previous.updateTime } : { exists: false } }), ...verify] }) });
     },
   };
 }

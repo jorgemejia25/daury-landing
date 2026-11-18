@@ -12,6 +12,7 @@ vi.mock("@/features/admin/server/session", () => ({ adminSessionCookie: "test-co
 import { saveFinanceEntry, settleFinanceEntry, archiveFinanceEntry } from "../src/features/admin/actions/finance";
 import { sampleFinance } from "../src/features/admin/lib/finance.fixtures";
 import { saveWorkspaceItem, archiveWorkspaceItem, addTaskComment } from "../src/features/admin/actions/workspace";
+import { bulkWorkspaceAction } from "../src/features/admin/actions/bulk";
 
 let env: RulesTestEnvironment;
 const project = "demo-daury-wiki";
@@ -40,6 +41,30 @@ beforeAll(async () => {
 afterAll(async () => { await env?.cleanup(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("acciones reales contra Firestore", () => {
+  test("las acciones masivas mueven, archivan, restauran y eliminan tareas y eventos en un solo commit", async () => {
+    actAs("devjorgemejia@gmail.com");
+    const board = succeeded(await saveWorkspaceItem({ collection: "boards", data: sampleBoard }));
+    const ids = [];
+    for (const title of ["Uno", "Dos", "Tres"]) ids.push(succeeded(await saveWorkspaceItem({ collection: "tasks", data: { ...sampleTask, title, boardId: board.id } })).id);
+    actAs("valeryalarconra@gmail.com");
+    expect(await bulkWorkspaceAction("tasks", ids, { type: "status", value: "done" })).toEqual({ ok: true, count: 3 });
+    const moved = await read("tasks", ids[0]);
+    expect(moved.status).toBe("done"); expect(moved.revision).toBe(2); expect(moved.updatedBy).toBe("valeryalarconra@gmail.com"); expect(moved.createdBy).toBe("devjorgemejia@gmail.com");
+    expect((await bulkWorkspaceAction("tasks", ids, { type: "status", value: "inexistente" })).ok).toBe(false);
+    expect((await read("tasks", ids[1])).status).toBe("done");
+    expect(await bulkWorkspaceAction("tasks", ids, { type: "archive" })).toEqual({ ok: true, count: 3 });
+    expect((await bulkWorkspaceAction("tasks", ids, { type: "priority", value: "high" })).ok).toBe(false);
+    expect(await bulkWorkspaceAction("tasks", ids.slice(0, 1), { type: "restore" })).toEqual({ ok: true, count: 1 });
+    expect(await bulkWorkspaceAction("tasks", ids.slice(1), { type: "delete" })).toEqual({ ok: true, count: 2 });
+    expect(await read("tasks", ids[1]).catch(() => undefined)).toBeUndefined();
+    expect((await read("tasks", ids[0])).archived).toBe(false);
+    const calendar = succeeded(await saveWorkspaceItem({ collection: "calendars", data: sampleCalendar }));
+    const other = succeeded(await saveWorkspaceItem({ collection: "calendars", data: { ...sampleCalendar, name: "Otro" } }));
+    const event = succeeded(await saveWorkspaceItem({ collection: "events", data: { ...sampleEvent, calendarId: calendar.id } }));
+    expect(await bulkWorkspaceAction("events", [event.id], { type: "calendar", value: other.id })).toEqual({ ok: true, count: 1 });
+    expect((await read("events", event.id)).calendarId).toBe(other.id);
+    expect(await bulkWorkspaceAction("events", [event.id], { type: "delete" })).toEqual({ ok: true, count: 1 });
+  });
   test("dos cuentas crean y editan tableros, tareas y comentarios con autoría inmutable", async () => {
     actAs("devjorgemejia@gmail.com");
     const board = succeeded(await saveWorkspaceItem({ collection: "boards", data: sampleBoard }));

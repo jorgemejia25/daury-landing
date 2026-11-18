@@ -16,6 +16,8 @@ import { compareEvents, eventBounds, eventsInMonth, occursOn, type CalendarCateg
 import { calendarTone } from "@/features/admin/lib/presentation";
 import { useAdminQuery } from "@/features/admin/hooks/useAdminQuery";
 import { EventItem } from "./EventItem";
+import { SelectBox } from "../molecules/BulkBar";
+import { useSelection } from "@/features/admin/hooks/useSelection";
 import styles from "./CalendarView.styles";
 
 const weekdays = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
@@ -33,10 +35,15 @@ type CalendarViewProps = {
   onCreateDay?: (date: string) => void;
   /** Abre la administración de calendarios desde el menú de calendarios. */
   onManageCalendars?: () => void;
+  /** Barra de acciones masivas para los eventos seleccionados en la agenda. */
+  bulk?: (selection: ReturnType<typeof useSelection>) => React.ReactNode;
 };
 
+/** Solo los eventos propios se seleccionan; fechas de tareas y movimientos de gastos no. */
+const selectable = (event: CalendarItem) => !event.taskId && !event.id.includes(":");
+
 /** Calendarios con vistas mes y agenda, navegación por meses y filtro de calendarios (estado en la URL). */
-export function CalendarView({ categories: sourceCategories, events, today, actions, onOpenEvent, onCreateDay, onManageCalendars }: CalendarViewProps) {
+export function CalendarView({ categories: sourceCategories, events, today, actions, onOpenEvent, onCreateDay, onManageCalendars, bulk }: CalendarViewProps) {
   const categories = [...sourceCategories, deadlineCategory];
   const { params, update } = useAdminQuery();
   const monthParam = params.get("month") ?? "";
@@ -54,6 +61,8 @@ export function CalendarView({ categories: sourceCategories, events, today, acti
     return first < `${month}-01` ? `${month}-01` : first;
   };
   const agendaDays = [...new Set(visibleEvents.map(agendaStart))].sort();
+  const selection = useSelection(bulk && view === "agenda" ? visibleEvents.filter(selectable).map((event) => event.id) : []);
+  const openOrToggle = (id: string) => (selection.count ? selection.toggle(id) : onOpenEvent?.(id));
   const filterLabel = selected.length === categories.length ? "Todos los calendarios" : selected.length === 0 ? "Ningún calendario" : `${selected.length} de ${categories.length} calendarios`;
 
   function toggle(id: string, checked: boolean) {
@@ -204,7 +213,15 @@ export function CalendarView({ categories: sourceCategories, events, today, acti
                     <Card padding="none">
                       {dayEvents.map((event, index) => {
                         const category = categoryFor(event.calendarId);
-                        return <EventItem key={event.id} event={event} onOpen={onOpenEvent} category={category} tone={toneFor(category)} date={date} divider={index > 0} />;
+                        if (!bulk) return <EventItem key={event.id} event={event} onOpen={onOpenEvent} category={category} tone={toneFor(category)} date={date} divider={index > 0} />;
+                        if (!selectable(event)) return <div key={event.id} className="flex items-center min-w-0 [&>.tw-EventItem-6006-row]:flex-1 [&>.tw-EventItem-6006-row]:min-w-0" style={{ borderTop: index > 0 ? "1px solid var(--rule)" : undefined }}><span className="w-[18px] ml-[16px] flex-none" aria-hidden="true" /><EventItem event={event} onOpen={onOpenEvent} category={category} tone={toneFor(category)} date={date} /></div>;
+                        const checked = selection.has(event.id);
+                        return (
+                          <div key={event.id} className="flex items-center min-w-0 [&>.tw-EventItem-6006-row]:flex-1 [&>.tw-EventItem-6006-row]:min-w-0" style={{ borderTop: index > 0 ? "1px solid var(--rule)" : undefined, background: checked ? "var(--blue-soft)" : undefined }}>
+                            <SelectBox checked={checked} onChange={() => selection.toggle(event.id)} label={`Seleccionar ${event.title}`} className="ml-[16px]" />
+                            <EventItem event={event} onOpen={openOrToggle} category={category} tone={toneFor(category)} date={date} />
+                          </div>
+                        );
                       })}
                     </Card>
                   </div>
@@ -214,6 +231,7 @@ export function CalendarView({ categories: sourceCategories, events, today, acti
           </ol>
         </TabsPanel>
       </Tabs>
+      {bulk?.(selection)}
 
     </section>
   );
