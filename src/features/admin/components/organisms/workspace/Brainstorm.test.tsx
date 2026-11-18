@@ -16,23 +16,43 @@ beforeEach(() => { vi.clearAllMocks(); window.history.replaceState(null, "", "/a
 test("muestra la pizarra con sus post-its y crea uno del color elegido", async () => {
   const user = userEvent.setup();
   render(<BrainstormWorkspace />);
-  expect(screen.getByRole("heading", { name: sampleWhiteboard.name })).toBeTruthy();
+  expect((screen.getByRole("textbox", { name: "Nombre de la pizarra" }) as HTMLInputElement).value).toBe(sampleWhiteboard.name);
   expect((screen.getByRole("textbox", { name: "Texto del post-it" }) as HTMLTextAreaElement).value).toBe("Daurisito");
   await user.click(screen.getByRole("button", { name: "Rosa" }));
   await user.click(screen.getByRole("button", { name: "Nuevo post-it" }));
   await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "stickyNotes", data: expect.objectContaining({ whiteboardId: sampleWhiteboard.id, text: "", color: "pink" }) }));
 });
 
-test("mueve un post-it con el teclado y guarda el texto al salir", async () => {
+test("con el teclado selecciona todo, mueve en la cuadrícula y elimina en bloque", async () => {
+  render(<BrainstormWorkspace />);
+  const canvas = screen.getByLabelText(/^Lienzo de/);
+  canvas.focus();
+  fireEvent.keyDown(canvas, { key: "a", ctrlKey: true, metaKey: true });
+  await waitFor(() => expect(screen.getByRole("toolbar", { name: /1 post-its seleccionados/ })).toBeTruthy());
+  fireEvent.keyDown(canvas, { key: "ArrowRight" });
+  await waitFor(() => expect(bulk).toHaveBeenCalledWith("stickyNotes", [sampleSticky.id], { type: "stickyPositions", positions: [{ id: sampleSticky.id, x: sampleSticky.x + 24, y: sampleSticky.y }] }));
+  fireEvent.keyDown(canvas, { key: "Delete" });
+  await waitFor(() => expect(bulk).toHaveBeenCalledWith("stickyNotes", [sampleSticky.id], { type: "delete" }));
+});
+
+test("doble clic edita el texto en el lugar y lo guarda al salir", async () => {
   const user = userEvent.setup();
   render(<BrainstormWorkspace />);
-  const note = screen.getByRole("group", { name: /Post-it de/ });
-  note.focus();
-  fireEvent.keyDown(note, { key: "ArrowRight" });
-  await waitFor(() => expect(save).toHaveBeenCalledWith(expect.objectContaining({ collection: "stickyNotes", id: sampleSticky.id, revision: 1, data: expect.objectContaining({ x: sampleSticky.x + 16, y: sampleSticky.y }) })));
-  const text = screen.getByRole("textbox", { name: "Texto del post-it" });
+  const text = screen.getByRole("textbox", { name: "Texto del post-it" }) as HTMLTextAreaElement;
+  expect(text.readOnly).toBe(true);
+  fireEvent.doubleClick(text.closest("[data-note]")!);
+  await waitFor(() => expect(text.readOnly).toBe(false));
   await user.clear(text);
   await user.type(text, "Tauri");
-  await user.tab();
-  await waitFor(() => expect(save).toHaveBeenLastCalledWith(expect.objectContaining({ id: sampleSticky.id, data: expect.objectContaining({ text: "Tauri" }) })));
+  fireEvent.blur(text);
+  await waitFor(() => expect(bulk).toHaveBeenCalledWith("stickyNotes", [sampleSticky.id], { type: "stickyText", value: "Tauri" }));
+});
+
+test("renombra la pizarra en el lugar", async () => {
+  const user = userEvent.setup();
+  render(<BrainstormWorkspace />);
+  const name = screen.getByRole("textbox", { name: "Nombre de la pizarra" });
+  await user.clear(name);
+  await user.type(name, "Mascota{Enter}");
+  await waitFor(() => expect(save).toHaveBeenCalledWith({ collection: "whiteboards", id: sampleWhiteboard.id, revision: sampleWhiteboard.revision, data: { name: "Mascota", description: sampleWhiteboard.description, color: sampleWhiteboard.color } }));
 });
