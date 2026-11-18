@@ -42,7 +42,8 @@
   "overrides": {
     "@firebase/app": "0.16.2",
     "@firebase/app-compat": "0.5.18",
-    "@grpc/grpc-js": "1.14.7"
+    "@grpc/grpc-js": "1.14.7",
+    "jwks-rsa": "3.2.2"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.2",
