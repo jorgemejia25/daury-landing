@@ -1,8 +1,8 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import {
-  closestCorners,
+  closestCenter,
   DndContext,
   DragOverlay,
   KeyboardSensor,
@@ -10,12 +10,17 @@ import {
   useDroppable,
   useSensor,
   useSensors,
+  getFirstCollision,
+  pointerWithin,
+  rectIntersection,
   type Announcements,
+  type CollisionDetection,
   type DragEndEvent,
+  type UniqueIdentifier,
   type DragOverEvent,
   type KeyboardCoordinateGetter,
 } from "@dnd-kit/core";
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Plus } from "lucide-react";
 import { IconButton } from "@/ui/atoms/IconButton";
@@ -149,6 +154,25 @@ export function KanbanColumns(props: KanbanColumnsProps) {
   const byId = useMemo(() => new Map(tasks.map((task) => [task.id, task])), [tasks]);
   const base = useMemo(() => Object.fromEntries(board.columnOrder.map((column) => [column, tasks.filter((task) => task.status === column).map((task) => task.id)])), [board.columnOrder, tasks]);
   const layout = preview ?? base;
+  /** Evita el bucle de dnd-kit: tras pasar la tarjeta a otra columna, se espera un cuadro antes de recalcular. */
+  const lastOver = useRef<UniqueIdentifier | null>(null);
+  const recentlyMoved = useRef(false);
+  useEffect(() => { requestAnimationFrame(() => { recentlyMoved.current = false; }); }, [preview]);
+  const collision: CollisionDetection = useCallback((args) => {
+    const pointer = pointerWithin(args);
+    let overId = getFirstCollision(pointer.length ? pointer : rectIntersection(args), "id");
+    if (overId != null) {
+      const key = String(overId);
+      if (key.startsWith("column:")) {
+        const items = layout[key.slice(7)] ?? [];
+        if (items.length) overId = closestCenter({ ...args, droppableContainers: args.droppableContainers.filter((container) => items.includes(String(container.id))) })[0]?.id ?? overId;
+      }
+      lastOver.current = overId;
+      return [{ id: overId }];
+    }
+    if (recentlyMoved.current) lastOver.current = args.active.id;
+    return lastOver.current ? [{ id: lastOver.current }] : [];
+  }, [layout]);
   const columnOf = (id: unknown, current = layout) => {
     const key = String(id);
     if (key.startsWith("column:")) return key.slice(7);
@@ -166,40 +190,34 @@ export function KanbanColumns(props: KanbanColumnsProps) {
 
   function onDragOver({ active, over }: DragOverEvent) {
     if (!over) return;
-    setPreview((current) => {
-      const state = current ?? base;
-      const from = columnOf(active.id, state), to = columnOf(over.id, state);
-      if (!from || !to) return state;
-      const id = String(active.id);
-      const source = state[from].filter((item) => item !== id);
-      const target = from === to ? source : [...state[to]];
-      const overIndex = String(over.id).startsWith("column:") ? target.length : target.indexOf(String(over.id));
-      // Sin orden manual, el destino solo cambia de columna: la tarjeta va al final.
-      const index = !reorderable && from !== to ? target.length : overIndex < 0 ? target.length : overIndex;
-      if (!reorderable && from === to) return state;
-      const next = [...target.slice(0, index), id, ...target.slice(index)];
-      if (from === to && next.join() === state[from].join()) return state;
-      return { ...state, [from]: from === to ? next : source, ...(from === to ? {} : { [to]: next }) };
-    });
+    const from = columnOf(active.id), to = columnOf(over.id);
+    // Dentro de la misma columna, el orden lo anima SortableContext y se calcula al soltar.
+    if (!from || !to || from === to) return;
+    const id = String(active.id);
+    const target = layout[to].filter((item) => item !== id);
+    const overIndex = String(over.id).startsWith("column:") || !reorderable ? -1 : target.indexOf(String(over.id));
+    const index = overIndex < 0 ? target.length : overIndex;
+    recentlyMoved.current = true;
+    setPreview({ ...layout, [from]: layout[from].filter((item) => item !== id), [to]: [...target.slice(0, index), id, ...target.slice(index)] });
   }
 
   function onDragEnd({ active, over }: DragEndEvent) {
     const final = preview ?? base;
     setDragging(null);
     setPreview(null);
+    lastOver.current = null;
     const task = byId.get(String(active.id));
     if (!task || !over) return;
-    let column = columnOf(active.id, final) ?? task.status;
-    let order = [...final[column]];
-    // Soltar sobre otra tarjeta de la misma columna sin onDragOver previo (p. ej. teclado rápido).
-    if (column === task.status && !String(over.id).startsWith("column:") && over.id !== active.id && reorderable) {
+    const column = columnOf(active.id, final) ?? task.status;
+    let order = final[column] ?? [];
+    const overColumn = columnOf(over.id, final);
+    if (reorderable && overColumn === column && !String(over.id).startsWith("column:") && over.id !== active.id) {
       const from = order.indexOf(task.id), to = order.indexOf(String(over.id));
-      if (from >= 0 && to >= 0) { order.splice(from, 1); order.splice(to, 0, task.id); }
+      if (from >= 0 && to >= 0) order = arrayMove(order, from, to);
     }
-    if (!order.includes(task.id)) { column = task.status; order = base[column]; }
     const index = order.indexOf(task.id);
-    const unchanged = column === task.status && index === base[column].indexOf(task.id);
-    if (unchanged) return;
+    if (index < 0) return;
+    if (column === task.status && index === base[column].indexOf(task.id)) return;
     if (!reorderable) { if (column !== task.status) onMove(task, column); return; }
     const before = byId.get(order[index - 1] ?? ""), after = byId.get(order[index + 1] ?? "");
     const rank = before && after ? (effectiveRank(before) + effectiveRank(after)) / 2 : before ? effectiveRank(before) + 1024 : after ? effectiveRank(after) - 1024 : 0;
@@ -211,11 +229,11 @@ export function KanbanColumns(props: KanbanColumnsProps) {
     <DndContext
       id={dndId}
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={collision}
       accessibility={{ announcements, screenReaderInstructions: { draggable: "Para mover una tarjeta, presiona Espacio; usa arriba y abajo para ordenarla, izquierda y derecha para cambiar de columna, y Espacio para soltarla. Enter abre la tarea." } }}
       onDragStart={({ active }) => setDragging(byId.get(String(active.id)) ?? null)}
       onDragOver={onDragOver}
-      onDragCancel={() => { setDragging(null); setPreview(null); }}
+      onDragCancel={() => { setDragging(null); setPreview(null); lastOver.current = null; }}
       onDragEnd={onDragEnd}
     >
       <div className={styles.columns}>
