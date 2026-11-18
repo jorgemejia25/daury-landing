@@ -53,29 +53,25 @@ describe("calendarios", () => {
     expect(onOpenEvent).toHaveBeenCalledWith("sesion-producto");
   });
 
-  test("el filtro de calendarios es un menú con casillas y se puede restablecer", async () => {
+  test("el filtro de calendarios es un select de un solo calendario y se puede restablecer", async () => {
     const user = userEvent.setup();
     renderCalendar();
-    await user.click(screen.getByRole("button", { name: /Calendarios visibles: Todos los calendarios/ }));
-    for (const name of ["Producto", "Contenido", "Fechas de tareas"]) {
-      await user.click(await screen.findByRole("menuitemcheckbox", { name }));
-    }
-    await waitFor(() => expect(screen.getByText("No hay calendarios seleccionados")).toBeTruthy());
-    await user.keyboard("{Escape}");
-    await user.click(screen.getByRole("button", { name: "Mostrar todos" }));
+    await user.click(screen.getByRole("combobox", { name: "Calendario visible" }));
+    await user.click(await screen.findByRole("option", { name: "Contenido" }));
+    await waitFor(() => expect(new URLSearchParams(window.location.search).get("calendars")).toBe("contenido"));
+    expect(screen.queryByRole("button", { name: /Ver evento sesion-producto/ })).toBeNull();
+    await user.click(screen.getByRole("combobox", { name: "Calendario visible" }));
+    await user.click(await screen.findByRole("option", { name: "Todos los calendarios" }));
+    await waitFor(() => expect(new URLSearchParams(window.location.search).get("calendars")).toBeNull());
     expect(screen.getByRole("button", { name: /Ver evento sesion-producto/ })).toBeTruthy();
-    expect(new URLSearchParams(window.location.search).get("calendars")).toBeNull();
   });
 
-  test("crear un evento desde un día y abrir la administración desde el filtro", async () => {
+  test("crear un evento desde un día", async () => {
     const user = userEvent.setup();
-    const onCreateDay = vi.fn(), onManageCalendars = vi.fn();
-    renderCalendar({ onCreateDay, onManageCalendars });
+    const onCreateDay = vi.fn();
+    renderCalendar({ onCreateDay });
     await user.click(screen.getByRole("button", { name: /Crear evento el 20 de noviembre/ }));
     expect(onCreateDay).toHaveBeenCalledWith("2026-11-20");
-    await user.click(screen.getByRole("button", { name: /Calendarios visibles/ }));
-    await user.click(await screen.findByRole("menuitem", { name: "Administrar calendarios" }));
-    expect(onManageCalendars).toHaveBeenCalled();
   });
 
   test("el agente cambia la vista con nombres accesibles", async () => {
