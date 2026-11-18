@@ -13,5 +13,7 @@ export type BulkAction =
   | { type: "stickyColor"; value: string }
   | { type: "stickyText"; value: string; h?: number }
   /** Tamaño y posición de figuras y textos. */
-  | { type: "stickyBox"; boxes: { id: string; x: number; y: number; w: number; h: number }[] };
+  | { type: "stickyBox"; boxes: { id: string; x: number; y: number; w: number; h: number }[] }
+  /** Una flecha: extremos (puntos relativos) y elementos a los que se une. */
+  | { type: "stickyArrow"; x: number; y: number; w: number; h: number; points: number[]; from: string; to: string };
 export type BulkResult = { ok: true; count: number } | { ok: false; error: string };

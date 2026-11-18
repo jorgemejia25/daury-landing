@@ -70,6 +70,8 @@ describe("acceso a los espacios compartidos", () => {
     await assertFails(setDoc(doc(db, "stickyNotes", "sin-tamano"), Object.fromEntries(Object.entries(shape).filter(([key]) => key !== "w"))));
     await assertFails(setDoc(doc(db, "stickyNotes", "trazo-largo"), { ...shape, kind: "pen", points: Array(1001).fill(1) }));
     await assertFails(setDoc(doc(db, "stickyNotes", "talla"), { ...shape, size: "xl" }));
+    await assertSucceeds(setDoc(doc(db, "stickyNotes", "flecha"), { ...shape, kind: "arrow", points: [0, 0, 10, 10], from: "figura", to: "" }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "flecha-mala"), { ...shape, kind: "arrow", points: [0, 0, 10, 10], from: 3, to: "" }));
   });
   test("las tareas admiten un orden manual numérico opcional", async () => {
     const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from "react";
-import { Menu, MenuContent, MenuContextTrigger, MenuItem, MenuSeparator, MenuSub, MenuSubContent, MenuSubTrigger } from "@ui-sdk/react/menu";
+import { Menu, MenuContent, MenuContextTrigger, MenuItem, MenuSeparator, MenuSub, MenuSubContent, MenuSubTrigger, MenuTrigger } from "@ui-sdk/react/menu";
 import { Toggle, ToggleGroup } from "@ui-sdk/react/toggle";
 import { Toolbar, ToolbarButton, ToolbarSeparator } from "@ui-sdk/react/toolbar";
 import { Tooltip, TooltipContent, TooltipShortcut, TooltipTrigger } from "@ui-sdk/react/tooltip";
-import { Archive, ArchiveRestore, ChevronRight, Circle, Copy, Eraser, Hand, LayoutGrid, Lightbulb, MousePointer2, MousePointerClick, MoveUpRight, Palette, Pencil, PenLine, Plus, Square, SquarePlus, StickyNote as StickyIcon, Trash2, Type, X, CircleHelp } from "lucide-react";
+import { Archive, ArchiveRestore, ChevronRight, Circle, Copy, Eraser, Hand, LayoutGrid, Lightbulb, MousePointer2, MousePointerClick, MoveUpRight, Palette, Pencil, PenLine, Plus, Square, SquarePlus, StickyNote as StickyIcon, Trash2, Type, X, CircleHelp, AlignStartVertical, AlignCenterVertical, AlignEndVertical, AlignStartHorizontal, AlignCenterHorizontal, AlignEndHorizontal, AlignHorizontalSpaceAround, AlignVerticalSpaceAround } from "lucide-react";
 import { Avatar } from "@/ui/atoms/Avatar";
 import { Button } from "@/ui/atoms/Button";
 import { StatusDot } from "@/ui/atoms/StatusDot";
@@ -15,6 +15,7 @@ import { EmptyState } from "@/ui/molecules/EmptyState";
 import { saveWorkspaceItem } from "@/features/admin/actions/workspace";
 import { bulkWorkspaceAction } from "@/features/admin/actions/bulk";
 import { useWorkspace } from "@/features/admin/hooks/useWorkspace";
+import { getAdminFirebase } from "@/features/admin/lib/firebase-client";
 import { useAdminQuery } from "@/features/admin/hooks/useAdminQuery";
 import type { BulkAction } from "@/features/admin/lib/bulk";
 import { personName } from "@/features/admin/lib/people";
@@ -68,6 +69,21 @@ const smoothPath = (points: number[]) => {
   for (let i = 2; i < points.length - 2; i += 2) path += ` Q${points[i]} ${points[i + 1]} ${(points[i] + points[i + 2]) / 2} ${(points[i + 1] + points[i + 3]) / 2}`;
   return `${path} L${points.at(-2)} ${points.at(-1)}`;
 };
+type Point = { x: number; y: number };
+type Box = { x: number; y: number; w: number; h: number };
+const centerOf = (box: Box): Point => ({ x: box.x + box.w / 2, y: box.y + box.h / 2 });
+/** Punto del borde de un elemento en dirección a otro punto, con un pequeño margen (como Excalidraw). */
+const edgeToward = (element: Pick<StickyNote, "kind">, box: Box, toward: Point): Point => {
+  const c = centerOf(box), dx = toward.x - c.x, dy = toward.y - c.y, length = Math.hypot(dx, dy);
+  if (!length) return c;
+  const t = element.kind === "ellipse"
+    ? 1 / Math.sqrt((dx / Math.max(box.w / 2, 1)) ** 2 + (dy / Math.max(box.h / 2, 1)) ** 2)
+    : Math.min(Math.abs(box.w / 2 / (dx || 1e-9)), Math.abs(box.h / 2 / (dy || 1e-9)));
+  const gap = 8 / length;
+  return { x: c.x + dx * (t + gap), y: c.y + dy * (t + gap) };
+};
+const bindable = (element?: Pick<StickyNote, "kind">) => Boolean(element && (isNote(element) || element.kind === "text" || element.kind === "rect" || element.kind === "ellipse"));
+const SNAP = 6;
 const tilt = (id: string) => ((Array.from(id).reduce((sum, char) => sum + char.charCodeAt(0), 0) % 7) - 3) * 0.45;
 const isMac = () => typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 const keyHint = (text: string) => <span className="ml-auto pl-[16px] text-ink-soft text-[12px] font-normal font-mono">{text}</span>;
@@ -99,7 +115,8 @@ type Gesture =
   | { type: "marquee"; x0: number; y0: number; x1: number; y1: number; base: string[] }
   | { type: "pan"; sx: number; sy: number; left: number; top: number }
   | { type: "draw"; kind: "pen"; points: number[] }
-  | { type: "shape"; kind: "rect" | "ellipse" | "arrow"; x0: number; y0: number; x1: number; y1: number; free: boolean }
+  | { type: "shape"; kind: "rect" | "ellipse" | "arrow"; x0: number; y0: number; x1: number; y1: number; free: boolean; from: string; to: string }
+  | { type: "arrowEnd"; id: string; end: "start" | "end"; x: number; y: number; target: string }
   | { type: "erase"; ids: string[] }
   | { type: "resize"; id: string; box: { x: number; y: number; w: number; h: number }; sx: number; sy: number; dx: number; dy: number };
 
@@ -121,6 +138,11 @@ export function BrainstormWorkspace() {
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [pending, setPending] = useState<Record<string, Pending>>({});
+  /** Elementos recién creados que se muestran antes de que Firestore los confirme. */
+  const [optimistic, setOptimistic] = useState<Record<string, Element>>({});
+  /** Una sola escritura a la vez por cliente: evita choques en el registro de control de la pizarra. */
+  const queue = useRef<Promise<unknown>>(Promise.resolve());
+  const enqueue = <T,>(task: () => Promise<T>) => { const next = queue.current.then(task, task); queue.current = next.catch(() => undefined); return next; };
   const [removed, setRemoved] = useState<Set<string>>(() => new Set());
   const [gesture, setGesture] = useState<Gesture | null>(null);
   const [spacePan, setSpacePan] = useState(false);
@@ -131,22 +153,56 @@ export function BrainstormWorkspace() {
   const scroller = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLInputElement>(null);
 
-  const live = useMemo(() => notes.items.filter((note) => !note.archived && !removed.has(note.id)).map((note) => {
+  // Lo que ya llegó de Firestore deja de ser provisional.
+  // Se compara por ids (no por referencia: el hook entrega una lista nueva mientras carga).
+  const serverIds = notes.items.map((note) => note.id).join("|");
+  const [seenIds, setSeenIds] = useState(serverIds);
+  if (seenIds !== serverIds) {
+    setSeenIds(serverIds);
+    if (Object.keys(optimistic).some((id) => notes.items.some((note) => note.id === id))) setOptimistic((current) => Object.fromEntries(Object.entries(current).filter(([id]) => !notes.items.some((note) => note.id === id))));
+  }
+  const live = useMemo(() => [...notes.items, ...Object.values(optimistic).filter((item) => !notes.items.some((note) => note.id === item.id))].filter((note) => !note.archived && !removed.has(note.id)).map((note) => {
     const local = pending[note.id];
     return local && note.revision < local.until ? { ...note, ...local } : note;
-  }).toSorted((a, b) => a.createdAt.localeCompare(b.createdAt)), [notes.items, pending, removed]);
+  }).toSorted((a, b) => a.createdAt.localeCompare(b.createdAt)), [notes.items, optimistic, pending, removed]);
   const byId = useMemo(() => new Map(live.map((note) => [note.id, note])), [live]);
   const selection = live.filter((note) => selected.has(note.id));
   const width = Math.max(2400, ...live.map((note) => { const box = boxOf(note); return box.x + box.w + 320; }));
   const height = Math.max(1500, ...live.map((note) => { const box = boxOf(note); return box.y + box.h + 320; }));
   const activeTool: Tool = spacePan ? "hand" : tool;
 
+  // Al mover: imán a los bordes y centros de otros elementos (con guías); si no hay, a la cuadrícula.
+  let shiftX = 0, shiftY = 0;
+  const guides: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  if (gesture?.type === "move" && gesture.moved) {
+    shiftX = gesture.dx; shiftY = gesture.dy;
+    const moving = gesture.ids.map((id) => byId.get(id)).filter((note): note is Element => Boolean(note) && note!.kind !== "arrow");
+    if (moving.length && !gesture.free) {
+      const boxes = moving.map((note) => ({ ...boxOf(note), ...gesture.origin[note.id] }));
+      const left = Math.min(...boxes.map((b) => b.x)), top = Math.min(...boxes.map((b) => b.y));
+      const union = { x: left, y: top, w: Math.max(...boxes.map((b) => b.x + b.w)) - left, h: Math.max(...boxes.map((b) => b.y + b.h)) - top };
+      const raw = { ...union, x: union.x + gesture.dx, y: union.y + gesture.dy };
+      const others = live.filter((note) => !gesture.ids.includes(note.id) && note.kind !== "arrow" && note.kind !== "pen").map(boxOf);
+      const lines = (b: Box, axis: "x" | "y") => (axis === "x" ? [b.x, b.x + b.w / 2, b.x + b.w] : [b.y, b.y + b.h / 2, b.y + b.h]);
+      for (const axis of ["x", "y"] as const) {
+        let best: { d: number; line: number; target: Box } | null = null;
+        for (const target of others) for (const a of lines(raw, axis)) for (const b of lines(target, axis)) if (Math.abs(b - a) <= SNAP && (!best || Math.abs(b - a) < Math.abs(best.d))) best = { d: b - a, line: b, target };
+        if (axis === "x") {
+          if (best) { shiftX = gesture.dx + best.d; guides.push({ x1: best.line, y1: Math.min(raw.y, best.target.y) - 12, x2: best.line, y2: Math.max(raw.y + raw.h, best.target.y + best.target.h) + 12 }); }
+          else shiftX = snap(union.x + gesture.dx) - union.x;
+        } else {
+          if (best) { shiftY = gesture.dy + best.d; guides.push({ x1: Math.min(raw.x, best.target.x) - 12, y1: best.line, x2: Math.max(raw.x + raw.w, best.target.x + best.target.w) + 12, y2: best.line }); }
+          else shiftY = snap(union.y + gesture.dy) - union.y;
+        }
+      }
+    }
+  }
   /** Caja en pantalla: con el gesto en curso aplicado (mover o cambiar tamaño). */
   const boxNow = (note: Element) => {
     const box = boxOf(note);
     if (gesture?.type === "move" && gesture.moved && gesture.ids.includes(note.id)) {
       const origin = gesture.origin[note.id];
-      return { ...box, x: clampTo(snap(origin.x + gesture.dx, gesture.free), box.w), y: clampTo(snap(origin.y + gesture.dy, gesture.free), box.h) };
+      return { ...box, x: clampTo(origin.x + shiftX, box.w), y: clampTo(origin.y + shiftY, box.h) };
     }
     if (gesture?.type === "resize" && gesture.id === note.id) {
       const w = Math.max(note.kind === "text" ? 80 : 32, snap(gesture.box.w + gesture.dx));
@@ -155,6 +211,31 @@ export function BrainstormWorkspace() {
     }
     return box;
   };
+
+  /** Extremos de una flecha: si está unida a elementos, sale y llega a sus bordes y los sigue al moverlos. */
+  const arrowEnds = (arrow: Element) => {
+    const pts = arrow.points?.length === 4 ? arrow.points : [0, 0, arrow.w ?? 0, arrow.h ?? 0];
+    let start: Point = { x: arrow.x + pts[0], y: arrow.y + pts[1] }, end: Point = { x: arrow.x + pts[2], y: arrow.y + pts[3] };
+    let fromEl = arrow.from ? byId.get(arrow.from) : undefined, toEl = arrow.to ? byId.get(arrow.to) : undefined;
+    if (!bindable(fromEl)) fromEl = undefined;
+    if (!bindable(toEl)) toEl = undefined;
+    if (gesture?.type === "move" && gesture.moved && gesture.ids.includes(arrow.id)) {
+      // Si la flecha se mueve sin el elemento al que estaba unida, se suelta de él.
+      if (fromEl && !gesture.ids.includes(fromEl.id)) fromEl = undefined;
+      if (toEl && !gesture.ids.includes(toEl.id)) toEl = undefined;
+      if (!fromEl) start = { x: start.x + shiftX, y: start.y + shiftY };
+      if (!toEl) end = { x: end.x + shiftX, y: end.y + shiftY };
+    }
+    if (gesture?.type === "arrowEnd" && gesture.id === arrow.id) {
+      const target = gesture.target ? byId.get(gesture.target) : undefined;
+      if (gesture.end === "start") { fromEl = target; start = { x: gesture.x, y: gesture.y }; } else { toEl = target; end = { x: gesture.x, y: gesture.y }; }
+    }
+    const fromBox = fromEl ? boxNow(fromEl) : undefined, toBox = toEl ? boxNow(toEl) : undefined;
+    const ref0 = fromBox ? centerOf(fromBox) : start, ref1 = toBox ? centerOf(toBox) : end;
+    return { start: fromEl && fromBox ? edgeToward(fromEl, fromBox, ref1) : start, end: toEl && toBox ? edgeToward(toEl, toBox, ref0) : end, from: fromEl?.id ?? "", to: toEl?.id ?? "" };
+  };
+  const arrowBox = (arrow: Element): Box => { const { start, end } = arrowEnds(arrow); return { x: Math.min(start.x, end.x), y: Math.min(start.y, end.y), w: Math.abs(end.x - start.x), h: Math.abs(end.y - start.y) }; };
+  const hitBox = (note: Element) => (note.kind === "arrow" ? arrowBox(note) : boxOf(note));
 
   const boardId = board?.id;
   const [seenBoard, setSeenBoard] = useState(boardId);
@@ -170,8 +251,8 @@ export function BrainstormWorkspace() {
     setPending((current) => {
       const next = { ...current };
       for (const [id, values] of Object.entries(changes)) {
-        const server = notes.items.find((note) => note.id === id);
-        if (server) next[id] = { ...next[id], ...values, until: Math.max(next[id]?.until ?? 0, server.revision) + 1 };
+        const revision = notes.items.find((note) => note.id === id)?.revision ?? (optimistic[id] ? 1 : undefined);
+        if (revision !== undefined) next[id] = { ...next[id], ...values, until: Math.max(next[id]?.until ?? 0, revision) + 1 };
       }
       return next;
     });
@@ -180,7 +261,7 @@ export function BrainstormWorkspace() {
     if (!ids.length) return true;
     setError("");
     try {
-      const result = await bulkWorkspaceAction("stickyNotes", ids, action);
+      const result = await enqueue(() => bulkWorkspaceAction("stickyNotes", ids, action));
       if (result.ok) return true;
       setError(result.error);
     } catch {
@@ -221,38 +302,43 @@ export function BrainstormWorkspace() {
     setEditingId(null);
     if (!(await run(ids, { type: "delete" }, "No se pudieron eliminar los elementos."))) setRemoved((current) => { const next = new Set(current); for (const id of ids) next.delete(id); return next; });
   }
-  async function create(items: Omit<StickyNote, "whiteboardId">[], edit = false) {
-    if (!board || !editable) return;
+  /** Crea al instante con un id del navegador; Firestore lo confirma en segundo plano, en orden. */
+  function create(items: Omit<StickyNote, "whiteboardId">[], edit = false) {
+    if (!board || !editable || !items.length) return [];
     setError("");
-    const ids: string[] = [];
-    for (const item of items) {
-      try {
-        const result = await saveWorkspaceItem({ collection: "stickyNotes", data: { whiteboardId: board.id, ...item } });
+    const now = new Date().toISOString();
+    let email = "";
+    try { email = getAdminFirebase().auth.currentUser?.email ?? ""; } catch { /* sin Firebase (pruebas): el servidor pone el autor real */ }
+    const created = items.map((item) => ({ ...item, whiteboardId: board.id, id: crypto.randomUUID(), revision: 0, archived: false, createdAt: now, updatedAt: now, createdBy: email, updatedBy: email }) as Element);
+    setOptimistic((current) => ({ ...current, ...Object.fromEntries(created.map((item) => [item.id, item])) }));
+    setSelected(new Set(created.map((item) => item.id)));
+    if (edit && created.length === 1) setEditingId(created[0].id);
+    for (const item of created) {
+      const { id, whiteboardId, text, color, x, y, kind, w, h, points, size, from, to } = item;
+      const data = { whiteboardId, text, color, x, y, ...(kind ? { kind, w, h, points, size } : {}), ...(from !== undefined || to !== undefined ? { from: from ?? "", to: to ?? "" } : {}) };
+      void enqueue(() => saveWorkspaceItem({ collection: "stickyNotes", id, revision: 0, data })).then((result) => {
         if (!result.ok) throw new Error(result.error);
-        ids.push(result.id);
-      } catch {
-        setError("No se pudo crear el elemento. Revisa tu conexión.");
-        break;
-      }
+      }).catch(() => {
+        setOptimistic((current) => { const next = { ...current }; delete next[id]; return next; });
+        setError("No se pudo guardar un elemento nuevo. Revisa tu conexión.");
+      });
     }
-    if (!ids.length) return;
-    setSelected(new Set(ids));
-    if (edit && ids.length === 1) setEditingId(ids[0]);
+    return created.map((item) => item.id);
   }
   const element = (kind: Exclude<ElementKind, "note">, x: number, y: number, w: number, h: number, points: number[] = []): Omit<StickyNote, "whiteboardId"> =>
     ({ text: "", color: strokeColor as StickyColor, kind, x: clampTo(x, w), y: clampTo(y, h), w, h, points, size: textSize });
   function addNote(x: number, y: number) {
-    void create([{ text: "", color: noteColor as StickyColor, x: clampTo(snap(x - NOTE_W / 2), NOTE_W), y: clampTo(snap(y - 24), NOTE_H) }], true);
+    create([{ text: "", color: noteColor as StickyColor, x: clampTo(snap(x - NOTE_W / 2), NOTE_W), y: clampTo(snap(y - 24), NOTE_H) }], true);
   }
   function addText(x: number, y: number) {
-    void create([element("text", Math.round(x), Math.round(y - fontPx[textSize] * 0.7), 260, textHeight("", 260, textSize))], true);
+    create([element("text", Math.round(x), Math.round(y - fontPx[textSize] * 0.7), 260, textHeight("", 260, textSize))], true);
   }
   function addInView() {
     const view = scroller.current, nudge = (live.length % 5) * GRID;
     addNote(view ? view.scrollLeft + view.clientWidth / 2 + nudge : 240, view ? view.scrollTop + view.clientHeight / 2 - NOTE_H / 2 + nudge : 120);
   }
   function duplicate(ids: string[]) {
-    void create(ids.map((id) => byId.get(id)).filter((note): note is Element => Boolean(note)).map(({ text, color, x, y, kind, w, h, points, size }) => {
+    create(ids.map((id) => byId.get(id)).filter((note): note is Element => Boolean(note)).map(({ text, color, x, y, kind, w, h, points, size }) => {
       const box = boxOf({ x, y, kind, w, h } as StickyNote);
       return { text, color, x: clampTo(x + GRID, box.w), y: clampTo(y + GRID, box.h), ...(kind ? { kind, w, h, points, size } : {}) };
     }));
@@ -264,6 +350,39 @@ export function BrainstormWorkspace() {
     const cellW = Math.max(...list.map((note) => boxOf(note).w)) + GRID, cellH = Math.max(...list.map((note) => boxOf(note).h)) + GRID;
     const x0 = snap(Math.min(...list.map((note) => note.x))), y0 = snap(Math.min(...list.map((note) => note.y)));
     move(list.map((note, index) => ({ id: note.id, x: clampTo(x0 + (index % columns) * cellW, boxOf(note).w), y: clampTo(y0 + Math.floor(index / columns) * cellH, boxOf(note).h) })));
+  }
+
+  function saveArrow(id: string, ends: { start: Point; end: Point; from: string; to: string }) {
+    const clamp = (value: number) => Math.min(Math.max(Math.round(value), 0), canvasSize);
+    const x = clamp(Math.min(ends.start.x, ends.end.x)), y = clamp(Math.min(ends.start.y, ends.end.y));
+    const points = [ends.start.x - x, ends.start.y - y, ends.end.x - x, ends.end.y - y].map((value) => Math.max(-canvasSize, Math.min(canvasSize, Math.round(value))));
+    const box = { x, y, w: Math.min(Math.max(1, Math.abs(points[2] - points[0])), canvasSize), h: Math.min(Math.max(1, Math.abs(points[3] - points[1])), canvasSize) };
+    applyLocal({ [id]: { ...box, points, from: ends.from, to: ends.to } });
+    void run([id], { type: "stickyArrow", ...box, points, from: ends.from, to: ends.to }, "No se pudo guardar la flecha.");
+  }
+  /** Alinear o repartir la selección (las flechas unidas los siguen solas). */
+  function align(mode: string) {
+    const items = selection.filter((note) => note.kind !== "arrow").map((note) => ({ note, box: boxOf(note) }));
+    if (items.length < 2) return;
+    const left = Math.min(...items.map((i) => i.box.x)), right = Math.max(...items.map((i) => i.box.x + i.box.w));
+    const top = Math.min(...items.map((i) => i.box.y)), bottom = Math.max(...items.map((i) => i.box.y + i.box.h));
+    const at = (item: { note: Element; box: Box }, x: number, y: number) => ({ id: item.note.id, x: clampTo(x, item.box.w), y: clampTo(y, item.box.h) });
+    if (mode === "left") move(items.map((i) => at(i, left, i.box.y)));
+    if (mode === "center") move(items.map((i) => at(i, (left + right) / 2 - i.box.w / 2, i.box.y)));
+    if (mode === "right") move(items.map((i) => at(i, right - i.box.w, i.box.y)));
+    if (mode === "top") move(items.map((i) => at(i, i.box.x, top)));
+    if (mode === "middle") move(items.map((i) => at(i, i.box.x, (top + bottom) / 2 - i.box.h / 2)));
+    if (mode === "bottom") move(items.map((i) => at(i, i.box.x, bottom - i.box.h)));
+    if (mode === "spread-x" && items.length > 2) {
+      const sorted = items.toSorted((a, b) => a.box.x - b.box.x), gap = (right - left - sorted.reduce((sum, i) => sum + i.box.w, 0)) / (sorted.length - 1);
+      let cursor = left;
+      move(sorted.map((i) => { const position = at(i, cursor, i.box.y); cursor += i.box.w + gap; return position; }));
+    }
+    if (mode === "spread-y" && items.length > 2) {
+      const sorted = items.toSorted((a, b) => a.box.y - b.box.y), gap = (bottom - top - sorted.reduce((sum, i) => sum + i.box.h, 0)) / (sorted.length - 1);
+      let cursor = top;
+      move(sorted.map((i) => { const position = at(i, i.box.x, cursor); cursor += i.box.h + gap; return position; }));
+    }
   }
 
   // ——— Pizarras ———
@@ -309,10 +428,14 @@ export function BrainstormWorkspace() {
       setGesture({ type: "pan", sx: event.clientX, sy: event.clientY, left: view.scrollLeft, top: view.scrollTop });
       return;
     }
-    if (target.closest("[data-handle]") && editable) {
-      const id = selection[0]?.id;
-      const note = id ? byId.get(id) : undefined;
-      if (note) { capture(); setGesture({ type: "resize", id: note.id, box: boxOf(note), sx: x, sy: y, dx: 0, dy: 0 }); }
+    const handle = target.closest<HTMLElement | SVGElement>("[data-handle]")?.getAttribute("data-handle");
+    if (handle && editable) {
+      const note = selection[0];
+      if (note && (handle === "start" || handle === "end")) {
+        const ends = arrowEnds(note), pointNow = handle === "start" ? ends.start : ends.end;
+        capture();
+        setGesture({ type: "arrowEnd", id: note.id, end: handle, x: pointNow.x, y: pointNow.y, target: handle === "start" ? ends.from : ends.to });
+      } else if (note) { capture(); setGesture({ type: "resize", id: note.id, box: boxOf(note), sx: x, sy: y, dx: 0, dy: 0 }); }
       return;
     }
     if (editingId) setEditingId(null);
@@ -320,7 +443,13 @@ export function BrainstormWorkspace() {
     if (activeTool === "note") { addNote(x, y); setTool("select"); return; }
     if (activeTool === "text") { addText(x, y); setTool("select"); return; }
     if (activeTool === "pen") { capture(); setSelected(new Set()); setGesture({ type: "draw", kind: "pen", points: [Math.round(x), Math.round(y)] }); return; }
-    if (activeTool === "rect" || activeTool === "ellipse" || activeTool === "arrow") { capture(); setSelected(new Set()); setGesture({ type: "shape", kind: activeTool, x0: x, y0: y, x1: x, y1: y, free: event.altKey }); return; }
+    if (activeTool === "rect" || activeTool === "ellipse" || activeTool === "arrow") {
+      const over = elementAt(event.target);
+      capture();
+      setSelected(new Set());
+      setGesture({ type: "shape", kind: activeTool, x0: x, y0: y, x1: x, y1: y, free: event.altKey, from: activeTool === "arrow" && over && bindable(byId.get(over)) ? over : "", to: "" });
+      return;
+    }
     if (activeTool === "eraser") { capture(); const id = elementAt(event.target); setGesture({ type: "erase", ids: id ? [id] : [] }); return; }
     const id = elementAt(event.target);
     const additive = event.shiftKey || event.metaKey || event.ctrlKey;
@@ -355,15 +484,19 @@ export function BrainstormWorkspace() {
     } else if (gesture.type === "marquee") {
       const box = { left: Math.min(gesture.x0, x), right: Math.max(gesture.x0, x), top: Math.min(gesture.y0, y), bottom: Math.max(gesture.y0, y) };
       setGesture({ ...gesture, x1: x, y1: y });
-      const hits = live.filter((note) => { const b = boxOf(note); return b.x < box.right && b.x + b.w > box.left && b.y < box.bottom && b.y + b.h > box.top; }).map((note) => note.id);
+      const hits = live.filter((note) => { const b = hitBox(note); return b.x < box.right && b.x + b.w > box.left && b.y < box.bottom && b.y + b.h > box.top; }).map((note) => note.id);
       setSelected(new Set([...gesture.base, ...hits]));
     } else if (gesture.type === "draw") {
       const last = gesture.points.slice(-2);
       if (Math.hypot(x - last[0], y - last[1]) >= 3 && gesture.points.length < 1000) setGesture({ ...gesture, points: [...gesture.points, Math.round(x), Math.round(y)] });
     } else if (gesture.type === "shape") {
-      setGesture({ ...gesture, x1: x, y1: y, free: event.altKey });
+      const over = gesture.kind === "arrow" ? elementAt(document.elementFromPoint?.(event.clientX, event.clientY) ?? null) : undefined;
+      setGesture({ ...gesture, x1: x, y1: y, free: event.altKey, to: over && over !== gesture.from && bindable(byId.get(over)) ? over : "" });
+    } else if (gesture.type === "arrowEnd") {
+      const over = elementAt(document.elementFromPoint?.(event.clientX, event.clientY) ?? null);
+      setGesture({ ...gesture, x, y, target: over && over !== gesture.id && bindable(byId.get(over)) ? over : "" });
     } else if (gesture.type === "erase") {
-      const id = elementAt(document.elementFromPoint(event.clientX, event.clientY));
+      const id = elementAt(document.elementFromPoint?.(event.clientX, event.clientY) ?? null);
       if (id && !gesture.ids.includes(id)) setGesture({ ...gesture, ids: [...gesture.ids, id] });
     }
   }
@@ -371,13 +504,19 @@ export function BrainstormWorkspace() {
     const done = gesture;
     setGesture(null);
     if (!done) return;
-    if (done.type === "move" && done.moved) move(done.ids.map((id) => { const box = boxNow(byId.get(id)!); return { id, x: box.x, y: box.y }; }));
+    if (done.type === "move" && done.moved) {
+      const arrows = done.ids.map((id) => byId.get(id)).filter((note): note is Element => note?.kind === "arrow");
+      move(done.ids.filter((id) => byId.get(id)?.kind !== "arrow").map((id) => { const box = boxNow(byId.get(id)!); return { id, x: box.x, y: box.y }; }));
+      for (const arrow of arrows) saveArrow(arrow.id, arrowEnds(arrow));
+    }
+    if (done.type === "arrowEnd") { const arrow = byId.get(done.id); if (arrow) saveArrow(arrow.id, arrowEnds(arrow)); }
     if (done.type === "resize") { const note = byId.get(done.id); if (note) { const box = boxNow(note); const old = boxOf(note); if (box.w !== old.w || box.h !== old.h) resize(done.id, box); } }
     if (done.type === "erase") void remove(done.ids);
     if (done.type === "draw" && done.points.length >= 2) {
       const xs = done.points.filter((_, i) => i % 2 === 0), ys = done.points.filter((_, i) => i % 2 === 1);
       const left = Math.min(...xs), top = Math.min(...ys);
-      void create([element("pen", left, top, Math.max(1, Math.max(...xs) - left), Math.max(1, Math.max(...ys) - top), done.points.map((value, i) => value - (i % 2 === 0 ? left : top)))]).then(() => setSelected(new Set()));
+      create([element("pen", left, top, Math.max(1, Math.max(...xs) - left), Math.max(1, Math.max(...ys) - top), done.points.map((value, i) => value - (i % 2 === 0 ? left : top)))]);
+      setSelected(new Set());
     }
     if (done.type === "shape") {
       const sx = done.kind === "arrow" ? done.x0 : snap(done.x0, done.free), sy = done.kind === "arrow" ? done.y0 : snap(done.y0, done.free);
@@ -385,9 +524,9 @@ export function BrainstormWorkspace() {
       const left = Math.round(Math.min(sx, ex)), top = Math.round(Math.min(sy, ey));
       let w = Math.round(Math.abs(ex - sx)), h = Math.round(Math.abs(ey - sy));
       if (done.kind !== "arrow" && w < 16 && h < 16) { w = 160; h = 112; }
-      if (done.kind === "arrow" && Math.hypot(w, h) < 12) return;
+      if (done.kind === "arrow" && Math.hypot(w, h) < 12 && !(done.from && done.to)) return;
       const points = done.kind === "arrow" ? [Math.round(sx) - left, Math.round(sy) - top, Math.round(ex) - left, Math.round(ey) - top] : [];
-      void create([element(done.kind, left, top, Math.max(1, w), Math.max(1, h), points)]);
+      create([{ ...element(done.kind, left, top, Math.max(1, w), Math.max(1, h), points), ...(done.kind === "arrow" ? { from: done.from, to: done.to } : {}) }]);
       setTool("select");
     }
   }
@@ -464,6 +603,14 @@ export function BrainstormWorkspace() {
   const paletteIsNote = palette === stickyColors;
   const shared = selection.length && selection.every((note) => note.color === selection[0].color) ? [selection[0].color] : [];
   const single = selection.length === 1 ? selection[0] : undefined;
+  const bindTargets = new Set(gesture?.type === "shape" && gesture.kind === "arrow" ? [gesture.from, gesture.to] : gesture?.type === "arrowEnd" ? [gesture.target] : []);
+  const draftArrow = (() => {
+    if (gesture?.type !== "shape" || gesture.kind !== "arrow") return undefined;
+    const fromEl = gesture.from ? byId.get(gesture.from) : undefined, toEl = gesture.to ? byId.get(gesture.to) : undefined;
+    const p0 = { x: gesture.x0, y: gesture.y0 }, p1 = { x: gesture.x1, y: gesture.y1 };
+    const start = fromEl ? edgeToward(fromEl, boxOf(fromEl), toEl ? centerOf(boxOf(toEl)) : p1) : p0;
+    return { start, end: toEl ? edgeToward(toEl, boxOf(toEl), fromEl ? centerOf(boxOf(fromEl)) : p0) : p1 };
+  })();
   const cursor = { select: gesture?.type === "move" && gesture.moved ? "grabbing" : "default", hand: gesture?.type === "pan" ? "grabbing" : "grab", note: "copy", text: "text", pen: "crosshair", rect: "crosshair", ellipse: "crosshair", arrow: "crosshair", eraser: "cell" }[activeTool];
 
   return (
@@ -505,7 +652,7 @@ export function BrainstormWorkspace() {
                     {item.name}
                   </button>
                 ))}
-                {!archived ? <button type="button" className={boardStyles.newBoard} aria-label="Nueva pizarra" title="Nueva pizarra" onClick={() => void newBoard()}><Plus size={15} strokeWidth={2.4} aria-hidden="true" /></button> : null}
+                {!archived ? <button type="button" className={`${boardStyles.newBoard} border-0 bg-transparent p-0 cursor-pointer hover:bg-[var(--surface-2)]`} aria-label="Nueva pizarra" title="Nueva pizarra" onClick={() => void newBoard()}><Plus size={15} strokeWidth={2.4} aria-hidden="true" /></button> : null}
               </MenuContextTrigger>
               <MenuContent className={`${menuStyles.content} outline-none`} sideOffset={4}>
                 {editable ? <MenuItem value="rename" className={menuStyles.item}><Pencil size={16} aria-hidden="true" />Renombrar</MenuItem> : null}
@@ -580,6 +727,25 @@ export function BrainstormWorkspace() {
                   {sep}
                   {single && canHoldText(single) ? <Tip label="Editar texto" shortcut="enter"><ToolbarButton onClick={() => setEditingId(single.id)} className={toolClass} aria-label="Editar texto"><Pencil size={15} aria-hidden="true" /></ToolbarButton></Tip> : null}
                   <Tip label="Duplicar" shortcut="mod+d"><ToolbarButton onClick={() => duplicate(selection.map((note) => note.id))} className={toolClass} aria-label="Duplicar"><Copy size={15} aria-hidden="true" /></ToolbarButton></Tip>
+                  {selection.filter((note) => note.kind !== "arrow").length > 1 ? (
+                    <Menu onAction={align}>
+                      <Tip label="Alinear y repartir">
+                        <MenuTrigger className={toolClass} aria-label="Alinear y repartir"><AlignCenterVertical size={15} aria-hidden="true" /></MenuTrigger>
+                      </Tip>
+                      <MenuContent className={`${menuStyles.content} outline-none`} sideOffset={8}>
+                        <MenuItem value="left" className={menuStyles.item}><AlignStartVertical size={16} aria-hidden="true" />Alinear a la izquierda</MenuItem>
+                        <MenuItem value="center" className={menuStyles.item}><AlignCenterVertical size={16} aria-hidden="true" />Centrar en horizontal</MenuItem>
+                        <MenuItem value="right" className={menuStyles.item}><AlignEndVertical size={16} aria-hidden="true" />Alinear a la derecha</MenuItem>
+                        <MenuSeparator className={menuStyles.separator} />
+                        <MenuItem value="top" className={menuStyles.item}><AlignStartHorizontal size={16} aria-hidden="true" />Alinear arriba</MenuItem>
+                        <MenuItem value="middle" className={menuStyles.item}><AlignCenterHorizontal size={16} aria-hidden="true" />Centrar en vertical</MenuItem>
+                        <MenuItem value="bottom" className={menuStyles.item}><AlignEndHorizontal size={16} aria-hidden="true" />Alinear abajo</MenuItem>
+                        <MenuSeparator className={menuStyles.separator} />
+                        <MenuItem value="spread-x" className={menuStyles.item} disabled={selection.filter((note) => note.kind !== "arrow").length < 3}><AlignHorizontalSpaceAround size={16} aria-hidden="true" />Repartir en horizontal</MenuItem>
+                        <MenuItem value="spread-y" className={menuStyles.item} disabled={selection.filter((note) => note.kind !== "arrow").length < 3}><AlignVerticalSpaceAround size={16} aria-hidden="true" />Repartir en vertical</MenuItem>
+                      </MenuContent>
+                    </Menu>
+                  ) : null}
                   {selection.length > 1 ? <Tip label="Ordenar en cuadrícula"><ToolbarButton onClick={() => arrange(selection.map((note) => note.id))} className={toolClass} aria-label="Ordenar en cuadrícula"><LayoutGrid size={15} aria-hidden="true" /></ToolbarButton></Tip> : null}
                   <Tip label="Eliminar" shortcut="delete"><ToolbarButton onClick={() => void remove(selection.map((note) => note.id))} className={`${toolClass} text-[var(--coral)]!`} aria-label="Eliminar selección"><Trash2 size={15} aria-hidden="true" /></ToolbarButton></Tip>
                   <Tip label="Quitar selección" shortcut="escape"><ToolbarButton onClick={() => setSelected(new Set())} className={toolClass} aria-label="Quitar selección"><X size={15} aria-hidden="true" /></ToolbarButton></Tip>
@@ -605,7 +771,7 @@ export function BrainstormWorkspace() {
                     onPointerCancel={() => setGesture(null)}
                     onDoubleClick={onDoubleClick}
                   >
-                    {live.map((note) => (
+                    {live.filter((note) => note.kind !== "arrow").map((note) => (
                       <CanvasElement
                         key={note.id}
                         note={note}
@@ -616,11 +782,32 @@ export function BrainstormWorkspace() {
                         editing={editingId === note.id}
                         editable={editable}
                         handle={editable && activeTool === "select" && single?.id === note.id && resizable(note) && editingId !== note.id}
+                        highlight={bindTargets.has(note.id)}
                         onCommit={(text) => retext(note.id, text)}
                         onDone={() => setEditingId(null)}
                       />
                     ))}
-                    <DraftLayer gesture={gesture} color={strokeColor} />
+                    <svg className="absolute left-0 top-0 overflow-visible pointer-events-none" width={width} height={height} style={{ zIndex: 2 }}>
+                      {live.filter((note) => note.kind === "arrow").map((arrow) => {
+                        const { start, end } = arrowEnds(arrow), isSelected = selected.has(arrow.id);
+                        const erasing = gesture?.type === "erase" && gesture.ids.includes(arrow.id);
+                        return (
+                          <g key={arrow.id} data-note={arrow.id} role="group" aria-label={`Flecha${isSelected ? " (seleccionada)" : ""}`} opacity={erasing ? 0.25 : 1}>
+                            {isSelected ? <line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="var(--blue)" strokeOpacity={0.22} strokeWidth={12} strokeLinecap="round" /> : null}
+                            <Arrow x0={start.x} y0={start.y} x1={end.x} y1={end.y} color={arrow.color} hit />
+                            {isSelected && single?.id === arrow.id && editable && activeTool === "select"
+                              ? ([["start", start], ["end", end]] as const).map(([key, at]) => <circle key={key} data-handle={key} cx={at.x} cy={at.y} r={6} fill="var(--surface)" stroke="var(--blue)" strokeWidth={2} pointerEvents="all" style={{ cursor: "move" }} />)
+                              : null}
+                          </g>
+                        );
+                      })}
+                    </svg>
+                    {guides.length ? (
+                      <svg aria-hidden="true" className="absolute left-0 top-0 overflow-visible pointer-events-none" width={width} height={height} style={{ zIndex: 60 }}>
+                        {guides.map((guide, index) => <line key={index} {...guide} stroke="var(--coral)" strokeWidth={1} strokeDasharray="4 3" />)}
+                      </svg>
+                    ) : null}
+                    <DraftLayer gesture={gesture} color={strokeColor} arrow={draftArrow} />
                     {!notes.loading && live.length === 0 ? (
                       <div className="absolute left-[min(50%,560px)] top-[200px] -translate-x-1/2 w-[min(420px,90%)] pointer-events-none">
                         <EmptyState icon={<Lightbulb size={26} aria-hidden="true" />} tone="amber" title={editable ? "Pizarra en blanco" : "Sin elementos"}>
@@ -680,7 +867,7 @@ export function BrainstormWorkspace() {
 }
 
 /** Vista previa de lo que se está dibujando o seleccionando. */
-function DraftLayer({ gesture, color }: { gesture: Gesture | null; color: string }) {
+function DraftLayer({ gesture, color, arrow }: { gesture: Gesture | null; color: string; arrow?: { start: Point; end: Point } }) {
   if (gesture?.type === "marquee") {
     return <div aria-hidden="true" className="absolute z-50 rounded-[4px] border border-[var(--blue)] bg-[color-mix(in_srgb,var(--blue)_10%,transparent)] pointer-events-none" style={{ left: Math.min(gesture.x0, gesture.x1), top: Math.min(gesture.y0, gesture.y1), width: Math.abs(gesture.x1 - gesture.x0), height: Math.abs(gesture.y1 - gesture.y0) }} />;
   }
@@ -693,7 +880,7 @@ function DraftLayer({ gesture, color }: { gesture: Gesture | null; color: string
       <svg aria-hidden="true" className="absolute inset-0 z-50 pointer-events-none overflow-visible" width="100%" height="100%">
         {gesture.kind === "rect" ? <rect x={x} y={y} width={w} height={h} rx={10} fill="none" stroke={strokeOf(color)} strokeWidth={2.5} strokeDasharray="6 5" /> : null}
         {gesture.kind === "ellipse" ? <ellipse cx={x + w / 2} cy={y + h / 2} rx={w / 2} ry={h / 2} fill="none" stroke={strokeOf(color)} strokeWidth={2.5} strokeDasharray="6 5" /> : null}
-        {gesture.kind === "arrow" ? <Arrow x0={gesture.x0} y0={gesture.y0} x1={gesture.x1} y1={gesture.y1} color={color} /> : null}
+        {gesture.kind === "arrow" && arrow ? <Arrow x0={arrow.start.x} y0={arrow.start.y} x1={arrow.end.x} y1={arrow.end.y} color={color} /> : null}
       </svg>
     );
   }
@@ -701,13 +888,14 @@ function DraftLayer({ gesture, color }: { gesture: Gesture | null; color: string
 }
 
 function Arrow({ x0, y0, x1, y1, color, hit = false }: { x0: number; y0: number; x1: number; y1: number; color: string; hit?: boolean }) {
-  const angle = Math.atan2(y1 - y0, x1 - x0), size = 13;
-  const head = [[x1, y1], [x1 - size * Math.cos(angle - 0.45), y1 - size * Math.sin(angle - 0.45)], [x1 - size * Math.cos(angle + 0.45), y1 - size * Math.sin(angle + 0.45)]];
+  // Punta abierta, como en Excalidraw.
+  const angle = Math.atan2(y1 - y0, x1 - x0), size = Math.min(16, Math.max(8, Math.hypot(x1 - x0, y1 - y0) / 3));
+  const wing = (offset: number) => `${x1 - size * Math.cos(angle + offset)} ${y1 - size * Math.sin(angle + offset)}`;
+  const line = `M${x0} ${y0} L${x1} ${y1}`, head = `M${wing(-0.5)} L${x1} ${y1} L${wing(0.5)}`;
   return (
     <>
-      {hit ? <line x1={x0} y1={y0} x2={x1} y2={y1} stroke="transparent" strokeWidth={16} pointerEvents="stroke" /> : null}
-      <line x1={x0} y1={y0} x2={x1} y2={y1} stroke={strokeOf(color)} strokeWidth={2.5} strokeLinecap="round" pointerEvents={hit ? "stroke" : "none"} />
-      <polygon points={head.map((p) => p.join(",")).join(" ")} fill={strokeOf(color)} pointerEvents={hit ? "all" : "none"} />
+      {hit ? <path d={`${line} ${head}`} fill="none" stroke="transparent" strokeWidth={16} strokeLinecap="round" pointerEvents="stroke" /> : null}
+      <path d={`${line} ${head}`} fill="none" stroke={strokeOf(color)} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" pointerEvents={hit ? "stroke" : "none"} />
     </>
   );
 }
@@ -751,12 +939,14 @@ type ElementProps = {
   editing: boolean;
   editable: boolean;
   handle: boolean;
+  /** Destino al que se unirá una flecha. */
+  highlight?: boolean;
   onCommit: (text: string) => void;
   onDone: () => void;
 };
 
 /** Un elemento de la pizarra: post-it, texto, trazo, rectángulo, elipse o flecha. */
-function CanvasElement({ note, box, selected, dragging, erasing, editing, editable, handle, onCommit, onDone }: ElementProps) {
+function CanvasElement({ note, box, selected, dragging, erasing, editing, editable, handle, highlight = false, onCommit, onDone }: ElementProps) {
   const [draft, setDraft] = useState<string | null>(null);
   const area = useRef<HTMLTextAreaElement>(null);
   const kind = note.kind ?? "note";
@@ -801,7 +991,7 @@ function CanvasElement({ note, box, selected, dragging, erasing, editing, editab
     height: Math.max(box.h, 1),
     zIndex: dragging ? 30 : editing ? 25 : selected ? 20 : kind === "note" ? 3 : kind === "text" ? 2 : 1,
     opacity: erasing ? 0.25 : 1,
-    outline: selected ? "2px solid var(--blue)" : "2px solid transparent",
+    outline: highlight ? "2px dashed var(--blue)" : selected ? "2px solid var(--blue)" : "2px solid transparent",
     outlineOffset: kind === "pen" || kind === "arrow" ? 6 : 3,
   };
   const label = kind === "note" ? `Post-it de ${author}` : { text: "Texto", pen: "Trazo", rect: "Rectángulo", ellipse: "Elipse", arrow: "Flecha" }[kind];
@@ -847,17 +1037,13 @@ function CanvasElement({ note, box, selected, dragging, erasing, editing, editab
       </div>
     );
   }
-  // Trazo y flecha: el contenedor no captura el puntero; solo la línea (con un margen para atinarle).
+  // Trazo: el contenedor no captura el puntero; solo la línea (con un margen para atinarle).
   const points = note.points ?? [];
   return (
     <div {...common} className="absolute pointer-events-none" style={wrapper}>
       <svg aria-hidden="true" className="absolute inset-0 overflow-visible" width="100%" height="100%">
-        {kind === "pen" ? (
-          <>
-            <path d={smoothPath(points)} fill="none" stroke="transparent" strokeWidth={16} strokeLinecap="round" pointerEvents="stroke" />
-            <path d={smoothPath(points)} fill="none" stroke={strokeOf(note.color)} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" pointerEvents="stroke" />
-          </>
-        ) : points.length >= 4 ? <Arrow x0={points[0]} y0={points[1]} x1={points[2]} y1={points[3]} color={note.color} hit /> : null}
+        <path d={smoothPath(points)} fill="none" stroke="transparent" strokeWidth={16} strokeLinecap="round" pointerEvents="stroke" />
+        <path d={smoothPath(points)} fill="none" stroke={strokeOf(note.color)} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" pointerEvents="stroke" />
       </svg>
     </div>
   );
