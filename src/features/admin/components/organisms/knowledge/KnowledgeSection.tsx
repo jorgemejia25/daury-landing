@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
-import styles from "./BrandGuide.styles";
+import styles from "./KnowledgeSection.styles";
 
 type BrandSectionProps = { id: string; eyebrow: string; title: string; lede?: ReactNode; children: ReactNode };
 
-/** Sección de la guía: etiqueta en mono, título en Bricolage y texto de entrada. */
+/** Sección de las páginas de conocimiento: etiqueta en mono, título en Bricolage y texto de entrada. */
 export function BrandSection({ id, eyebrow, title, lede, children }: BrandSectionProps) {
   return (
     <section id={id} className={`scroll-mt-[calc(var(--topbar-h)+72px)] ${styles.section}`} aria-labelledby={`${id}-title`}>

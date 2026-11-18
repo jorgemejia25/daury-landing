@@ -4,7 +4,7 @@ import { IconTile } from "@/ui/atoms/IconTile";
 import type { Tone } from "@/ui/lib/tones";
 import { Card } from "@/ui/molecules/Card";
 import { audiences, businessModes, features, plans, productRoadmap, viability, viabilityCriteria, week } from "@/features/admin/lib/knowledge";
-import { BrandList, BrandSection } from "../brand/BrandSection";
+import { BrandList, BrandSection } from "./KnowledgeSection";
 import styles from "./Knowledge.styles";
 
 const featureIcons: Record<string, React.ReactNode> = {

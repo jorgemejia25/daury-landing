@@ -1,26 +1,16 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { ScreenHeader } from "@/ui/molecules/ScreenHeader";
-import { BrandHero } from "@/features/admin/components/organisms/brand/BrandHero";
-import { LogoSection } from "@/features/admin/components/organisms/brand/LogoSection";
-import { ColorSection } from "@/features/admin/components/organisms/brand/ColorSection";
-import { TypeSection } from "@/features/admin/components/organisms/brand/TypeSection";
-import { InterfaceSection } from "@/features/admin/components/organisms/brand/InterfaceSection";
-import { FormatSection } from "@/features/admin/components/organisms/brand/FormatSection";
-import { TemplateSection } from "@/features/admin/components/organisms/brand/TemplateSection";
-import { MascotSection } from "@/features/admin/components/organisms/brand/MascotSection";
-import { ToneSection } from "@/features/admin/components/organisms/brand/ToneSection";
-import { OriginSection } from "@/features/admin/components/organisms/brand/OriginSection";
-import { PiecesSection } from "@/features/admin/components/organisms/brand/PiecesSection";
-import gallery from "@/features/admin/components/organisms/brand/BrandGallery.styles";
-
-const contents = [
-  ["logo", "Logo"], ["color", "Color"], ["tipografia", "Tipografía"], ["interfaz", "Interfaz"], ["formatos", "Formatos"], ["plantillas", "Plantillas"],
-  ["mascota", "Mascota"], ["piezas", "Piezas"], ["storyboard", "Storyboard"], ["tono", "Tono"], ["origen", "Origen"],
-] as const;
+import { BrandTabs } from "@/features/admin/components/organisms/brand/BrandTabs";
+import { EssentialPanel } from "@/features/admin/components/organisms/brand/EssentialPanel";
+import { MascotPanel } from "@/features/admin/components/organisms/brand/MascotPanel";
+import { SocialPanel } from "@/features/admin/components/organisms/brand/SocialPanel";
+import { ProductPanel } from "@/features/admin/components/organisms/brand/ProductPanel";
 import styles from "@/features/admin/components/organisms/brand/BrandGuide.styles";
 
-/** Página Identidad y diseño: la guía de marca de Daury adaptada a la wiki. */
+/**
+ * Página Identidad y diseño: guía de marca de Daury en pestañas por público.
+ * Esencial es para todo el equipo; Mascota, Redes y Producto traen su Kit IA.
+ */
 export function BrandGuide() {
   return (
     <article className={styles.guide}>
@@ -28,28 +18,25 @@ export function BrandGuide() {
         <ArrowLeft size={20} strokeWidth={2.2} aria-hidden="true" />
         Volver al inicio
       </Link>
-      <ScreenHeader
-        eyebrow="Conocimiento"
-        title="Identidad y diseño"
-        subtitle="La guía de marca de Daury: cómo se ve y cómo habla en la app, el admin y las redes, con la mascota, las piezas producidas y el origen de la identidad."
+      <header className={styles.hero}>
+        <div className={styles.heroIntro}>
+          <p className={styles.eyebrow}>Identidad y diseño</p>
+          <h1 className={styles.heroTitle}>Guía de marca Daury</h1>
+          <p className={styles.lede}>
+            Cómo se ve, cómo habla y cómo se dibuja Daury. La referencia es la app móvil. Empieza por Esencial y luego abre la
+            pestaña de tu trabajo; cada una trae un Kit IA para producir con inteligencia artificial sin salirte de la marca.
+          </p>
+        </div>
+        <div className={styles.ghost} aria-hidden="true">daury</div>
+      </header>
+      <BrandTabs
+        panels={{
+          esencial: <EssentialPanel />,
+          mascota: <MascotPanel />,
+          redes: <SocialPanel />,
+          producto: <ProductPanel />,
+        }}
       />
-      <BrandHero />
-      <nav className={gallery.toc} aria-label="Contenido de la guía">
-        {contents.map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
-      </nav>
-      <LogoSection />
-      <ColorSection />
-      <TypeSection />
-      <InterfaceSection />
-      <FormatSection />
-      <TemplateSection />
-      <MascotSection />
-      <PiecesSection />
-      <ToneSection />
-      <OriginSection />
-      <p className={styles.footnote}>
-        Colores, fuentes y logo tomados de la app Daury. Contraste calculado con la fórmula de WCAG 2.2. Noviembre de 2026.
-      </p>
     </article>
   );
 }

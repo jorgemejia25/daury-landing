@@ -3,7 +3,7 @@ import { Chip } from "@/ui/atoms/Chip";
 import type { Tone } from "@/ui/lib/tones";
 import { Card } from "@/ui/molecules/Card";
 import { architecture, codeTree, libraries, offlineRules, roles, scaleLimits, scaleStats, scopes, syncExample, syncSteps, techRoadmap, type TreeNode } from "@/features/admin/lib/knowledge";
-import { BrandSection, BrandSubhead } from "../brand/BrandSection";
+import { BrandSection, BrandSubhead } from "./KnowledgeSection";
 import styles from "./Knowledge.styles";
 
 const statusChip = (status?: string) => {
