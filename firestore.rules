@@ -81,8 +81,14 @@ service cloud.firestore {
         || (kind == 'whiteboards' && fields(['name', 'description', 'color'])
           && label(d.name, 120) && d.description is string && d.description.size() <= 3000 && color(d.color))
         || (kind == 'stickyNotes' && (fields(['whiteboardId', 'text', 'color', 'x', 'y']) || ((fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size'])
-              || (fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size', 'from', 'to']) && d.from is string && d.from.size() <= 80 && d.to is string && d.to.size() <= 80))
-            && d.kind in ['note', 'text', 'pen', 'rect', 'ellipse', 'arrow'] && d.size in ['sm', 'md', 'lg']
+              || (fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size', 'from', 'to']) && d.from is string && d.from.size() <= 80 && d.to is string && d.to.size() <= 80)
+              || (fields(['whiteboardId', 'text', 'color', 'x', 'y', 'kind', 'w', 'h', 'points', 'size', 'from', 'to', 'style']) && d.from is string && d.from.size() <= 80 && d.to is string && d.to.size() <= 80
+                && d.style is map && d.style.keys().hasOnly(['arrowType', 'head', 'stroke', 'weight', 'fill', 'font', 'align', 'z'])
+                && d.style.get('arrowType', 'straight') in ['straight', 'elbow', 'curved'] && d.style.get('head', 'end') in ['none', 'end', 'start', 'both']
+                && d.style.get('stroke', 'solid') in ['solid', 'dashed', 'dotted'] && d.style.get('weight', 2) in [1, 2, 4]
+                && d.style.get('fill', 'none') in ['none', 'soft', 'solid'] && d.style.get('font', 'sans') in ['sans', 'display', 'mono', 'serif']
+                && d.style.get('align', 'left') in ['left', 'center', 'right'] && d.style.get('z', 0) is int))
+            && d.kind in ['note', 'text', 'pen', 'rect', 'ellipse', 'arrow'] && d.size in ['sm', 'md', 'lg', 'xl']
             && d.w is int && d.w >= 0 && d.w <= 4000 && d.h is int && d.h >= 0 && d.h <= 4000
             && d.points is list && d.points.size() <= 1000))
           && d.whiteboardId is string && d.whiteboardId != '' && d.text is string && d.text.size() <= 500

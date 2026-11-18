@@ -19,9 +19,21 @@ export const elementColorValues: string[] = [...new Set([...stickyColors, ...str
 /** Tipos de elemento de la pizarra; sin `kind` (datos anteriores) es un post-it. */
 export const elementKinds = ["note", "text", "pen", "rect", "ellipse", "arrow"] as const;
 export type ElementKind = typeof elementKinds[number];
-export const textSizes = ["sm", "md", "lg"] as const;
+export const textSizes = ["sm", "md", "lg", "xl"] as const;
+/** Estilo de un elemento de la pizarra (todas las claves son opcionales). */
+export const elementStyleOptions = {
+  arrowType: ["straight", "elbow", "curved"],
+  head: ["none", "end", "start", "both"],
+  stroke: ["solid", "dashed", "dotted"],
+  weight: [1, 2, 4],
+  fill: ["none", "soft", "solid"],
+  font: ["sans", "display", "mono", "serif"],
+  align: ["left", "center", "right"],
+} as const;
+type StyleOptions = typeof elementStyleOptions;
+export type ElementStyle = { [K in keyof StyleOptions]?: StyleOptions[K][number] } & { /** Capa: mayor = encima. */ z?: number };
 /** Elemento sobre una pizarra; x e y en píxeles del lienzo (0–4000). Lápiz y flecha guardan puntos relativos a x, y. */
-export type StickyNote = { whiteboardId: string; text: string; color: StickyColor; x: number; y: number; kind?: ElementKind; w?: number; h?: number; points?: number[]; size?: typeof textSizes[number]; /** Flechas: elementos que unen (siguen al moverlos). */ from?: string; to?: string };
+export type StickyNote = { whiteboardId: string; text: string; color: StickyColor; x: number; y: number; kind?: ElementKind; w?: number; h?: number; points?: number[]; size?: typeof textSizes[number]; /** Flechas: elementos que unen (siguen al moverlos). */ from?: string; to?: string; style?: ElementStyle };
 export const canvasSize = 4000;
 export type Folder = { name: string; parentId: string; color: WorkspaceColor };
 export type Page = { title: string; description: string; folderId: string; tags: string[] };
@@ -63,6 +75,16 @@ function tags(value: unknown) {
   if (!Array.isArray(value) || value.length > 12 || value.some((tag) => typeof tag !== "string" || !tag.trim() || tag.length > 40)) throw new Error("Usa hasta 12 etiquetas de 40 caracteres.");
   return [...new Set((value as string[]).map((tag) => tag.trim()))];
 }
+function parseStyle(value: unknown): ElementStyle {
+  const style = object(value), result: Record<string, unknown> = {};
+  for (const [key, item] of Object.entries(style)) {
+    if (key === "z") { if (!Number.isInteger(item) || Math.abs(Number(item)) > 1_000_000) throw new Error("La capa no es válida."); result.z = item; continue; }
+    const allowed = (elementStyleOptions as Record<string, readonly unknown[]>)[key];
+    if (!allowed || !allowed.includes(item)) throw new Error("El estilo no es válido.");
+    result[key] = item;
+  }
+  return result as ElementStyle;
+}
 function rank(value: unknown) {
   if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("El orden de la tarea no es válido.");
   return value;
@@ -89,7 +111,8 @@ export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C,
     else {
       const points = data.points;
       if (!Array.isArray(points) || points.length > 1000 || points.length % 2 || points.some((value) => !Number.isInteger(value) || Math.abs(value) > canvasSize)) throw new Error("El trazo no es válido.");
-      const bound = data.from !== undefined || data.to !== undefined ? { from: reference(data, "from"), to: reference(data, "to") } : {};
+      const link = (key: "from" | "to") => (data[key] === undefined ? "" : reference(data, key));
+      const bound = data.style !== undefined ? { from: link("from"), to: link("to"), style: parseStyle(data.style) } : data.from !== undefined || data.to !== undefined ? { from: link("from"), to: link("to") } : {};
       result = { ...base, kind: choice(data.kind, elementKinds), w: point("w"), h: point("h"), points: points as number[], size: choice(data.size, textSizes), ...bound };
     }
   } else if (collection === "calendars") {

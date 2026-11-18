@@ -2,7 +2,7 @@
 
 import { workspaceStore, WorkspaceConflict, type RestDocument } from "../server/firestore-rest";
 import { adminAllowedEmails } from "../lib/access";
-import { canvasSize, elementColorValues, validId } from "../lib/workspace";
+import { canvasSize, elementColorValues, parseWorkspaceData, validId } from "../lib/workspace";
 import type { BulkAction, BulkKind, BulkResult } from "../lib/bulk";
 
 const MAX_ITEMS = 100;
@@ -15,7 +15,7 @@ const priorities = ["high", "medium", "low"];
 async function bulkAttempt(kind: BulkKind, ids: string[], action: BulkAction): Promise<BulkResult & { retryable?: boolean }> {
   try {
     if (kind !== "tasks" && kind !== "events" && kind !== "stickyNotes") throw new Error("Colección no válida.");
-    if (kind === "stickyNotes" && !["delete", "stickyPositions", "stickyColor", "stickyText", "stickyBox", "stickyArrow"].includes(action.type)) throw new Error("Acción no válida.");
+    if (kind === "stickyNotes" && !["delete", "stickyPositions", "stickyColor", "stickyText", "stickyBox", "stickyArrow", "stickyPatch"].includes(action.type)) throw new Error("Acción no válida.");
     if (kind !== "stickyNotes" && action.type.startsWith("sticky")) throw new Error("Acción no válida.");
     if (!Array.isArray(ids) || !ids.length) throw new Error("Selecciona al menos un elemento.");
     if (ids.length > MAX_ITEMS) throw new Error(`Selecciona como máximo ${MAX_ITEMS} elementos a la vez.`);
@@ -92,6 +92,17 @@ async function bulkAttempt(kind: BulkKind, ids: string[], action: BulkAction): P
           if (action.h !== undefined && (data.kind === undefined || !Number.isInteger(action.h) || action.h < 0 || action.h > canvasSize)) throw new Error("El tamaño no es válido.");
           if (data.text !== action.value || (action.h !== undefined && data.h !== action.h)) writes.push(touch(doc, { text: action.value, ...(action.h === undefined ? {} : { h: action.h }) }));
           break;
+        case "stickyPatch": {
+          const id = doc.name.split("/").pop()!;
+          const item = Array.isArray(action.items) ? action.items.find((entry) => entry?.id === id) : undefined;
+          if (!item || !item.changes || typeof item.changes !== "object" || "whiteboardId" in item.changes) throw new Error("Cambio no válido.");
+          const fields = ["text", "color", "x", "y", "kind", "w", "h", "points", "size", "from", "to", "style"];
+          if (Object.keys(item.changes).some((key) => !fields.includes(key))) throw new Error("Cambio no válido.");
+          const current = Object.fromEntries(["whiteboardId", ...fields].filter((key) => data[key] !== undefined).map((key) => [key, data[key]]));
+          const parsed = parseWorkspaceData("stickyNotes", { ...current, ...item.changes }) as Record<string, unknown>;
+          if (fields.some((key) => JSON.stringify(parsed[key]) !== JSON.stringify(data[key]))) writes.push(touch(doc, parsed));
+          break;
+        }
         case "stickyArrow": {
           const valid = (value: unknown) => Number.isInteger(value) && Number(value) >= 0 && Number(value) <= canvasSize;
           const ends = [action.from, action.to];
