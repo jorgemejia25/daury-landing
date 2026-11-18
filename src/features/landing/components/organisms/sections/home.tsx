@@ -17,7 +17,7 @@ export function Hero({ t, lang }: SectionProps) {
     <section className={"l-hero [padding:calc(var(--header-h)_+_clamp(48px,_7vw,_96px))_var(--gutter)_clamp(48px,_6vw,_80px)]"} aria-labelledby="hero-title">
       <div className={"l-hero--head flex flex-col items-center gap-[24px] max-w-[1000px] [margin:0_auto] text-center [&_.l-eyebrow]:self-center"}>
         <span className={"l-eyebrow inline-flex items-center self-start [padding:8px_14px] rounded-full bg-surface [color:var(--ink-2)] text-[14px] font-semibold tracking-[-.005em] leading-[1]   l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>{h.label}</span>
-        <h1 id="hero-title" className={"l-hero--title m-0 font-display text-[clamp(46px,_7.6vw,_112px)] font-bold tracking-[-.055em] leading-[.94] text-balance text-ink l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>
+        <h1 id="hero-title" className={"l-hero--title m-0 font-display text-[clamp(46px,_7.6vw,_112px)] font-semibold tracking-[-.055em] leading-[.94] text-balance text-ink l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>
           {h.title}
         </h1>
         <p className={"l-hero--lead m-0 max-w-[620px] text-[clamp(18px,_1.7vw,_21px)] leading-[1.5] [color:var(--ink-2)] text-pretty l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>{h.lead}</p>
@@ -49,7 +49,7 @@ export function Hero({ t, lang }: SectionProps) {
         <div className={"l-notch absolute z-[2] bg-canvas [&::before]:[content:''] [&::before]:absolute [&::before]:w-[var(--r)] [&::before]:h-[var(--r)] [&::before]:pointer-events-none [&::after]:[content:''] [&::after]:absolute [&::after]:w-[var(--r)] [&::after]:h-[var(--r)] [&::after]:pointer-events-none l-notch--br [&.l-notch--br]:right-0 [&.l-notch--br]:bottom-0 [&.l-notch--br]:[padding:var(--notch)_0_0_var(--notch)] [&.l-notch--br]:[border-top-left-radius:var(--r)] [&::before]:bottom-0 [&::before]:right-[100%] [&::before]:[background:radial-gradient(circle_at_0_0,_transparent_calc(var(--r)_-_.5px),_var(--bg)_var(--r))] [&::after]:bottom-[100%] [&::after]:right-0 [&::after]:[background:radial-gradient(circle_at_0_0,_transparent_calc(var(--r)_-_.5px),_var(--bg)_var(--r))]"}>
           <ul className={"l-chips flex flex-wrap justify-end gap-[10px] max-w-[470px] max-[760.02px]:max-w-[230px] max-[760.02px]:gap-[6px] l-list-reset m-0 p-0 list-none"}>
             {h.chips.map((c) => (
-              <li key={c} className={"l-chip [padding:13px_20px] rounded-full bg-surface text-[15px] font-semibold text-ink whitespace-nowrap [box-shadow:0_10px_24px_-16px_rgba(13,_19,_51,_.4)] [transition:transform_.35s_var(--spring),_background-color_.2s,_color_.2s] [&:hover]:[transform:translateY(-3px)] [&:hover]:bg-brand [&:hover]:[color:#fff] max-[760.02px]:[padding:9px_13px] max-[760.02px]:text-[13px] max-[760.02px]:[&:nth-child(n_+_3)]:hidden"}>
+              <li key={c} className={"l-chip [padding:13px_20px] rounded-full bg-surface text-[15px] font-semibold text-ink whitespace-nowrap [box-shadow:0_10px_24px_-16px_rgba(15,_16,_29,_.4)] [transition:transform_.35s_var(--spring),_background-color_.2s,_color_.2s] [&:hover]:[transform:translateY(-3px)] [&:hover]:bg-brand [&:hover]:[color:#fff] max-[760.02px]:[padding:9px_13px] max-[760.02px]:text-[13px] max-[760.02px]:[&:nth-child(n_+_3)]:hidden"}>
                 {c}
               </li>
             ))}
@@ -57,7 +57,7 @@ export function Hero({ t, lang }: SectionProps) {
         </div>
 
         <div className={"l-float absolute z-[3] flex items-center gap-[14px] [padding:18px_22px] rounded-[24px] bg-surface [box-shadow:var(--shadow-float)] max-[760.02px]:[padding:12px_14px] max-[760.02px]:rounded-[18px] max-[760.02px]:gap-[10px] l-float--award [&.l-float--award]:left-[-32px] [&.l-float--award]:bottom-[30%] max-[1080.02px]:[&.l-float--award]:left-[16px] max-[760.02px]:[&.l-float--award]:left-[12px] max-[760.02px]:[&.l-float--award]:bottom-auto max-[760.02px]:[&.l-float--award]:top-[42%] [will-change:translate]"} data-speed="0.1">
-          <span className={"l-float--icon grid place-items-center w-[46px] h-[46px] rounded-[14px] max-[760.02px]:w-[36px] max-[760.02px]:h-[36px] l-float--icon--amber [&.l-float--icon--amber]:[background:var(--amber-50)] [&.l-float--icon--amber]:[color:var(--amber)]"}>
+          <span className={"l-float--icon grid place-items-center w-[46px] h-[46px] rounded-[14px] max-[760.02px]:w-[36px] max-[760.02px]:h-[36px] l-float--icon--amber [&.l-float--icon--amber]:[background:var(--amber-50)] [&.l-float--icon--amber]:[color:var(--amber-deep)]"}>
             <Icon name="emoji_events" size={22} />
           </span>
           <span>
@@ -107,7 +107,7 @@ export function HowItWorks({ t }: SectionProps) {
                     0{i + 1}
                   </span>
                 </div>
-                <h3 className={"l-step--title [margin:24px_0_0] font-display text-[28px] font-bold tracking-[-.035em] leading-[1.08]"}>{s.title}</h3>
+                <h3 className={"l-step--title [margin:24px_0_0] font-display text-[28px] font-semibold tracking-[-.035em] leading-[1.08]"}>{s.title}</h3>
                 <p className={"l-step--text m-0 text-[17px] leading-[1.55] [color:rgba(255,_255,_255,_.84)]"}>{s.text}</p>
               </StackCard>
             </li>
@@ -170,7 +170,7 @@ export function Features({ t, lang }: SectionProps) {
             <article key={c.tone} className={landingClasses(`fcard fcard--${c.tone}`)}>
               <div className={"l-fcard--copy flex flex-col gap-[18px] max-w-[460px] self-center pb-[var(--pad)] max-[960.02px]:pb-0 max-[960.02px]:max-w-[560px] max-[760.02px]:gap-[14px]"}>
                 <span className={landingClasses(`pill pill--${c.pill}`)}>{c.copy.tag}</span>
-                <h3 className={"l-h3 m-0 font-display text-[clamp(30px,_3.6vw,_48px)] font-bold tracking-[-.04em] leading-[1.02] text-balance "}>{c.copy.title}</h3>
+                <h3 className={"l-h3 m-0 font-display text-[clamp(30px,_3.6vw,_48px)] font-semibold tracking-[-.04em] leading-[1.02] text-balance "}>{c.copy.title}</h3>
                 <p className={"l-body m-0 text-[18px] leading-[1.55] [color:var(--ink-2)] text-pretty "}>{c.copy.text}</p>
               </div>
               <div className={"l-fcard--visual motion-safe:[.motion_&:not(.is-in)_.l-ph-ring--bar]:[stroke-dashoffset:var(--c)] relative min-w-0 min-h-[500px] [&_.l-phone]:absolute [&_.l-phone]:top-0 [&_.l-phone]:left-[50%] [&_.l-phone]:[translate:-50%_0] max-[960.02px]:min-h-[460px] max-[760.02px]:min-h-[430px] max-[760.02px]:[margin:0_calc(var(--pad)_*_-1)] [.motion_&]:[transition:opacity_.9s_var(--ease),transform_1s_var(--ease)] [.motion_&:not(.is-in)]:opacity-0 [.motion_&:not(.is-in)]:[transform:translateY(40px)]"} data-reveal="">
@@ -221,7 +221,7 @@ export function Award({ t, lang }: SectionProps) {
   return (
     <section className={"l-section [padding:var(--pad-y)_var(--gutter)] [&_+_.l-section]:pt-0"} aria-labelledby="premio-title">
       <div className={"l-container w-full max-w-[1240px] [margin:0_auto] l-award grid [grid-template-columns:1fr_1fr] items-center [gap:clamp(40px,_6vw,_96px)] max-[960.02px]:[grid-template-columns:1fr]"}>
-        <figure className={"l-award--media relative m-0 [aspect-ratio:4_/_4.7] rounded-[40px] overflow-hidden [background:#0b0c14] max-[760.02px]:rounded-[32px] [.motion_&]:[transition:opacity_.9s_var(--ease),transform_1s_var(--ease)] [.motion_&:not(.is-in)]:opacity-0 [.motion_&:not(.is-in)]:[transform:translateY(40px)]"} data-reveal="">
+        <figure className={"l-award--media relative m-0 [aspect-ratio:4_/_4.7] rounded-[40px] overflow-hidden [background:var(--night)] max-[760.02px]:rounded-[32px] [.motion_&]:[transition:opacity_.9s_var(--ease),transform_1s_var(--ease)] [.motion_&:not(.is-in)]:opacity-0 [.motion_&:not(.is-in)]:[transform:translateY(40px)]"} data-reveal="">
           <div className={"l-award--img absolute [inset:-6%_0] [will-change:translate]"} data-speed="-0.06">
             <Image
               src="/images/ilan-awards.jpg"
@@ -232,19 +232,19 @@ export function Award({ t, lang }: SectionProps) {
                className={"object-cover! [object-position:50%_62%]!"}
             />
           </div>
-          <figcaption className={"l-award--badge absolute left-[20px] bottom-[20px] inline-flex items-center gap-[8px] [padding:12px_18px] rounded-full [background:var(--amber)] [color:#fff] font-bold text-[15px]"}>
+          <figcaption className={"l-award--badge absolute left-[20px] bottom-[20px] inline-flex items-center gap-[8px] [padding:12px_18px] rounded-full [background:var(--amber-ink)] [color:#fff] font-bold text-[15px]"}>
             <Icon name="emoji_events" size={20} />
             {a.tag}
           </figcaption>
         </figure>
         <div className={"l-award--copy flex flex-col items-start gap-[24px] [.motion_&>*]:[transition:opacity_.8s_var(--ease),transform_.9s_var(--ease)] [.motion_&>*]:[transition-delay:calc(var(--i,0)*90ms)] [.motion_&:not(.is-in)>*]:opacity-0 [.motion_&:not(.is-in)>*]:[transform:translateY(40px)]"} data-reveal="stagger">
           <IlanLogo alt={a.logoAlt} size={88} />
-          <h2 id="premio-title" className={"l-h2 m-0 font-display text-[clamp(36px,_5.2vw,_72px)] font-bold tracking-[-.045em] leading-[1] text-balance text-ink l-h2--md [&.l-h2--md]:text-[clamp(32px,_4vw,_54px)]"}>
+          <h2 id="premio-title" className={"l-h2 m-0 font-display text-[clamp(36px,_5.2vw,_72px)] font-semibold tracking-[-.045em] leading-[1] text-balance text-ink l-h2--md [&.l-h2--md]:text-[clamp(32px,_4vw,_54px)]"}>
             {a.title}
           </h2>
           <p className={"l-body m-0 text-[18px] leading-[1.55] [color:var(--ink-2)] text-pretty  l-body--lg [&.l-body--lg]:text-[clamp(18px,_1.6vw,_21px)]"}>{a.text}</p>
           <div>
-            <Link href={`/${lang}/about`} className={"l-btn inline-flex items-center justify-center gap-[12px] min-h-[52px] [padding:6px_8px_6px_24px] [border:0] rounded-full font-semibold text-[16px] leading-[1] font-sans tracking-[-.01em] no-underline whitespace-nowrap cursor-pointer [transition:transform_.35s_var(--ease),_background-color_.25s,_color_.25s,_box-shadow_.35s_var(--ease)] [&:not(:has(.l-arrow))]:[padding:6px_26px] [@media(hover:_hover)]:[&:hover]:[transform:translateY(-2px)] [&:active]:[transform:scale(.97)] [&:disabled]:opacity-70 [&:disabled]:cursor-progress [&:disabled]:[transform:none] [&:hover_.l-arrow]:[transform:rotate(45deg)]  l-btn--ink [&.l-btn--ink]:bg-ink [&.l-btn--ink]:[color:#fff] [&.l-btn--ink:hover]:[background:#1d2550] [&.l-btn--ink:hover]:[color:#fff] l-btn--lg [&.l-btn--lg]:min-h-[60px] [&.l-btn--lg]:text-[17px] [&.l-btn--lg]:pl-[28px] [&.l-btn--lg:not(:has(.l-arrow))]:[padding:6px_30px]"}>
+            <Link href={`/${lang}/about`} className={"l-btn inline-flex items-center justify-center gap-[12px] min-h-[52px] [padding:6px_8px_6px_24px] [border:0] rounded-full font-semibold text-[16px] leading-[1] font-sans tracking-[-.01em] no-underline whitespace-nowrap cursor-pointer [transition:transform_.35s_var(--ease),_background-color_.25s,_color_.25s,_box-shadow_.35s_var(--ease)] [&:not(:has(.l-arrow))]:[padding:6px_26px] [@media(hover:_hover)]:[&:hover]:[transform:translateY(-2px)] [&:active]:[transform:scale(.97)] [&:disabled]:opacity-70 [&:disabled]:cursor-progress [&:disabled]:[transform:none] [&:hover_.l-arrow]:[transform:rotate(45deg)]  l-btn--ink [&.l-btn--ink]:bg-ink [&.l-btn--ink]:[color:#fff] [&.l-btn--ink:hover]:[background:var(--ink-2)] [&.l-btn--ink:hover]:[color:#fff] l-btn--lg [&.l-btn--lg]:min-h-[60px] [&.l-btn--lg]:text-[17px] [&.l-btn--lg]:pl-[28px] [&.l-btn--lg:not(:has(.l-arrow))]:[padding:6px_30px]"}>
               {a.cta}
               <Arrow />
             </Link>
@@ -270,7 +270,7 @@ export function PlansTeaser({ t, lang }: SectionProps) {
         <div className={"l-teaser--list flex flex-col gap-[14px] [.motion_&>*]:[transition:opacity_.8s_var(--ease),transform_.9s_var(--ease)] [.motion_&>*]:[transition-delay:calc(var(--i,0)*90ms)] [.motion_&:not(.is-in)>*]:opacity-0 [.motion_&:not(.is-in)>*]:[transform:translateY(40px)]"} data-reveal="stagger">
           {plans.map((pl) => (
             <Link key={pl.name} href={`/${lang}/pricing`} className={landingClasses(pl.featured ? "tplan tplan--featured" : "tplan")}>
-              <span className={"l-tplan--name [grid-area:name] font-display text-[30px] font-bold tracking-[-.04em]"}>{pl.name}</span>
+              <span className={"l-tplan--name [grid-area:name] font-display text-[30px] font-semibold tracking-[-.04em]"}>{pl.name}</span>
               <span className={"l-tplan--text [grid-area:text] text-[16px] [color:var(--muted)]"}>{pl.text}</span>
               <span className={"l-tplan--price [grid-area:price] font-display text-[34px] font-bold tracking-[-.04em] [&_small]:font-sans [&_small]:text-[15px] [&_small]:font-medium [&_small]:tracking-[0] [&_small]:[color:var(--muted)] max-[760.02px]:mt-[8px] max-[760.02px]:text-[28px]"}>
                 {pl.price}

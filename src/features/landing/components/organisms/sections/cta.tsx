@@ -13,7 +13,7 @@ export function CtaBand({ t, lang }: SectionProps) {
             <img src="/logo.svg" alt="" />
           </div>
           <span className={"l-eyebrow inline-flex items-center self-start [padding:8px_14px] rounded-full bg-surface [color:var(--ink-2)] text-[14px] font-semibold tracking-[-.005em] leading-[1]   l-eyebrow--light [&.l-eyebrow--light]:[background:rgba(255,_255,_255,_.16)] [&.l-eyebrow--light]:[color:#fff]"}>{t.cta.tag}</span>
-          <h2 id="cta-title" className={"l-cta--title m-0 font-display text-[clamp(42px,_6.6vw,_96px)] font-bold tracking-[-.055em] leading-[.95] text-balance"}>
+          <h2 id="cta-title" className={"l-cta--title m-0 font-display text-[clamp(42px,_6.6vw,_96px)] font-semibold tracking-[-.055em] leading-[.95] text-balance"}>
             {t.cta.title}
           </h2>
           <p className={"l-cta--lead [margin:0_0_12px] max-w-[520px] text-[clamp(18px,_1.7vw,_21px)] leading-[1.5] [color:rgba(255,_255,_255,_.82)]"}>{t.cta.lead}</p>

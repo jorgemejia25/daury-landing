@@ -1,6 +1,6 @@
 import { Card } from "@/ui/molecules/Card";
 import { Chip } from "@/ui/atoms/Chip";
-import { mascotAnimation, mascotDo, mascotDont, mascotExplorations, mascotMoods, mascotMoodsImage, mascotPoses } from "@/features/admin/lib/brand";
+import { appMascotPoses, mascotAnimation, mascotDo, mascotDont, mascotExplorations, mascotMoods, mascotMoodsImage, mascotPoses } from "@/features/admin/lib/brand";
 import { MascotMono } from "@/features/admin/components/atoms/brand/MascotMono";
 import { BrandList, BrandSection, BrandSubhead } from "./BrandSection";
 import styles from "./BrandGuide.styles";
@@ -13,9 +13,21 @@ export function MascotSection() {
       id="mascota"
       eyebrow="Mascota"
       title="La mascota y sus poses"
-      lede="La mascota es un cerebro que camina. Acompaña contenido de apoyo y no reemplaza al logo. Cada pose tiene un uso: elige la que cuente lo que pasa en la pantalla."
+      lede="La mascota es un cerebro que camina: la pose caminando es la versión base, igual que en la app. Acompaña contenido de apoyo y no reemplaza al logo. Cada pose tiene un uso: elige la que cuente lo que pasa en la pantalla."
     >
-      <BrandSubhead title="Poses" note="Siempre en azul marino, sobre crema, blanco o azul claro." />
+      <BrandSubhead title="Poses en la app" note="Ocho poses animadas del componente DauryMascot, cada una ligada a una pantalla." />
+      <Card padding="none">
+        <dl className={styles.appScale}>
+          {appMascotPoses.map((item) => (
+            <div key={item.pose}>
+              <dt>{item.name} <code>{item.pose}</code></dt>
+              <dd>{item.use}</dd>
+            </div>
+          ))}
+        </dl>
+      </Card>
+
+      <BrandSubhead title="Ilustraciones para redes" note="Siempre en azul marino. Sobre crema, blanco o azul claro; sobre azul, solo a un lado y sin tapar texto, como en la app." />
       <ul className={`m-0 p-0 list-none ${gallery.poses}`}>
         {mascotPoses.map((pose) => (
           <li key={pose.name} className={gallery.tile}>
@@ -48,7 +60,7 @@ export function MascotSection() {
         </Card>
       </div>
 
-      <BrandSubhead title="Emociones" note="Sistema de caras de la identidad original: refleja cómo está la persona cuidada." />
+      <BrandSubhead title="Emociones (propuesta original)" note="Sistema de caras de la identidad de ILAN. La app no lo usa; queda como referencia." />
       <div className={gallery.moods}>
         <div className={gallery.moodImage}><img src={mascotMoodsImage} alt="Cuatro caras de la mascota original: tranquila, triste, feliz y alerta" loading="lazy" /></div>
         <ul className={`m-0 p-0 list-none ${gallery.moodList}`}>

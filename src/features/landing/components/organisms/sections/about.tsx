@@ -17,7 +17,7 @@ export function AboutHero({ t }: SectionProps) {
         <div className={"l-ahero--head grid [grid-template-columns:1.2fr_.8fr] [align-items:end] [gap:24px_clamp(40px,_6vw,_96px)] max-[960.02px]:[grid-template-columns:1fr]"}>
           <div className={"l-ahero--copy flex flex-col gap-[24px]"}>
             <span className={"l-eyebrow inline-flex items-center self-start [padding:8px_14px] rounded-full bg-surface [color:var(--ink-2)] text-[14px] font-semibold tracking-[-.005em] leading-[1]   l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>{a.eyebrow}</span>
-            <h1 id="about-title" className={"l-ahero--title m-0 font-display text-[clamp(48px,_7.2vw,_104px)] font-bold tracking-[-.055em] leading-[.94] text-balance l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>
+            <h1 id="about-title" className={"l-ahero--title m-0 font-display text-[clamp(48px,_7.2vw,_104px)] font-semibold tracking-[-.055em] leading-[.94] text-balance l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>
               {a.title}
             </h1>
           </div>
@@ -38,7 +38,7 @@ export function AboutHero({ t }: SectionProps) {
               <Icon name="public" size={20} />
               {a.values.items[0].title}
             </span>
-            <span className={"l-ahero--tag inline-flex items-center gap-[8px] [padding:12px_18px] rounded-full [background:rgba(255,_255,_255,_.9)] [-webkit-backdrop-filter:blur(10px)] [backdrop-filter:blur(10px)] text-[15px] font-bold text-ink [&_.l-msr]:text-brand max-[760.02px]:[padding:9px_13px] max-[760.02px]:text-[13px] l-ahero--tag--amber [&.l-ahero--tag--amber]:[background:var(--amber)] [&.l-ahero--tag--amber]:[color:#fff] [&_.l-msr]:[color:#fff] max-[760.02px]:[&.l-ahero--tag--amber]:hidden"}>
+            <span className={"l-ahero--tag inline-flex items-center gap-[8px] [padding:12px_18px] rounded-full [background:rgba(255,_255,_255,_.9)] [-webkit-backdrop-filter:blur(10px)] [backdrop-filter:blur(10px)] text-[15px] font-bold text-ink [&_.l-msr]:text-brand max-[760.02px]:[padding:9px_13px] max-[760.02px]:text-[13px] l-ahero--tag--amber [&.l-ahero--tag--amber]:[background:var(--amber-ink)] [&.l-ahero--tag--amber]:[color:#fff] [&_.l-msr]:[color:#fff] max-[760.02px]:[&.l-ahero--tag--amber]:hidden"}>
               <Icon name="emoji_events" size={20} />
               {t.hero.awardValue} · {t.hero.awardText}
             </span>
@@ -77,13 +77,13 @@ export function AboutJourney({ t, lang }: SectionProps) {
     </div>,
 
     <div key="name" className={"l-vsong flex items-center gap-[32px] p-[28px] rounded-[36px] bg-surface max-[760.02px]:flex-col max-[760.02px]:items-start max-[760.02px]:gap-[20px]"} aria-hidden="true">
-      <div className={"l-vinyl relative grid place-items-center [width:clamp(140px,_18vw,_200px)] [aspect-ratio:1] flex-none rounded-full [background:repeating-radial-gradient(circle,_#1a1d33_0_2px,_#10132a_2px_5px)] [box-shadow:0_24px_50px_-24px_rgba(13,_19,_51,_.7)] motion-safe:[animation:landing-spin_9s_linear_infinite]"}>
+      <div className={"l-vinyl relative grid place-items-center [width:clamp(140px,_18vw,_200px)] [aspect-ratio:1] flex-none rounded-full [background:repeating-radial-gradient(circle,_#1a1d26_0_2px,_#101218_2px_5px)] [box-shadow:0_24px_50px_-24px_rgba(15,_16,_29,_.7)] motion-safe:[animation:landing-spin_9s_linear_infinite]"}>
         <div className={"l-vinyl--label grid place-items-center w-[38%] [aspect-ratio:1] rounded-full bg-brand [&_img]:w-[58%] [&_img]:h-auto"}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.svg" alt="" />
         </div>
       </div>
-      <p className={"l-vsong--line m-0 font-display text-[clamp(24px,_2.6vw,_34px)] font-bold tracking-[-.035em] leading-[1.1]"}>{a.songLine}</p>
+      <p className={"l-vsong--line m-0 font-display text-[clamp(24px,_2.6vw,_34px)] font-semibold tracking-[-.035em] leading-[1.1]"}>{a.songLine}</p>
     </div>,
 
     <StackCard key="idea" tone="blue" className={"l-videa h-auto mt-[24px]"}>
@@ -98,7 +98,7 @@ export function AboutJourney({ t, lang }: SectionProps) {
     </StackCard>,
 
     <div key="award" className={"l-vaward grid [grid-template-columns:1.15fr_.85fr] gap-[14px] max-[760.02px]:[grid-template-columns:1fr_1fr]"}>
-      <div className={"l-vaward--photo relative [aspect-ratio:4_/_5] overflow-hidden rounded-[32px] [background:#0b0c14] max-[760.02px]:[grid-column:1_/_-1] max-[760.02px]:[aspect-ratio:4_/_4.4]"}>
+      <div className={"l-vaward--photo relative [aspect-ratio:4_/_5] overflow-hidden rounded-[32px] [background:var(--night)] max-[760.02px]:[grid-column:1_/_-1] max-[760.02px]:[aspect-ratio:4_/_4.4]"}>
         <Image
           src="/images/ilan-awards.jpg"
           alt={t.award.alt}
@@ -112,7 +112,7 @@ export function AboutJourney({ t, lang }: SectionProps) {
         <div className={"l-vaward--logo grid place-items-center p-[24px] rounded-[32px] [background:#302e82] [&_.l-ilan-logo]:[width:min(100%,_150px)] [&_.l-ilan-logo]:[box-shadow:none] [&_.l-ilan-logo]:rounded-none max-[760.02px]:p-[16px] max-[760.02px]:rounded-[26px] max-[760.02px]:[&_.l-ilan-logo]:w-[96px]"}>
           <IlanLogo alt={t.award.logoAlt} size={120} />
         </div>
-        <div className={"l-vaward--badge flex flex-col items-start gap-[14px] p-[24px] rounded-[32px] [background:var(--amber)] [color:#fff] [&_b]:block [&_b]:mb-[4px] [&_b]:font-display [&_b]:text-[34px] [&_b]:tracking-[-.04em] [&_b]:leading-[1] [&_span]:text-[16px] [&_span]:font-semibold [&_span]:leading-[1.35] max-[760.02px]:rounded-[26px] max-[760.02px]:p-[20px] max-[760.02px]:gap-[10px] max-[760.02px]:[&_b]:text-[28px]"}>
+        <div className={"l-vaward--badge flex flex-col items-start gap-[14px] p-[24px] rounded-[32px] [background:var(--amber-ink)] [color:#fff] [&_b]:block [&_b]:mb-[4px] [&_b]:font-display [&_b]:text-[34px] [&_b]:tracking-[-.04em] [&_b]:leading-[1] [&_span]:text-[16px] [&_span]:font-semibold [&_span]:leading-[1.35] max-[760.02px]:rounded-[26px] max-[760.02px]:p-[20px] max-[760.02px]:gap-[10px] max-[760.02px]:[&_b]:text-[28px]"}>
           <Icon name="emoji_events" size={30} />
           <span>
             <b>{t.hero.awardValue}</b>
@@ -154,7 +154,7 @@ export function Values({ t }: SectionProps) {
             <li key={item.title} className={"l-steps--item min-w-0"}>
               <StackCard tone={valueTones[i]}>
                 <Icon name={valueIcons[i]} size={40} />
-                <h3 className={"l-step--title [margin:24px_0_0] font-display text-[28px] font-bold tracking-[-.035em] leading-[1.08]"}>{item.title}</h3>
+                <h3 className={"l-step--title [margin:24px_0_0] font-display text-[28px] font-semibold tracking-[-.035em] leading-[1.08]"}>{item.title}</h3>
                 <p className={"l-step--text m-0 text-[17px] leading-[1.55] [color:rgba(255,_255,_255,_.84)]"}>{item.text}</p>
               </StackCard>
             </li>

@@ -77,10 +77,10 @@ const templates = [
   },
   {
     name: "Recordatorio",
-    note: "Ámbar claro con texto ámbar oscuro. El ámbar significa aviso.",
+    note: "Ámbar claro con texto en tinta. El ámbar significa aviso.",
     spec: "1:1 · título 84",
     post: (
-      <Post aspect="1 / 1" background="#F7EFE0" color="#8A5A12" logo="#8A5A12" label="Ejemplo de post de recordatorio">
+      <Post aspect="1 / 1" background="#F7EFE0" color="#15161D" logo="#15161D" label="Ejemplo de post de recordatorio">
         <span className={styles.postEyebrow}>Recordatorio</span>
         <span className={styles.postTitle}>Revisa la fecha de vencimiento de los medicamentos de la casa.</span>
       </Post>

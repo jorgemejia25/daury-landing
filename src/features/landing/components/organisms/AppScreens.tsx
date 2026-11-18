@@ -76,7 +76,7 @@ export function TodayScreen({ a, lang }: Props) {
         <span className={"l-pt-hero--orb absolute right-[-90px] top-[-60px] w-[300px] h-[300px] rounded-full [background:rgba(255,_255,_255,_.07)]"} />
         <span className={"l-pt-hero--orb absolute right-[-90px] top-[-60px] w-[300px] h-[300px] rounded-full [background:rgba(255,_255,_255,_.07)] l-pt-hero--orb--2 [&.l-pt-hero--orb--2]:right-auto [&.l-pt-hero--orb--2]:left-[-120px] [&.l-pt-hero--orb--2]:top-[90px] [&.l-pt-hero--orb--2]:w-[260px] [&.l-pt-hero--orb--2]:h-[260px] [&.l-pt-hero--orb--2]:[background:rgba(255,_255,_255,_.05)]"} />
         <div className={"l-pt-hero--top relative flex items-center gap-[10px] mb-[26px]"}>
-          <b className={"l-pt-brand [flex:1] font-display text-[26px] font-bold tracking-[-.03em]"}>Daury</b>
+          <b className={"l-pt-brand [flex:1] font-display text-[26px] font-semibold tracking-[-.03em]"}>Daury</b>
           <span className={"l-pt-streak inline-flex items-center gap-[6px] h-[40px] [padding:0_14px_0_10px] rounded-full [background:rgba(255,_255,_255,_.16)] [color:#FFC978] font-bold text-[17px] [color:#fff] [&_svg]:[color:#FFC978]"}>
             <AppIcon name="flame" size={20} fill="#FFC978" stroke={2} />5
           </span>
@@ -86,7 +86,7 @@ export function TodayScreen({ a, lang }: Props) {
           </span>
         </div>
         <p className={"l-pt-date relative font-mono text-[13px] font-semibold tracking-[.12em] uppercase [color:rgba(255,_255,_255,_.72)]"}>{date}</p>
-        <p className={"l-pt-greet relative mt-[6px]! font-display text-[31px] font-bold tracking-[-.03em] leading-[1.06]"}>
+        <p className={"l-pt-greet relative mt-[6px]! font-display text-[31px] font-semibold tracking-[-.03em] leading-[1.06]"}>
           {d.greet}
           <br />
           {a.people.me}
@@ -193,7 +193,7 @@ export function ScanScreen({ a }: Props) {
             </span>
           ))}
           <i className={"l-ps--sign mt-[10px] pt-[10px] [border-top:1px_solid_#d9d6cc] font-display text-[17px] font-bold"}>L.H.</i>
-          <span className={"l-ps--scan absolute left-0 right-0 top-[18%] h-[3px] [background:#6f9bff] [box-shadow:0_0_18px_5px_rgba(76,_123,_255,_.55)] motion-safe:[animation:landing-pscan_2.6s_ease-in-out_infinite_alternate]"} />
+          <span className={"l-ps--scan absolute left-0 right-0 top-[18%] h-[3px] [background:var(--blue-bright)] [box-shadow:0_0_18px_5px_rgba(76,_123,_255,_.55)] motion-safe:[animation:landing-pscan_2.6s_ease-in-out_infinite_alternate]"} />
         </div>
         <div className={"l-ps--controls absolute left-0 right-0 top-[705px] flex items-center justify-around [padding:0_20px]"}>
           <span className={"l-ps--ctl grid place-items-center w-[54px] h-[54px] rounded-full [background:rgba(255,_255,_255,_.14)]"}>
@@ -213,8 +213,8 @@ export function ScanScreen({ a }: Props) {
 export function ScanResult({ a }: Props) {
   const s = a.scan;
   return (
-    <div className={"l-pfloat absolute z-[3] flex rounded-[22px] [background:#fff] text-ink [box-shadow:var(--shadow-float)] motion-safe:[animation:landing-pfloat_5s_ease-in-out_infinite_alternate] [&_.l-pt-chip--amber]:[background:#F7EFE0] [&_.l-pt-chip--amber]:[color:#9a6514] [&_.l-pt-chip--blue]:[background:#EAF0FE] [&_.l-pt-chip--blue]:[color:#2358E8] max-[760.02px]:rounded-[18px] l-pfloat--result [&.l-pfloat--result]:left-0 [&.l-pfloat--result]:top-[58%] [&.l-pfloat--result]:flex-col [&.l-pfloat--result]:gap-[12px] [&.l-pfloat--result]:w-[250px] [&.l-pfloat--result]:p-[16px] [&.l-pfloat--result]:[rotate:-2deg] max-[760.02px]:[&.l-pfloat--result]:left-[10px] max-[760.02px]:[&.l-pfloat--result]:top-[62%] max-[760.02px]:[&.l-pfloat--result]:w-[206px] max-[760.02px]:[&.l-pfloat--result]:p-[12px] max-[760.02px]:[&.l-pfloat--result]:gap-[8px]"} aria-hidden="true">
-      <span className={"l-pfloat--eyebrow flex items-center gap-[6px] text-[13px] font-bold [color:var(--violet)]"}>
+    <div className={"l-pfloat absolute z-[3] flex rounded-[22px] [background:#fff] text-ink [box-shadow:var(--shadow-float)] motion-safe:[animation:landing-pfloat_5s_ease-in-out_infinite_alternate] [&_.l-pt-chip--amber]:[background:#F7EFE0] [&_.l-pt-chip--amber]:[color:var(--amber-ink)] [&_.l-pt-chip--blue]:[background:#EAF0FE] [&_.l-pt-chip--blue]:[color:#2358E8] max-[760.02px]:rounded-[18px] l-pfloat--result [&.l-pfloat--result]:left-0 [&.l-pfloat--result]:top-[58%] [&.l-pfloat--result]:flex-col [&.l-pfloat--result]:gap-[12px] [&.l-pfloat--result]:w-[250px] [&.l-pfloat--result]:p-[16px] [&.l-pfloat--result]:[rotate:-2deg] max-[760.02px]:[&.l-pfloat--result]:left-[10px] max-[760.02px]:[&.l-pfloat--result]:top-[62%] max-[760.02px]:[&.l-pfloat--result]:w-[206px] max-[760.02px]:[&.l-pfloat--result]:p-[12px] max-[760.02px]:[&.l-pfloat--result]:gap-[8px]"} aria-hidden="true">
+      <span className={"l-pfloat--eyebrow flex items-center gap-[6px] text-[13px] font-bold [color:var(--violet-deep)]"}>
         <AppIcon name="sparkles" size={16} />
         {s.result}
       </span>
@@ -226,7 +226,7 @@ export function ScanResult({ a }: Props) {
         </span>
       </div>
       <div className={"l-pfloat--chips flex flex-wrap gap-[6px]"}>
-        <span className={"l-pt-chip inline-flex items-center gap-[5px] [padding:4px_9px] rounded-[8px] text-[13px] font-semibold leading-[1.2] whitespace-nowrap l-pt-chip--amber [&.l-pt-chip--amber]:[background:var(--p-amber-soft)] [&.l-pt-chip--amber]:[color:#9a6514]"}>
+        <span className={"l-pt-chip inline-flex items-center gap-[5px] [padding:4px_9px] rounded-[8px] text-[13px] font-semibold leading-[1.2] whitespace-nowrap l-pt-chip--amber [&.l-pt-chip--amber]:[background:var(--p-amber-soft)] [&.l-pt-chip--amber]:[color:var(--amber-ink)]"}>
           <AppIcon name="utensils-crossed" size={14} />
           {s.chips[0]}
         </span>
@@ -254,12 +254,12 @@ export function FamilyScreen({ a }: Props) {
   return (
     <Phone>
       <div className={"l-pf [padding:60px_18px_0]"}>
-        <p className={"l-pf--title font-display text-[32px] font-bold tracking-[-.035em]"}>{f.title}</p>
+        <p className={"l-pf--title font-display text-[32px] font-semibold tracking-[-.035em]"}>{f.title}</p>
         <p className={"l-pf--sub mt-[4px]! text-[15px] [color:var(--p-soft)]"}>{f.sub}</p>
 
         <div className={"l-pt-card rounded-[22px] [background:#fff] [box-shadow:0_1px_2px_rgba(21,_22,_29,_.04),_0_8px_24px_-16px_rgba(21,_22,_29,_.18)] l-pf--turn mt-[18px] p-[18px]"}>
           <div className={"l-pf--turn-top flex items-center gap-[14px] mb-[16px]"}>
-            <span className={"l-pf--avatar relative grid place-items-center flex-none w-[46px] h-[46px] rounded-full font-display text-[19px] font-bold [&_i]:absolute [&_i]:right-[-1px] [&_i]:bottom-[1px] [&_i]:w-[12px] [&_i]:h-[12px] [&_i]:rounded-full [&_i]:[background:#b8b8bf] [&_i]:[box-shadow:0_0_0_2.5px_#fff] [&_i.l-is-on]:[background:var(--p-green)] l-pf--avatar--green [&.l-pf--avatar--green]:[background:var(--p-green-soft)] [&.l-pf--avatar--green]:[color:var(--p-green-d)] l-pf--avatar--lg [&.l-pf--avatar--lg]:w-[56px] [&.l-pf--avatar--lg]:h-[56px] [&.l-pf--avatar--lg]:text-[22px]"}>
+            <span className={"l-pf--avatar relative grid place-items-center flex-none w-[46px] h-[46px] rounded-full font-display text-[19px] font-semibold [&_i]:absolute [&_i]:right-[-1px] [&_i]:bottom-[1px] [&_i]:w-[12px] [&_i]:h-[12px] [&_i]:rounded-full [&_i]:[background:var(--ink-mute)] [&_i]:[box-shadow:0_0_0_2.5px_#fff] [&_i.l-is-on]:[background:var(--p-green)] l-pf--avatar--green [&.l-pf--avatar--green]:[background:var(--p-green-soft)] [&.l-pf--avatar--green]:[color:var(--p-green-d)] l-pf--avatar--lg [&.l-pf--avatar--lg]:w-[56px] [&.l-pf--avatar--lg]:h-[56px] [&.l-pf--avatar--lg]:text-[22px]"}>
               {p.carer[0]}
               <i className="l-is-on" />
             </span>
@@ -305,8 +305,8 @@ export function FamilyScreen({ a }: Props) {
 /** Aviso flotante de actividad en vivo. */
 export function FamilyToast({ a, text }: Props & { text: string }) {
   return (
-    <div className={"l-pfloat absolute z-[3] flex rounded-[22px] [background:#fff] text-ink [box-shadow:var(--shadow-float)] motion-safe:[animation:landing-pfloat_5s_ease-in-out_infinite_alternate] [&_.l-pt-chip--amber]:[background:#F7EFE0] [&_.l-pt-chip--amber]:[color:#9a6514] [&_.l-pt-chip--blue]:[background:#EAF0FE] [&_.l-pt-chip--blue]:[color:#2358E8] max-[760.02px]:rounded-[18px] l-pfloat--toast [&.l-pfloat--toast]:right-0 [&.l-pfloat--toast]:top-[52%] [&.l-pfloat--toast]:items-start [&.l-pfloat--toast]:gap-[12px] [&.l-pfloat--toast]:w-[270px] [&.l-pfloat--toast]:[padding:14px_16px] [&.l-pfloat--toast]:text-[15px] [&.l-pfloat--toast]:leading-[1.4] [&_b]:[color:var(--violet)] [&_small]:block [&_small]:mt-[4px] [&_small]:font-mono [&_small]:text-[12px] [&_small]:[color:var(--muted)] [&_.l-pf--avatar]:w-[38px] [&_.l-pf--avatar]:h-[38px] [&_.l-pf--avatar]:text-[16px] [&_.l-pf--avatar]:[background:#E7F4EC] [&_.l-pf--avatar]:[color:#1C7A43] max-[760.02px]:[&.l-pfloat--toast]:right-[12px] max-[760.02px]:[&.l-pfloat--toast]:top-[50%] max-[760.02px]:[&.l-pfloat--toast]:w-[232px] max-[760.02px]:[&.l-pfloat--toast]:[padding:12px_14px] max-[760.02px]:[&.l-pfloat--toast]:text-[14px]"} aria-hidden="true">
-      <span className={"l-pf--avatar relative grid place-items-center flex-none w-[46px] h-[46px] rounded-full font-display text-[19px] font-bold [&_i]:absolute [&_i]:right-[-1px] [&_i]:bottom-[1px] [&_i]:w-[12px] [&_i]:h-[12px] [&_i]:rounded-full [&_i]:[background:#b8b8bf] [&_i]:[box-shadow:0_0_0_2.5px_#fff] [&_i.l-is-on]:[background:var(--p-green)] l-pf--avatar--green [&.l-pf--avatar--green]:[background:var(--p-green-soft)] [&.l-pf--avatar--green]:[color:var(--p-green-d)]"}>{a.people.carer[0]}</span>
+    <div className={"l-pfloat absolute z-[3] flex rounded-[22px] [background:#fff] text-ink [box-shadow:var(--shadow-float)] motion-safe:[animation:landing-pfloat_5s_ease-in-out_infinite_alternate] [&_.l-pt-chip--amber]:[background:#F7EFE0] [&_.l-pt-chip--amber]:[color:var(--amber-ink)] [&_.l-pt-chip--blue]:[background:#EAF0FE] [&_.l-pt-chip--blue]:[color:#2358E8] max-[760.02px]:rounded-[18px] l-pfloat--toast [&.l-pfloat--toast]:right-0 [&.l-pfloat--toast]:top-[52%] [&.l-pfloat--toast]:items-start [&.l-pfloat--toast]:gap-[12px] [&.l-pfloat--toast]:w-[270px] [&.l-pfloat--toast]:[padding:14px_16px] [&.l-pfloat--toast]:text-[15px] [&.l-pfloat--toast]:leading-[1.4] [&_b]:[color:var(--violet-deep)] [&_small]:block [&_small]:mt-[4px] [&_small]:font-mono [&_small]:text-[12px] [&_small]:[color:var(--muted)] [&_.l-pf--avatar]:w-[38px] [&_.l-pf--avatar]:h-[38px] [&_.l-pf--avatar]:text-[16px] [&_.l-pf--avatar]:[background:#E7F4EC] [&_.l-pf--avatar]:[color:#1C7A43] max-[760.02px]:[&.l-pfloat--toast]:right-[12px] max-[760.02px]:[&.l-pfloat--toast]:top-[50%] max-[760.02px]:[&.l-pfloat--toast]:w-[232px] max-[760.02px]:[&.l-pfloat--toast]:[padding:12px_14px] max-[760.02px]:[&.l-pfloat--toast]:text-[14px]"} aria-hidden="true">
+      <span className={"l-pf--avatar relative grid place-items-center flex-none w-[46px] h-[46px] rounded-full font-display text-[19px] font-semibold [&_i]:absolute [&_i]:right-[-1px] [&_i]:bottom-[1px] [&_i]:w-[12px] [&_i]:h-[12px] [&_i]:rounded-full [&_i]:[background:var(--ink-mute)] [&_i]:[box-shadow:0_0_0_2.5px_#fff] [&_i.l-is-on]:[background:var(--p-green)] l-pf--avatar--green [&.l-pf--avatar--green]:[background:var(--p-green-soft)] [&.l-pf--avatar--green]:[color:var(--p-green-d)]"}>{a.people.carer[0]}</span>
       <span>
         <b>{a.people.carer}</b> {text}
         <small>13:05</small>
@@ -340,7 +340,7 @@ export function HealthScreen({ a, lang }: Props) {
   return (
     <Phone>
       <div className={"l-ph-health [padding:60px_18px_0]"}>
-        <p className={"l-pf--title font-display text-[32px] font-bold tracking-[-.035em]"}>{h.title}</p>
+        <p className={"l-pf--title font-display text-[32px] font-semibold tracking-[-.035em]"}>{h.title}</p>
         <div className={"l-ph-seg flex mt-[14px] p-[4px] rounded-[16px] [background:var(--p-bg2)] [&_span]:[flex:1] [&_span]:[padding:11px_0] [&_span]:rounded-[12px] [&_span]:text-[15px] [&_span]:font-bold [&_span]:text-center [&_span]:[color:var(--p-soft)] [&_span.l-is-on]:[background:#fff] [&_span.l-is-on]:[color:var(--p-ink)] [&_span.l-is-on]:[box-shadow:0_2px_6px_rgba(21,_22,_29,_.08)]"}>
           {h.tabs.map((tab, i) => (
             <span key={tab} className={landingClasses(i === 0 ? "is-on" : undefined)}>
@@ -385,11 +385,11 @@ export function HealthScreen({ a, lang }: Props) {
         </div>
 
         <div className={"l-ph-alert flex items-center gap-[14px] mt-[12px] p-[14px] rounded-[22px] [background:var(--p-coral-soft)]"}>
-          <span className={"l-ph-alert--badge flex flex-col items-center justify-center flex-none w-[66px] h-[66px] rounded-[18px] [background:var(--p-coral)] [color:#fff] [&_b]:font-display [&_b]:text-[26px] [&_b]:leading-[1]"}>
+          <span className={"l-ph-alert--badge flex flex-col items-center justify-center flex-none w-[66px] h-[66px] rounded-[18px] [background:var(--p-coral-d)] [color:#fff] [&_b]:font-display [&_b]:text-[26px] [&_b]:leading-[1]"}>
             <AppIcon name="brain" size={20} />
             <b>2</b>
           </span>
-          <span className={"l-ph-alert--text [&_b]:block [&_b]:font-display [&_b]:text-[17px] [&_b]:leading-[1.15] [&_b]:[color:var(--p-coral)] [&_small]:block [&_small]:mt-[4px] [&_small]:text-[13px] [&_small]:leading-[1.4] [&_small]:[color:var(--p-ink2)]"}>
+          <span className={"l-ph-alert--text [&_b]:block [&_b]:font-display [&_b]:text-[17px] [&_b]:leading-[1.15] [&_b]:[color:var(--p-coral-d)] [&_small]:block [&_small]:mt-[4px] [&_small]:text-[13px] [&_small]:leading-[1.4] [&_small]:[color:var(--p-ink2)]"}>
             <b>{h.alert}</b>
             <small>{h.alertSub}</small>
           </span>
@@ -411,7 +411,7 @@ export function HealthScreen({ a, lang }: Props) {
               </span>
               {r.marks.map((m, j) =>
                 m === "none" ? (
-                  <i key={j} className={"l-ph-mark [justify-self:center] l-ph-mark--none [&.l-ph-mark--none]:w-[12px] [&.l-ph-mark--none]:h-[2px] [&.l-ph-mark--none]:rounded-[2px] [&.l-ph-mark--none]:[background:#cfccc3]"} />
+                  <i key={j} className={"l-ph-mark [justify-self:center] l-ph-mark--none [&.l-ph-mark--none]:w-[12px] [&.l-ph-mark--none]:h-[2px] [&.l-ph-mark--none]:rounded-[2px] [&.l-ph-mark--none]:[background:var(--ink-mute)]"} />
                 ) : (
                   <AppIcon
                     key={j}
@@ -432,7 +432,7 @@ export function HealthScreen({ a, lang }: Props) {
 /** Botón flotante para compartir el reporte. */
 export function ShareChip({ label }: { label: string }) {
   return (
-    <div className={"l-pfloat absolute z-[3] flex rounded-[22px] [background:#fff] text-ink [box-shadow:var(--shadow-float)] motion-safe:[animation:landing-pfloat_5s_ease-in-out_infinite_alternate] [&_.l-pt-chip--amber]:[background:#F7EFE0] [&_.l-pt-chip--amber]:[color:#9a6514] [&_.l-pt-chip--blue]:[background:#EAF0FE] [&_.l-pt-chip--blue]:[color:#2358E8] max-[760.02px]:rounded-[18px] l-pfloat--share [&.l-pfloat--share]:right-0 [&.l-pfloat--share]:top-[76%] [&.l-pfloat--share]:items-center [&.l-pfloat--share]:gap-[12px] [&.l-pfloat--share]:[padding:10px_18px_10px_10px] [&.l-pfloat--share]:rounded-full [&.l-pfloat--share]:bg-ink [&.l-pfloat--share]:[color:#fff] [&.l-pfloat--share]:font-bold [&.l-pfloat--share]:text-[16px] [&.l-pfloat--share]:whitespace-nowrap [&_small]:[padding:4px_8px] [&_small]:rounded-[8px] [&_small]:[background:var(--green)] [&_small]:font-mono [&_small]:text-[11px] [&_small]:tracking-[.06em] max-[760.02px]:[&.l-pfloat--share]:right-[12px] max-[760.02px]:[&.l-pfloat--share]:top-[80%] max-[760.02px]:[&.l-pfloat--share]:text-[15px]"} aria-hidden="true">
+    <div className={"l-pfloat absolute z-[3] flex rounded-[22px] [background:#fff] text-ink [box-shadow:var(--shadow-float)] motion-safe:[animation:landing-pfloat_5s_ease-in-out_infinite_alternate] [&_.l-pt-chip--amber]:[background:#F7EFE0] [&_.l-pt-chip--amber]:[color:var(--amber-ink)] [&_.l-pt-chip--blue]:[background:#EAF0FE] [&_.l-pt-chip--blue]:[color:#2358E8] max-[760.02px]:rounded-[18px] l-pfloat--share [&.l-pfloat--share]:right-0 [&.l-pfloat--share]:top-[76%] [&.l-pfloat--share]:items-center [&.l-pfloat--share]:gap-[12px] [&.l-pfloat--share]:[padding:10px_18px_10px_10px] [&.l-pfloat--share]:rounded-full [&.l-pfloat--share]:bg-ink [&.l-pfloat--share]:[color:#fff] [&.l-pfloat--share]:font-bold [&.l-pfloat--share]:text-[16px] [&.l-pfloat--share]:whitespace-nowrap [&_small]:[padding:4px_8px] [&_small]:rounded-[8px] [&_small]:[background:var(--green-deep)] [&_small]:font-mono [&_small]:text-[11px] [&_small]:tracking-[.06em] max-[760.02px]:[&.l-pfloat--share]:right-[12px] max-[760.02px]:[&.l-pfloat--share]:top-[80%] max-[760.02px]:[&.l-pfloat--share]:text-[15px]"} aria-hidden="true">
       <span className={"l-pfloat--icon grid place-items-center w-[42px] h-[42px] rounded-full [background:rgba(255,_255,_255,_.14)]"}>
         <AppIcon name="share-2" size={20} />
       </span>

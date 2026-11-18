@@ -39,7 +39,7 @@ export function Footer({ t, lang }: { t: Dictionary; lang: Locale }) {
           </div>
         </div>
       </div>
-      <p aria-hidden="true" className={"l-footer--word [margin:clamp(48px,_7vw,_96px)_0_0] text-center select-none font-display text-[clamp(110px,_27vw,_400px)] font-extrabold tracking-[-.07em] leading-[.78] [color:#1b2350]"}>
+      <p aria-hidden="true" className={"l-footer--word [margin:clamp(48px,_7vw,_96px)_0_0] text-center select-none font-display text-[clamp(110px,_27vw,_400px)] font-extrabold tracking-[-.07em] leading-[.78] [color:var(--night-elev)]"}>
         daury
       </p>
       <div className={"l-footer--bottom flex flex-wrap justify-between gap-[8px] max-w-[1240px] [margin:24px_auto_0] text-[14px] [color:rgba(255,_255,_255,_.5)] max-[760.02px]:flex-col"}>

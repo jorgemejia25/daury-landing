@@ -49,17 +49,28 @@
   --blue-soft: #eaf0fe;
   --blue-50: var(--blue-soft);
   --coral: #e04b4b;
+  --coral-deep: #c23b3b;
   --coral-soft: #fbedec;
   --red: var(--coral);
   --green: #2e9e5b;
   --green-deep: #1c7a43;
   --green-soft: #e7f4ec;
   --violet: #7257e8;
+  --violet-deep: #5a40cf;
   --violet-soft: #efebfc;
   --amber: #c98a2b;
   --amber-deep: #b8791e;
+  --amber-ink: #8a5e1a;
   --amber-soft: #f7efe0;
   --night: #101218;
+
+  /* Fondos sólidos con texto blanco (TONES.fill de la app): 4.5:1 con blanco.
+     No cambian en modo oscuro para que el texto blanco siga siendo legible. */
+  --blue-fill: #2358e8;
+  --coral-fill: #c23b3b;
+  --green-fill: #1c7a43;
+  --violet-fill: #7257e8;
+  --amber-fill: #8a5e1a;
 
   /* Layout del admin */
   --page-max: 1440px;
@@ -157,14 +168,17 @@
   --blue-deep: #a9bfff;
   --blue-soft: rgba(79, 124, 255, 0.16);
   --coral: #f06a6a;
+  --coral-deep: #ff9a95;
   --coral-soft: rgba(240, 106, 106, 0.14);
   --green: #3dbb72;
   --green-deep: #74d79d;
   --green-soft: rgba(61, 187, 114, 0.14);
   --violet: #9d89ff;
+  --violet-deep: #c2b6ff;
   --violet-soft: rgba(157, 137, 255, 0.16);
   --amber: #e0a53e;
   --amber-deep: #f0c070;
+  --amber-ink: #f0c070;
   --amber-soft: rgba(224, 165, 62, 0.15);
 
   --side-bg: #0d0e12;
@@ -211,14 +225,20 @@
     --blue-deep: #a9bfff;
     --blue-soft: rgba(79, 124, 255, 0.16);
     --coral: #f06a6a;
+    --coral-deep: #ff9a95;
+  --coral-deep: #ff9a95;
     --coral-soft: rgba(240, 106, 106, 0.14);
     --green: #3dbb72;
     --green-deep: #74d79d;
     --green-soft: rgba(61, 187, 114, 0.14);
     --violet: #9d89ff;
+    --violet-deep: #c2b6ff;
+  --violet-deep: #c2b6ff;
     --violet-soft: rgba(157, 137, 255, 0.16);
     --amber: #e0a53e;
     --amber-deep: #f0c070;
+    --amber-ink: #f0c070;
+  --amber-ink: #f0c070;
     --amber-soft: rgba(224, 165, 62, 0.15);
 
     --side-bg: #0d0e12;

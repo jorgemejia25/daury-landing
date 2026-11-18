@@ -1,11 +1,13 @@
 /*
- * Tonos: fondo suave + tinta + color sólido por rol (TONES en icon-tile.tsx de la app).
- * Lo reutilizan chips, tiles, puntos de estado e insignias mediante data-tone.
+ * Tonos: fondo suave + color de ícono + tinta de texto + color sólido por rol
+ * (TONES en icon-tile.tsx de la app). --tone-color es para íconos y --tone-ink para
+ * texto (4.5:1 sobre --tone-soft); --tone-solid para puntos y tiles sólidos, y
+ * --tone-fill para fondos sólidos con texto blanco. Lo reutilizan chips, tiles, puntos e insignias.
  */
-[data-tone="blue"] { --tone-soft: var(--blue-soft); --tone-color: var(--blue); --tone-solid: var(--blue); }
-[data-tone="coral"] { --tone-soft: var(--coral-soft); --tone-color: var(--coral); --tone-solid: var(--coral); }
-[data-tone="green"] { --tone-soft: var(--green-soft); --tone-color: var(--green-deep); --tone-solid: var(--green); }
-[data-tone="violet"] { --tone-soft: var(--violet-soft); --tone-color: var(--violet); --tone-solid: var(--violet); }
-[data-tone="amber"] { --tone-soft: var(--amber-soft); --tone-color: var(--amber-deep); --tone-solid: var(--amber); }
-[data-tone="neutral"] { --tone-soft: var(--bg-2); --tone-color: var(--ink-2); --tone-solid: var(--ink-2); }
-[data-tone="ink"] { --tone-soft: var(--ink); --tone-color: var(--bg); --tone-solid: var(--ink); }
+[data-tone="blue"] { --tone-soft: var(--blue-soft); --tone-color: var(--blue); --tone-ink: var(--blue); --tone-solid: var(--blue); --tone-fill: var(--blue-fill); }
+[data-tone="coral"] { --tone-soft: var(--coral-soft); --tone-color: var(--coral); --tone-ink: var(--coral-deep); --tone-solid: var(--coral); --tone-fill: var(--coral-fill); }
+[data-tone="green"] { --tone-soft: var(--green-soft); --tone-color: var(--green-deep); --tone-ink: var(--green-deep); --tone-solid: var(--green); --tone-fill: var(--green-fill); }
+[data-tone="violet"] { --tone-soft: var(--violet-soft); --tone-color: var(--violet); --tone-ink: var(--violet-deep); --tone-solid: var(--violet); --tone-fill: var(--violet-fill); }
+[data-tone="amber"] { --tone-soft: var(--amber-soft); --tone-color: var(--amber-deep); --tone-ink: var(--amber-ink); --tone-solid: var(--amber); --tone-fill: var(--amber-fill); }
+[data-tone="neutral"] { --tone-soft: var(--bg-2); --tone-color: var(--ink-2); --tone-ink: var(--ink-2); --tone-solid: var(--ink-2); --tone-fill: var(--ink-2); }
+[data-tone="ink"] { --tone-soft: var(--ink); --tone-color: var(--bg); --tone-ink: var(--bg); --tone-solid: var(--ink); --tone-fill: var(--ink); }

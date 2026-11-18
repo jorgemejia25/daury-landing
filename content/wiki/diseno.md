@@ -1,12 +1,12 @@
 ## La misma identidad, un nuevo espacio
 
-La wiki comparte la identidad visual de la landing. Su diseño favorece la lectura y la orientación, con una navegación lateral que permanece a mano.
+La wiki comparte la identidad visual de la app móvil, que es la referencia de la marca, igual que la landing. Su diseño favorece la lectura y la orientación, con una navegación lateral que permanece a mano.
 
 ## Color
 
 - **Azul Daury · `#2358E8`:** acciones principales, selección y acentos.
-- **Tinta · `#0D1333`:** títulos y texto principal.
-- **Fondo cálido · `#F4F3EF`:** el lienzo de la interfaz.
+- **Tinta · `#15161D`:** títulos y texto principal.
+- **Crema · `#F3F1EC`:** el lienzo de la interfaz.
 - **Blanco · `#FFFFFF`:** superficies de lectura y paneles.
 
 Los componentes reutilizan las variables de `src/styles/tokens.css` para conservar la consistencia.

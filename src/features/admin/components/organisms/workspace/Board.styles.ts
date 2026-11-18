@@ -31,7 +31,7 @@ const styles = {
   "cardMeta": "tw-Board-47c8-cardMeta flex items-center justify-between gap-[8px] min-h-[20px] pl-[11px]",
   "type": "tw-Board-47c8-type inline-flex items-center gap-[5px] min-w-0 [color:var(--ink-mute)] font-medium text-[11px] leading-[1] font-mono [&_svg]:flex-none [&_svg]:w-[13px] [&_svg]:h-[13px]",
   "metaIcons": "tw-Board-47c8-metaIcons flex items-center justify-end gap-[8px] text-ink-soft font-medium text-[11.5px] leading-[1] font-sans [font-variant-numeric:tabular-nums] [&_>_span:not([class])]:inline-flex [&_>_span:not([class])]:items-center [&_>_span:not([class])]:gap-[3px] [&_>_span[data-complete]]:[color:var(--green-deep)]",
-  "due": "tw-Board-47c8-due inline-flex items-center gap-[4px] [padding:2px_6px] rounded-[5px] [background:var(--tone-soft)] [color:var(--tone-color)] font-medium text-[11.5px] leading-[1.3] font-sans whitespace-nowrap [&[data-tone=neutral]]:[background:transparent] [&[data-tone=neutral]]:text-ink-soft [&[data-tone=neutral]]:px-0",
+  "due": "tw-Board-47c8-due inline-flex items-center gap-[4px] [padding:2px_6px] rounded-[5px] [background:var(--tone-soft)] [color:var(--tone-ink)] font-medium text-[11.5px] leading-[1.3] font-sans whitespace-nowrap [&[data-tone=neutral]]:[background:transparent] [&[data-tone=neutral]]:text-ink-soft [&[data-tone=neutral]]:px-0",
   "points": "tw-Board-47c8-points [padding:1px_5px] [border:1px_solid_var(--rule)] rounded-[5px] font-medium text-[10.5px] leading-[1.4] font-mono",
   "assignee": "tw-Board-47c8-assignee inline-flex",
   "unassigned": "tw-Board-47c8-unassigned w-[20px] h-[20px] [border:1.5px_dashed_var(--rule-hover)] rounded-full",

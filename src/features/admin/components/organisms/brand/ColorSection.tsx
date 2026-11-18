@@ -31,7 +31,7 @@ export function ColorSection() {
       id="color"
       eyebrow="Color"
       title="Azul para la marca, un color por significado"
-      lede="El azul y el crema identifican a Daury. Los demás colores tienen un significado fijo y solo se usan para ese significado: en la app son los mismos tonos de chips, íconos y estados. Cada color de apoyo tiene una versión para fondos y otra, más oscura, para texto."
+      lede="El azul y el crema identifican a Daury. Los demás colores tienen un significado fijo y solo se usan para ese significado: en la app son los mismos tonos de chips, íconos y estados. Cada color de apoyo tiene una versión clara para fondos y una versión profunda para texto, que llega a 4.5 a 1 sobre su fondo claro, blanco y crema."
     >
       {colorGroups.map((group) => (
         <div key={group.title} className={styles.group}>
@@ -61,11 +61,11 @@ export function ColorSection() {
 
       <BrandSubhead
         title="Solo para títulos grandes"
-        note="Contraste entre 3 y 4.5 a 1: títulos de 84 px o más en redes (24 px o más en la app). Para texto menor se usa la versión “texto” del mismo color."
+        note="Contraste entre 3 y 4.5 a 1: títulos de 66 px o más en redes (24 px o más en la app), íconos y gráficos. Para texto menor se usa la versión profunda del mismo color."
       />
       <PairGrid pairs={largeOnlyPairs} verdict="Solo títulos grandes" tone="amber" />
 
-      <BrandSubhead title="No permitida" />
+      <BrandSubhead title="No permitida para texto" note="Contraste menor de 3 a 1. Solo para elementos inactivos o decorativos." />
       <PairGrid pairs={forbiddenPairs} verdict="No permitida" tone="coral" />
     </BrandSection>
   );

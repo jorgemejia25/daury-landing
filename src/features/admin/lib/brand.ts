@@ -22,6 +22,7 @@ export const logoRules = [
   "Tamaño mínimo: 80 px de ancho.",
   "Posición: esquina inferior izquierda, dentro del margen de 80 px. En historias, por encima de la franja inferior reservada.",
   "Un solo logo por imagen.",
+  "Ícono de la app: logo blanco sobre Azul Daury. Pantalla de carga: fondo Crema en modo claro y Noche en modo oscuro.",
 ];
 
 export const logoMisuses = [
@@ -37,125 +38,141 @@ export const colorGroups: ColorGroup[] = [
   {
     title: "Colores de marca",
     swatches: [
-      { name: "Azul Daury", hex: "#2358E8", use: "Fondo principal, logo y botones" },
+      { name: "Azul Daury", hex: "#2358E8", use: "Fondo principal, logo, botones y acción" },
       { name: "Crema", hex: "#F3F1EC", use: "Fondo claro principal" },
-      { name: "Blanco", hex: "#FFFFFF", use: "Texto sobre azul y fondo de datos" },
+      { name: "Blanco", hex: "#FFFFFF", use: "Tarjetas y texto sobre azul" },
       { name: "Tinta", hex: "#15161D", use: "Texto sobre fondos claros" },
       { name: "Azul profundo", hex: "#1740A8", use: "Texto azul sobre azul claro y fondos oscuros" },
-      { name: "Azul claro", hex: "#EAF0FE", use: "Fondos suaves y texto secundario sobre azul" },
+      { name: "Azul claro", hex: "#EAF0FE", use: "Fondos suaves de acción" },
+      { name: "Azul brillante", hex: "#4C7BFF", use: "Destellos y acentos sobre fondos oscuros" },
     ],
   },
   {
     title: "Verde: logro o tarea hecha",
     swatches: [
-      { name: "Verde", hex: "#2E9E5B", use: "Íconos y gráficos" },
-      { name: "Verde texto", hex: "#1C7A43", use: "Texto verde y fondo con texto blanco" },
+      { name: "Verde", hex: "#2E9E5B", use: "Botón de hecho, íconos y gráficos" },
+      { name: "Verde profundo", hex: "#1C7A43", use: "Texto verde, íconos sobre verde claro y fondo con texto blanco" },
       { name: "Verde claro", hex: "#E7F4EC", use: "Fondo" },
     ],
   },
   {
     title: "Coral: alerta o algo que no se hizo",
     swatches: [
-      { name: "Coral", hex: "#E04B4B", use: "Íconos y gráficos" },
-      { name: "Coral texto", hex: "#C23B3B", use: "Texto coral y fondo con texto blanco" },
+      { name: "Coral", hex: "#E04B4B", use: "Peligro, emergencia, íconos y gráficos" },
+      { name: "Coral profundo", hex: "#C23B3B", use: "Texto coral y fondo con texto blanco" },
       { name: "Coral claro", hex: "#FBEDEC", use: "Fondo" },
     ],
   },
   {
     title: "Violeta: familia y círculo de cuidado",
     swatches: [
-      { name: "Violeta", hex: "#7257E8", use: "Íconos y gráficos" },
-      { name: "Violeta texto", hex: "#5A40CF", use: "Texto violeta y fondo con texto blanco" },
+      { name: "Violeta", hex: "#7257E8", use: "Familia y plan: íconos y gráficos" },
+      { name: "Violeta profundo", hex: "#5A40CF", use: "Texto violeta y fondo con texto blanco" },
       { name: "Violeta claro", hex: "#EFEBFC", use: "Fondo" },
     ],
   },
   {
-    title: "Ámbar: aviso o recordatorio",
+    title: "Ámbar: aviso, recordatorio o racha",
     swatches: [
       { name: "Ámbar", hex: "#C98A2B", use: "Íconos y gráficos, sin texto encima" },
-      { name: "Ámbar texto", hex: "#8A5A12", use: "Texto ámbar y fondo con texto blanco" },
+      { name: "Ámbar profundo", hex: "#B8791E", use: "Íconos sobre ámbar claro" },
+      { name: "Ámbar tinta", hex: "#8A5E1A", use: "Texto ámbar y fondo con texto blanco" },
       { name: "Ámbar claro", hex: "#F7EFE0", use: "Fondo" },
-      { name: "Amarillo brillo", hex: "#FFC978", use: "Detalle sobre azul o tinta" },
+      { name: "Amarillo brillo", hex: "#FFC978", use: "Racha y detalles sobre azul o tinta" },
     ],
   },
   {
     title: "Neutros",
     swatches: [
-      { name: "Gris texto", hex: "#5E5F6A", use: "Fuentes, notas y texto secundario" },
-      { name: "Crema oscuro", hex: "#EEEBE3", use: "Tarjetas sobre crema" },
+      { name: "Tinta 2", hex: "#3C3D47", use: "Texto fuerte y botón secundario" },
+      { name: "Gris texto", hex: "#5E5F6A", use: "Texto secundario, fuentes y notas" },
+      { name: "Gris tenue", hex: "#9A9AA3", use: "Elementos inactivos, nunca texto que se deba leer" },
+      { name: "Línea", hex: "#E8E5DD", use: "Bordes y separadores" },
+      { name: "Crema oscuro", hex: "#EEEBE3", use: "Tarjetas sobre crema y botón secundario" },
       { name: "Noche", hex: "#101218", use: "Fondo oscuro" },
+      { name: "Noche elevada", hex: "#1A1D26", use: "Tarjetas sobre fondo oscuro" },
       { name: "Azul marino", hex: "#031B5C", use: "Solo en la mascota" },
     ],
   },
 ];
 
+/* Contraste calculado con la fórmula de WCAG 2.2 sobre las combinaciones que usa la app. */
 export const allowedPairs: ColorPair[] = [
   { name: "Blanco sobre azul", text: "#FFFFFF", background: "#2358E8", ratio: 5.78 },
   { name: "Azul sobre crema", text: "#2358E8", background: "#F3F1EC", ratio: 5.12 },
+  { name: "Azul sobre azul claro", text: "#2358E8", background: "#EAF0FE", ratio: 5.06 },
   { name: "Tinta sobre crema", text: "#15161D", background: "#F3F1EC", ratio: 15.98 },
   { name: "Tinta sobre blanco", text: "#15161D", background: "#FFFFFF", ratio: 18.04 },
+  { name: "Tinta 2 sobre crema oscuro", text: "#3C3D47", background: "#EEEBE3", ratio: 9.04 },
   { name: "Blanco sobre azul profundo", text: "#FFFFFF", background: "#1740A8", ratio: 8.99 },
   { name: "Azul profundo sobre azul claro", text: "#1740A8", background: "#EAF0FE", ratio: 7.88 },
   { name: "Gris sobre crema", text: "#5E5F6A", background: "#F3F1EC", ratio: 5.6 },
   { name: "Crema sobre tinta", text: "#F3F1EC", background: "#15161D", ratio: 15.98 },
   { name: "Blanco sobre noche", text: "#FFFFFF", background: "#101218", ratio: 18.72 },
-  { name: "Blanco sobre verde texto", text: "#FFFFFF", background: "#1C7A43", ratio: 5.37 },
-  { name: "Verde texto sobre verde claro", text: "#1C7A43", background: "#E7F4EC", ratio: 4.74 },
-  { name: "Blanco sobre coral texto", text: "#FFFFFF", background: "#C23B3B", ratio: 5.27 },
-  { name: "Coral texto sobre coral claro", text: "#C23B3B", background: "#FBEDEC", ratio: 4.63 },
-  { name: "Blanco sobre violeta texto", text: "#FFFFFF", background: "#5A40CF", ratio: 6.84 },
-  { name: "Violeta texto sobre violeta claro", text: "#5A40CF", background: "#EFEBFC", ratio: 5.85 },
-  { name: "Ámbar texto sobre ámbar claro", text: "#8A5A12", background: "#F7EFE0", ratio: 5.17 },
-  { name: "Blanco sobre ámbar texto", text: "#FFFFFF", background: "#8A5A12", ratio: 5.91 },
+  { name: "Blanco sobre noche elevada", text: "#FFFFFF", background: "#1A1D26", ratio: 16.83 },
+  { name: "Azul brillante sobre noche", text: "#4C7BFF", background: "#101218", ratio: 4.98 },
+  { name: "Verde profundo sobre verde claro", text: "#1C7A43", background: "#E7F4EC", ratio: 4.74 },
+  { name: "Blanco sobre verde profundo", text: "#FFFFFF", background: "#1C7A43", ratio: 5.37 },
+  { name: "Coral profundo sobre coral claro", text: "#C23B3B", background: "#FBEDEC", ratio: 4.63 },
+  { name: "Blanco sobre coral profundo", text: "#FFFFFF", background: "#C23B3B", ratio: 5.27 },
+  { name: "Violeta profundo sobre violeta claro", text: "#5A40CF", background: "#EFEBFC", ratio: 5.85 },
+  { name: "Blanco sobre violeta profundo", text: "#FFFFFF", background: "#5A40CF", ratio: 6.84 },
+  { name: "Blanco sobre violeta", text: "#FFFFFF", background: "#7257E8", ratio: 4.95 },
+  { name: "Ámbar tinta sobre ámbar claro", text: "#8A5E1A", background: "#F7EFE0", ratio: 4.97 },
+  { name: "Blanco sobre ámbar tinta", text: "#FFFFFF", background: "#8A5E1A", ratio: 5.68 },
   { name: "Amarillo brillo sobre tinta", text: "#FFC978", background: "#15161D", ratio: 11.92 },
 ];
 
 export const largeOnlyPairs: ColorPair[] = [
-  { name: "Blanco sobre violeta", text: "#FFFFFF", background: "#7257E8", ratio: 4.95 },
+  { name: "Violeta sobre violeta claro", text: "#7257E8", background: "#EFEBFC", ratio: 4.23 },
   { name: "Blanco sobre coral", text: "#FFFFFF", background: "#E04B4B", ratio: 3.98 },
+  { name: "Amarillo brillo sobre azul", text: "#FFC978", background: "#2358E8", ratio: 3.82 },
+  { name: "Coral sobre coral claro", text: "#E04B4B", background: "#FBEDEC", ratio: 3.49 },
   { name: "Blanco sobre verde", text: "#FFFFFF", background: "#2E9E5B", ratio: 3.41 },
+  { name: "Ámbar profundo sobre ámbar claro", text: "#B8791E", background: "#F7EFE0", ratio: 3.17 },
 ];
 
 export const forbiddenPairs: ColorPair[] = [
   { name: "Blanco sobre ámbar", text: "#FFFFFF", background: "#C98A2B", ratio: 2.94 },
+  { name: "Gris tenue sobre crema", text: "#9A9AA3", background: "#F3F1EC", ratio: 2.47 },
 ];
 
 export const fontFamilies = [
   {
     name: "Bricolage Grotesque",
     css: "var(--f-display)",
-    weight: 800,
-    note: "Títulos y cifras. ExtraBold (800) en títulos, Bold (700) en subtítulos.",
+    weight: 600,
+    note: "Títulos y cifras. SemiBold (600) en todos los títulos; Bold (700) solo en cifras destacadas.",
     url: "https://fonts.google.com/specimen/Bricolage+Grotesque",
   },
   {
     name: "Geist",
     css: "var(--f-sans)",
     weight: 500,
-    note: "Texto y botones. Regular (400) en texto, SemiBold (600) para resaltar, Bold (700) en botones.",
+    note: "Texto y botones. Regular (400) en texto, SemiBold (600) para resaltar y en títulos de fila, Bold (700) en botones y etiquetas de sección.",
     url: "https://fonts.google.com/specimen/Geist",
   },
   {
     name: "Geist Mono",
     css: "var(--f-mono)",
     weight: 600,
-    note: "Etiquetas en mayúsculas sobre el título, como “CONSEJO PARA CUIDAR”. SemiBold (600).",
+    note: "Etiquetas en mayúsculas sobre el título, como “AHORA” o “PASO 1 DE 3”. SemiBold (600).",
     url: "https://fonts.google.com/specimen/Geist+Mono",
   },
 ] as const;
 
-/** Escala para lienzos de 1080 px: la de la app multiplicada por 2.77. */
+/** Escala para lienzos de 1080 px: la tipografía de la app (Typography) multiplicada por 2.77. */
 export const typeScale = [
-  { name: "Cifra grande", size: 236, lineHeight: 1, family: "display", weight: 800, tracking: -0.04, sample: "87 %", font: "Bricolage Grotesque ExtraBold", spec: "interlineado 1.0, espaciado -4 %" },
-  { name: "Título", size: 84, lineHeight: 1.08, family: "display", weight: 800, tracking: -0.03, sample: "Escucha cada paso", font: "Bricolage Grotesque ExtraBold", spec: "interlineado 1.08, espaciado -3 %" },
-  { name: "Subtítulo", size: 66, lineHeight: 1.15, family: "display", weight: 700, tracking: -0.02, sample: "Para quien cuida en casa", font: "Bricolage Grotesque Bold", spec: "interlineado 1.15, espaciado -2 %" },
-  { name: "Destacado", size: 56, lineHeight: 1.2, family: "display", weight: 700, tracking: -0.02, sample: "Tableta de la mañana", font: "Bricolage Grotesque Bold", spec: "interlineado 1.2, espaciado -2 %" },
-  { name: "Texto", size: 44, lineHeight: 1.42, family: "sans", weight: 400, tracking: 0, sample: "Daury lee las indicaciones en voz alta.", font: "Geist Regular", spec: "interlineado 1.42" },
-  { name: "Texto resaltado", size: 44, lineHeight: 1.42, family: "sans", weight: 600, tracking: 0, sample: "También sin internet.", font: "Geist SemiBold", spec: "interlineado 1.42" },
-  { name: "Texto pequeño", size: 38, lineHeight: 1.4, family: "sans", weight: 400, tracking: 0, sample: "Disponible para iPhone y Android.", font: "Geist Regular", spec: "interlineado 1.4" },
-  { name: "Botón", size: 47, lineHeight: 1.2, family: "sans", weight: 700, tracking: 0, sample: "Descarga Daury", font: "Geist Bold", spec: "interlineado 1.2" },
-  { name: "Etiqueta", size: 30, lineHeight: 1.3, family: "mono", weight: 600, tracking: 0.12, sample: "CONSEJO PARA CUIDAR", font: "Geist Mono SemiBold", spec: "mayúsculas, espaciado +12 %" },
-  { name: "Fuente o nota", size: 30, lineHeight: 1.4, family: "sans", weight: 400, tracking: 0, sample: "Fuente: [organización, año]", font: "Geist Regular", spec: "interlineado 1.4" },
+  { name: "Cifra grande", size: 116, lineHeight: 1.05, family: "display", weight: 600, tracking: -0.04, sample: "87 %", font: "Bricolage Grotesque SemiBold", spec: "interlineado 1.05, espaciado -4 %" },
+  { name: "Título", size: 83, lineHeight: 1.2, family: "display", weight: 600, tracking: -0.03, sample: "Escucha cada paso", font: "Bricolage Grotesque SemiBold", spec: "interlineado 1.2, espaciado -3 %" },
+  { name: "Subtítulo", size: 66, lineHeight: 1.2, family: "display", weight: 600, tracking: -0.02, sample: "Para quien cuida en casa", font: "Bricolage Grotesque SemiBold", spec: "interlineado 1.2, espaciado -2 %" },
+  { name: "Destacado", size: 55, lineHeight: 1.25, family: "display", weight: 600, tracking: -0.02, sample: "Tableta de la mañana", font: "Bricolage Grotesque SemiBold", spec: "interlineado 1.25, espaciado -2 %" },
+  { name: "Texto", size: 44, lineHeight: 1.5, family: "sans", weight: 400, tracking: 0, sample: "Daury lee las indicaciones en voz alta.", font: "Geist Regular", spec: "interlineado 1.5" },
+  { name: "Texto resaltado", size: 44, lineHeight: 1.5, family: "sans", weight: 600, tracking: 0, sample: "También sin internet.", font: "Geist SemiBold", spec: "interlineado 1.5" },
+  { name: "Texto pequeño", size: 39, lineHeight: 1.43, family: "sans", weight: 400, tracking: 0, sample: "Disponible para iPhone y Android.", font: "Geist Regular", spec: "interlineado 1.43" },
+  { name: "Botón", size: 47, lineHeight: 1.29, family: "sans", weight: 700, tracking: 0, sample: "Descarga Daury", font: "Geist Bold", spec: "interlineado 1.29" },
+  { name: "Etiqueta", size: 30, lineHeight: 1.27, family: "mono", weight: 600, tracking: 0.127, sample: "CONSEJO PARA CUIDAR", font: "Geist Mono SemiBold", spec: "mayúsculas, espaciado +13 %" },
+  { name: "Fuente o nota", size: 36, lineHeight: 1.38, family: "sans", weight: 400, tracking: 0, sample: "Fuente: [organización, año]", font: "Geist Regular", spec: "interlineado 1.38" },
 ] as const;
 
 export const typeRules = [
@@ -181,11 +198,40 @@ export const compositionRules = [
   { rule: "Carrusel", value: "Máximo 10 láminas, mismo fondo en todas, número de lámina abajo a la derecha" },
 ];
 
+/** Botones de la app (DauryButton): píldora, Geist Bold. */
+export const appButtons = [
+  { variant: "primary", label: "Guardar", background: "#2358E8", color: "#FFFFFF", shadow: "0 12px 20px -6px rgba(35, 88, 232, 0.45)", use: "Acción principal de la pantalla. Una por pantalla." },
+  { variant: "secondary", label: "Cancelar", background: "#EEEBE3", color: "#3C3D47", use: "Acción secundaria." },
+  { variant: "soft", label: "Escuchar", background: "#EAF0FE", color: "#2358E8", use: "Acciones ligeras: ver, escuchar." },
+  { variant: "ink", label: "Listo", background: "#15161D", color: "#F3F1EC", use: "Confirmaciones." },
+  { variant: "success", label: "Tomada", background: "#2E9E5B", color: "#FFFFFF", shadow: "0 10px 18px -6px rgba(46, 158, 91, 0.35)", use: "Confirmar algo hecho." },
+  { variant: "danger", label: "Eliminar", background: "#FBEDEC", color: "#E04B4B", use: "Acciones destructivas." },
+  { variant: "dangerSolid", label: "Llamar", background: "#E04B4B", color: "#FFFFFF", shadow: "0 12px 22px -6px rgba(224, 75, 75, 0.4)", use: "Emergencia y llamadas." },
+  { variant: "onBlue", label: "Ver día", background: "#FFFFFF", color: "#2358E8", use: "Sobre fondos azules." },
+  { variant: "text", label: "Omitir", background: "transparent", color: "#2358E8", use: "Enlaces y acciones discretas." },
+] as const;
+
+export const appButtonSizes = [
+  { name: "Grande", height: 56, paddingX: 24, fontSize: 17 },
+  { name: "Mediano", height: 46, paddingX: 18, fontSize: 14.5 },
+  { name: "Pequeño", height: 38, paddingX: 14, fontSize: 13.5 },
+] as const;
+
+/** Sombras de la app (Shadows), en su equivalente CSS. */
+export const appShadows = [
+  { name: "soft", shadow: "0 8px 18px rgba(15, 16, 29, 0.08)", use: "Tarjetas" },
+  { name: "pop", shadow: "0 18px 30px rgba(15, 16, 29, 0.22)", use: "Hojas y modales" },
+  { name: "blue", shadow: "0 12px 20px rgba(35, 88, 232, 0.45)", use: "Botón principal y botón +" },
+  { name: "coral", shadow: "0 12px 22px rgba(224, 75, 75, 0.4)", use: "Emergencia" },
+  { name: "green", shadow: "0 10px 18px rgba(46, 158, 91, 0.35)", use: "Confirmar hecho" },
+] as const;
+
 export const mascotDo = [
   "Consejos para cuidar.",
   "Funciones de la app.",
   "Logros, como completar una semana de registros.",
   "Altura mínima: 160 px en un lienzo de 1080 px.",
+  "Sobre azul, como en la tarjeta “Ahora” de la app: a un lado y sin tapar el texto.",
 ];
 
 export const mascotDont = [
@@ -193,7 +239,7 @@ export const mascotDont = [
   "Cambiar sus colores, proporciones o expresión.",
   "Agregarle ropa, objetos o texto encima.",
   "Ponerla pegada al logo.",
-  "Ponerla sobre fondo azul o con fotos detrás.",
+  "Ponerla sobre fotos o fondos con mucho detalle.",
 ];
 
 export const toneGroups = [
@@ -266,10 +312,22 @@ export function hexToRgb(hex: string) {
 
 const brandImage = (name: string) => `/images/brand/${name}`;
 
-/** Poses de la mascota, con el uso recomendado de cada una. */
+/** Poses de la mascota en la app (componente DauryMascot), con la pantalla donde se usa cada una. */
+export const appMascotPoses = [
+  { pose: "walk", name: "Caminando", use: "Pose base. Tarjeta “Ahora” de la pantalla Hoy." },
+  { pose: "idle", name: "Tranquila", use: "Estados en calma, como no tener notificaciones." },
+  { pose: "wave", name: "Saludando", use: "Bienvenida del onboarding." },
+  { pose: "cheer", name: "Celebrando", use: "Logros: todas las actividades del día hechas." },
+  { pose: "think", name: "Pensando", use: "Estados vacíos y preguntas: “¿Para quién es?”." },
+  { pose: "hug", name: "Abrazando", use: "Familia y compartir el cuidado, con corazones." },
+  { pose: "point", name: "Señalando", use: "Ajustes y pasos a seguir." },
+  { pose: "hold", name: "Sosteniendo", use: "Lector de recetas con IA, con una tarjeta en las manos." },
+] as const;
+
+/** Ilustraciones de la mascota para redes y piezas impresas (no se usan en la app). */
 export const mascotPoses = [
-  { name: "De pie", file: brandImage("mascota-de-pie.webp"), use: "Pose principal. Bienvenida, perfiles y piezas institucionales." },
-  { name: "Caminando", file: brandImage("mascota-caminando.webp"), use: "Movimiento y progreso: rutinas, caminatas y avances del día." },
+  { name: "Caminando", file: brandImage("mascota-caminando.webp"), use: "Pose base, la misma de la app. Rutinas, caminatas y avances del día." },
+  { name: "De pie", file: brandImage("mascota-de-pie.webp"), use: "Bienvenida, perfiles y piezas institucionales." },
   { name: "Con energía", file: brandImage("mascota-energia.webp"), use: "Logros y celebraciones. Las líneas azules marcan entusiasmo." },
   { name: "Organizando", file: brandImage("mascota-organiza.webp"), use: "Plan Base, listas, tareas y recordatorios." },
   { name: "Premium", file: brandImage("mascota-premium.webp"), use: "Plan Premium: sombrero y teléfono para las funciones avanzadas." },
@@ -278,7 +336,7 @@ export const mascotPoses = [
 /** Exploraciones de la pose caminando antes de fijar la versión final. */
 export const mascotExplorations = [1, 2, 3, 4].map((index) => ({ name: `Exploración ${index}`, file: brandImage(`mascota-exploracion-${index}.webp`) }));
 
-/** Sistema de caras de la identidad original: el estado de ánimo de la persona cuidada. */
+/** Sistema de caras de la propuesta original (ILAN). La app no lo usa: queda como referencia histórica. */
 export const mascotMoods = [
   { name: "Tranquila", tone: "blue", use: "Estado estable, sin cambios. Es la cara por defecto." },
   { name: "Feliz", tone: "green", use: "Buen día, tareas completas o una mejora reportada." },

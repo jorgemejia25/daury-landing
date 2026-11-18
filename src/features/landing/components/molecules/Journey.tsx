@@ -57,7 +57,7 @@ export function Journey({ label, chapters, visuals }: { label: string; chapters:
       <aside className={"l-journey--aside sticky [top:calc(var(--header-h)_+_56px)] [align-self:start] z-[5] max-[960.02px]:[top:calc(var(--header-h)_+_12px)]"}>
         <nav className={"l-spy relative flex flex-col gap-[18px] max-[960.02px]:hidden"} aria-label={label}>
           <span className={"l-spy--label text-[14px] font-bold [color:var(--muted)]"}>{label}</span>
-          <div className={"l-spy--rail absolute left-[19px] top-[58px] bottom-[20px] w-[2px] rounded-[2px] [background:#dcdbd3]"} aria-hidden="true">
+          <div className={"l-spy--rail absolute left-[19px] top-[58px] bottom-[20px] w-[2px] rounded-[2px] [background:var(--rule)]"} aria-hidden="true">
             <span className={"l-spy--fill absolute [inset:0_0_auto] [height:calc(var(--progress)_*_100%)] [border-radius:inherit] bg-brand"} />
           </div>
           <ol className={"l-spy--list relative flex flex-col gap-[6px] l-list-reset m-0 p-0 list-none"}>
@@ -70,7 +70,7 @@ export function Journey({ label, chapters, visuals }: { label: string; chapters:
                   data-past={i < active}
                   onClick={go(i)}
                 >
-                  <span className={"l-spy--num grid place-items-center w-[40px] h-[40px] flex-none rounded-full bg-canvas [box-shadow:inset_0_0_0_2px_#dcdbd3] font-mono text-[13px] font-semibold [transition:background-color_.35s,_color_.35s,_box-shadow_.35s,_transform_.45s_var(--spring)]"}>{String(i + 1).padStart(2, "0")}</span>
+                  <span className={"l-spy--num grid place-items-center w-[40px] h-[40px] flex-none rounded-full bg-canvas [box-shadow:inset_0_0_0_2px_var(--rule)] font-mono text-[13px] font-semibold [transition:background-color_.35s,_color_.35s,_box-shadow_.35s,_transform_.45s_var(--spring)]"}>{String(i + 1).padStart(2, "0")}</span>
                   <span className={"l-spy--text [transition:transform_.45s_var(--ease)]"}>{c.kicker}</span>
                 </a>
               </li>
@@ -99,7 +99,7 @@ export function Journey({ label, chapters, visuals }: { label: string; chapters:
               {String(i + 1).padStart(2, "0")}
             </span>
             <span className={"l-eyebrow inline-flex items-center self-start [padding:8px_14px] rounded-full bg-surface [color:var(--ink-2)] text-[14px] font-semibold tracking-[-.005em] leading-[1]  "}>{c.kicker}</span>
-            <h3 className={"l-chapter--title m-0 font-display text-[clamp(34px,_4.4vw,_60px)] font-bold tracking-[-.045em] leading-[1] text-balance"}>{c.title}</h3>
+            <h3 className={"l-chapter--title m-0 font-display text-[clamp(34px,_4.4vw,_60px)] font-semibold tracking-[-.045em] leading-[1] text-balance"}>{c.title}</h3>
             <p className={"l-chapter--text m-0 max-w-[640px] text-[clamp(18px,_1.6vw,_21px)] leading-[1.6] [color:var(--ink-2)] text-pretty"}>{c.text}</p>
             {visuals[i] && <div className={"l-chapter--visual mt-[20px] max-w-[680px]"}>{visuals[i]}</div>}
           </article>

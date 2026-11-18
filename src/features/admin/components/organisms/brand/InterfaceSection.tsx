@@ -1,22 +1,12 @@
 import { ArrowRight, Bell, Check, HeartPulse, House, Pill, Users } from "lucide-react";
-import { Button, type ButtonVariant } from "@/ui/atoms/Button";
 import { Chip } from "@/ui/atoms/Chip";
 import { IconTile } from "@/ui/atoms/IconTile";
 import type { Tone } from "@/ui/lib/tones";
 import { Card } from "@/ui/molecules/Card";
 import { ListRow } from "@/ui/molecules/ListRow";
+import { appButtonSizes, appButtons, appShadows } from "@/features/admin/lib/brand";
 import { BrandSection, BrandSubhead } from "./BrandSection";
 import styles from "./BrandGuide.styles";
-
-const buttons: { variant: ButtonVariant; label: string; use: string }[] = [
-  { variant: "primary", label: "Guardar", use: "Acción principal de la pantalla. Una por pantalla." },
-  { variant: "secondary", label: "Cancelar", use: "Acción secundaria." },
-  { variant: "soft", label: "Escuchar", use: "Acciones ligeras: ver, escuchar." },
-  { variant: "ink", label: "Listo", use: "Confirmaciones." },
-  { variant: "success", label: "Tomada", use: "Confirmar algo hecho." },
-  { variant: "danger", label: "Eliminar", use: "Acciones destructivas." },
-  { variant: "text", label: "Omitir", use: "Enlaces y acciones discretas." },
-];
 
 const tones: { tone: Tone; meaning: string; icon: React.ReactNode }[] = [
   { tone: "blue", meaning: "Acción", icon: <House size={22} strokeWidth={2} /> },
@@ -43,17 +33,27 @@ export function InterfaceSection() {
       id="interfaz"
       eyebrow="Interfaz"
       title="Los componentes de la app"
-      lede="La app y este admin comparten el mismo sistema: botones en píldora, tarjetas blancas con sombra suave y un tono por significado. Estos ejemplos son los componentes reales de la wiki, en src/ui."
+      lede="La especificación sale de la app móvil: botones en píldora, tarjetas blancas con sombra suave y un tono por significado. Los botones de abajo reproducen los de la app; los tonos y las filas son componentes del admin, que comparten sus colores."
     >
       <BrandSubhead title="Botones" note="Píldora con etiqueta en Geist Bold. Alturas de 56, 46 y 38 px." />
       <Card padding="none">
         <ul className={`m-0 p-0 list-none ${styles.buttonList}`}>
-          {buttons.map((button) => (
+          {appButtons.map((button) => (
             <li key={button.variant}>
-              <span className={styles.buttonSample}>
-                <Button variant={button.variant} size="md" tabIndex={-1} aria-hidden="true">
+              <span className={styles.buttonSample} aria-hidden="true">
+                <span
+                  className={styles.appButton}
+                  style={{
+                    height: 46,
+                    padding: "0 18px",
+                    fontSize: 14.5,
+                    background: button.background,
+                    color: button.color,
+                    boxShadow: "shadow" in button ? button.shadow : undefined,
+                  }}
+                >
                   {button.label}
-                </Button>
+                </span>
               </span>
               <span className={styles.buttonName}>
                 <b>{button.variant}</b>
@@ -64,12 +64,19 @@ export function InterfaceSection() {
         </ul>
       </Card>
       <div className={styles.sizes} aria-hidden="true">
-        <Button variant="primary" size="lg" tabIndex={-1} icon={<ArrowRight size={20} strokeWidth={2.2} />} iconPosition="trailing">Grande · 56</Button>
-        <Button variant="primary" size="md" tabIndex={-1}>Mediano · 46</Button>
-        <Button variant="primary" size="sm" tabIndex={-1}>Pequeño · 38</Button>
+        {appButtonSizes.map((size, index) => (
+          <span
+            key={size.name}
+            className={styles.appButton}
+            style={{ height: size.height, padding: `0 ${size.paddingX}px`, fontSize: size.fontSize, background: "#2358E8", color: "#FFFFFF" }}
+          >
+            {size.name} · {size.height}
+            {index === 0 ? <ArrowRight size={20} strokeWidth={2.2} /> : null}
+          </span>
+        ))}
       </div>
 
-      <BrandSubhead title="Tonos, chips y tiles" note="Cada tono tiene fondo suave y tinta. Se usan en chips de estado, cuadros de ícono y puntos." />
+      <BrandSubhead title="Tonos, chips y tiles" note="Cada tono tiene fondo suave, color de ícono y tinta de texto. El chip sólido usa la versión profunda del tono (en violeta, el violeta normal) para que el texto blanco se lea." />
       <ul className={`m-0 p-0 list-none ${styles.toneGrid}`}>
         {tones.map((item) => (
           <li key={item.tone}>
@@ -94,7 +101,7 @@ export function InterfaceSection() {
           </Card>
         </div>
         <div>
-          <BrandSubhead title="Radios y sombras" note="Escala BorderRadius de la app." />
+          <BrandSubhead title="Radios" note="Escala BorderRadius de la app." />
           <Card padding="lg">
             <ul className={`m-0 p-0 list-none ${styles.radii}`}>
               {radii.map((radius) => (
@@ -108,6 +115,18 @@ export function InterfaceSection() {
           </Card>
         </div>
       </div>
+      <BrandSubhead title="Sombras" note="Escala Shadows de la app. La sombra de color va solo bajo el botón de su mismo color." />
+      <Card padding="lg">
+        <ul className={`m-0 p-0 list-none ${styles.radii}`}>
+          {appShadows.map((item) => (
+            <li key={item.name}>
+              <span className={styles.shadowBox} style={{ boxShadow: item.shadow }} aria-hidden="true" />
+              <b>{item.name}</b>
+              <small>{item.use}</small>
+            </li>
+          ))}
+        </ul>
+      </Card>
     </BrandSection>
   );
 }

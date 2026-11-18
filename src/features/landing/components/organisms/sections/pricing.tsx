@@ -13,7 +13,7 @@ export function PricingHero({ t, lang }: SectionProps) {
       <div className={"l-container w-full max-w-[1240px] [margin:0_auto]"}>
         <div className={"l-head flex flex-col gap-[18px] max-w-[760px]  l-head--center [&.l-head--center]:items-center [&.l-head--center]:text-center [&.l-head--center]:[margin:0_auto] [&_.l-eyebrow]:self-center"}>
           <span className={"l-eyebrow inline-flex items-center self-start [padding:8px_14px] rounded-full bg-surface [color:var(--ink-2)] text-[14px] font-semibold tracking-[-.005em] leading-[1]   l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>{p.eyebrow}</span>
-          <h1 id="pricing-title" className={"l-ahero--title m-0 font-display text-[clamp(48px,_7.2vw,_104px)] font-bold tracking-[-.055em] leading-[.94] text-balance l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>
+          <h1 id="pricing-title" className={"l-ahero--title m-0 font-display text-[clamp(48px,_7.2vw,_104px)] font-semibold tracking-[-.055em] leading-[.94] text-balance l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>
             {p.title}
           </h1>
           <p className={"l-hero--lead m-0 max-w-[620px] text-[clamp(18px,_1.7vw,_21px)] leading-[1.5] [color:var(--ink-2)] text-pretty l-hero--in motion-safe:[animation:landing-rise_1s_var(--ease)_both] motion-safe:[&:nth-child(2)]:[animation-delay:.08s] motion-safe:[&:nth-child(3)]:[animation-delay:.16s] motion-safe:[&:nth-child(4)]:[animation-delay:.24s] motion-safe:[&:nth-child(5)]:[animation-delay:.32s]"}>{p.sub}</p>
@@ -45,7 +45,7 @@ export function PlanCards({ t, lang }: SectionProps) {
   return (
     <div className={"l-plans grid [grid-template-columns:repeat(3,_1fr)] gap-[24px] items-stretch [margin-top:clamp(64px,_7vw,_88px)] max-[960.02px]:[grid-template-columns:1fr] max-[960.02px]:max-w-[560px] max-[960.02px]:ml-auto max-[960.02px]:mr-auto [.motion_&>*]:[transition:opacity_.8s_var(--ease),transform_.9s_var(--ease)] [.motion_&>*]:[transition-delay:calc(var(--i,0)*90ms)] [.motion_&:not(.is-in)>*]:opacity-0 [.motion_&:not(.is-in)>*]:[transform:translateY(40px)]"} data-reveal="stagger">
       <article className={"l-plan flex flex-col gap-[18px] [padding:36px_32px] rounded-[32px] bg-surface [&_.l-btn--soft]:bg-canvas"}>
-        <h3 className={"l-plan--name m-0 font-display text-[26px] font-bold tracking-[-.035em]"}>Free</h3>
+        <h3 className={"l-plan--name m-0 font-display text-[26px] font-semibold tracking-[-.035em]"}>Free</h3>
         <p className={"l-plan--price [margin:6px_0_0] font-display text-[60px] font-bold tracking-[-.055em] leading-[1]"}>{p.freePrice}</p>
         <p className={"l-plan--desc m-0 min-h-[4.5em] text-[16px] leading-[1.5] [color:var(--ink-2)] max-[960.02px]:min-h-0"}>{p.free.desc}</p>
         <Link href={contact} className={"l-btn inline-flex items-center justify-center gap-[12px] min-h-[52px] [padding:6px_8px_6px_24px] [border:0] rounded-full font-semibold text-[16px] leading-[1] font-sans tracking-[-.01em] no-underline whitespace-nowrap cursor-pointer [transition:transform_.35s_var(--ease),_background-color_.25s,_color_.25s,_box-shadow_.35s_var(--ease)] [&:not(:has(.l-arrow))]:[padding:6px_26px] [@media(hover:_hover)]:[&:hover]:[transform:translateY(-2px)] [&:active]:[transform:scale(.97)] [&:disabled]:opacity-70 [&:disabled]:cursor-progress [&:disabled]:[transform:none] [&:hover_.l-arrow]:[transform:rotate(45deg)]  l-btn--soft [&.l-btn--soft]:bg-surface [&.l-btn--soft]:text-ink [&.l-btn--soft:hover]:text-brand [&.l-btn--soft:hover]:[box-shadow:var(--shadow-soft)] [&_.l-arrow]:[background:var(--blue-50)] [&_.l-arrow]:text-brand  l-btn--block [&.l-btn--block]:flex [&.l-btn--block]:w-full"}>
@@ -56,7 +56,7 @@ export function PlanCards({ t, lang }: SectionProps) {
 
       <StackCard tone="blue" className={"l-plan flex flex-col gap-[18px] [padding:36px_32px] rounded-[32px] bg-surface [&_.l-btn--soft]:bg-canvas l-plan--featured [&.l-plan--featured]:p-0 [&.l-plan--featured]:[background:none] [&_.l-stack-card--content]:gap-[18px] [&_.l-stack-card--content]:[padding:36px_32px] [&_.l-stack-card--content]:items-stretch [&_.l-plan--desc]:[color:rgba(255,_255,_255,_.82)] [&_.l-plan--check]:[background:rgba(255,_255,_255,_.2)] [&_.l-plan--check]:[color:#fff] [@media(hover:_hover)]:[&.l-plan--featured:hover]:[transform:translateY(-10px)]"}>
         <div className={"l-plan--row flex items-center justify-between"}>
-          <h3 className={"l-plan--name m-0 font-display text-[26px] font-bold tracking-[-.035em]"}>Plus</h3>
+          <h3 className={"l-plan--name m-0 font-display text-[26px] font-semibold tracking-[-.035em]"}>Plus</h3>
           <span className={"l-pill inline-flex items-center self-start gap-[6px] [padding:8px_14px] rounded-full text-[14px] font-bold leading-[1] l-pill--white [&.l-pill--white]:[background:rgba(255,_255,_255,_.2)] [&.l-pill--white]:[color:#fff]"}>{p.plus.tag}</span>
         </div>
         <p className={"l-plan--price [margin:6px_0_0] font-display text-[60px] font-bold tracking-[-.055em] leading-[1]"}>
@@ -72,13 +72,13 @@ export function PlanCards({ t, lang }: SectionProps) {
       </StackCard>
 
       <article className={"l-plan flex flex-col gap-[18px] [padding:36px_32px] rounded-[32px] bg-surface [&_.l-btn--soft]:bg-canvas"}>
-        <h3 className={"l-plan--name m-0 font-display text-[26px] font-bold tracking-[-.035em]"}>Business</h3>
+        <h3 className={"l-plan--name m-0 font-display text-[26px] font-semibold tracking-[-.035em]"}>Business</h3>
         <p className={"l-plan--price [margin:6px_0_0] font-display text-[60px] font-bold tracking-[-.055em] leading-[1]"}>
           ${prices.business}
           <span className={"l-plan--per font-sans text-[17px] font-medium tracking-[0] opacity-60"}>{p.perMonth}</span>
         </p>
         <p className={"l-plan--desc m-0 min-h-[4.5em] text-[16px] leading-[1.5] [color:var(--ink-2)] max-[960.02px]:min-h-0"}>{p.business.desc}</p>
-        <Link href={`/${lang}/contact`} className={"l-btn inline-flex items-center justify-center gap-[12px] min-h-[52px] [padding:6px_8px_6px_24px] [border:0] rounded-full font-semibold text-[16px] leading-[1] font-sans tracking-[-.01em] no-underline whitespace-nowrap cursor-pointer [transition:transform_.35s_var(--ease),_background-color_.25s,_color_.25s,_box-shadow_.35s_var(--ease)] [&:not(:has(.l-arrow))]:[padding:6px_26px] [@media(hover:_hover)]:[&:hover]:[transform:translateY(-2px)] [&:active]:[transform:scale(.97)] [&:disabled]:opacity-70 [&:disabled]:cursor-progress [&:disabled]:[transform:none] [&:hover_.l-arrow]:[transform:rotate(45deg)]  l-btn--ink [&.l-btn--ink]:bg-ink [&.l-btn--ink]:[color:#fff] [&.l-btn--ink:hover]:[background:#1d2550] [&.l-btn--ink:hover]:[color:#fff] l-btn--block [&.l-btn--block]:flex [&.l-btn--block]:w-full"}>
+        <Link href={`/${lang}/contact`} className={"l-btn inline-flex items-center justify-center gap-[12px] min-h-[52px] [padding:6px_8px_6px_24px] [border:0] rounded-full font-semibold text-[16px] leading-[1] font-sans tracking-[-.01em] no-underline whitespace-nowrap cursor-pointer [transition:transform_.35s_var(--ease),_background-color_.25s,_color_.25s,_box-shadow_.35s_var(--ease)] [&:not(:has(.l-arrow))]:[padding:6px_26px] [@media(hover:_hover)]:[&:hover]:[transform:translateY(-2px)] [&:active]:[transform:scale(.97)] [&:disabled]:opacity-70 [&:disabled]:cursor-progress [&:disabled]:[transform:none] [&:hover_.l-arrow]:[transform:rotate(45deg)]  l-btn--ink [&.l-btn--ink]:bg-ink [&.l-btn--ink]:[color:#fff] [&.l-btn--ink:hover]:[background:var(--ink-2)] [&.l-btn--ink:hover]:[color:#fff] l-btn--block [&.l-btn--block]:flex [&.l-btn--block]:w-full"}>
           {p.contactSales}
         </Link>
         <Checks items={p.business.items} />
@@ -94,7 +94,7 @@ export function Faq({ t, lang }: SectionProps) {
     <section id="preguntas" className={"l-section [padding:var(--pad-y)_var(--gutter)] [&_+_.l-section]:pt-0"} aria-labelledby="preguntas-title">
       <div className={"l-container w-full max-w-[1240px] [margin:0_auto] l-faq grid [grid-template-columns:.8fr_1.2fr] [gap:clamp(40px,_6vw,_96px)] [align-items:start] max-[960.02px]:[grid-template-columns:1fr]"}>
         <div className={"l-faq--intro sticky [top:calc(var(--header-h)_+_48px)] flex flex-col gap-[20px] max-[960.02px]:static"}>
-          <h2 id="preguntas-title" className={"l-h2 m-0 font-display text-[clamp(36px,_5.2vw,_72px)] font-bold tracking-[-.045em] leading-[1] text-balance text-ink [.motion_&]:[transition:opacity_.9s_var(--ease),transform_1s_var(--ease)] [.motion_&:not(.is-in)]:opacity-0 [.motion_&:not(.is-in)]:[transform:translateY(40px)]"} data-reveal="">
+          <h2 id="preguntas-title" className={"l-h2 m-0 font-display text-[clamp(36px,_5.2vw,_72px)] font-semibold tracking-[-.045em] leading-[1] text-balance text-ink [.motion_&]:[transition:opacity_.9s_var(--ease),transform_1s_var(--ease)] [.motion_&:not(.is-in)]:opacity-0 [.motion_&:not(.is-in)]:[transform:translateY(40px)]"} data-reveal="">
             {f.title}
           </h2>
           <p className={"l-body m-0 text-[18px] leading-[1.55] [color:var(--ink-2)] text-pretty"}>

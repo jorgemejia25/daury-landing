@@ -40,7 +40,7 @@ export function EarlyAccessForm({ lang, t }: { lang: Locale; t: Dictionary["form
 
   return (
     <form action={action} className={"l-form flex flex-col gap-[22px]"} noValidate={false}>
-      <b className={"l-form--title font-display text-[26px] font-bold tracking-[-.035em] leading-[1.1]"}>{t.title}</b>
+      <b className={"l-form--title font-display text-[26px] font-semibold tracking-[-.035em] leading-[1.1]"}>{t.title}</b>
       <input type="hidden" name="lang" value={lang} />
 
       <fieldset className={"l-form--group flex flex-col gap-[10px] m-0 p-0 [border:0] min-w-0 [fieldset&_>_legend]:mb-[10px]"}>
@@ -87,7 +87,7 @@ export function EarlyAccessForm({ lang, t }: { lang: Locale; t: Dictionary["form
           aria-describedby={state.status === "error" ? "acceso-error" : undefined}
         />
         {state.status === "error" && (
-          <span id="acceso-error" role="alert" className={"l-form--error text-[15px] font-semibold [color:var(--red)]"}>
+          <span id="acceso-error" role="alert" className={"l-form--error text-[15px] font-semibold [color:var(--coral-deep)]"}>
             {state.message}
           </span>
         )}

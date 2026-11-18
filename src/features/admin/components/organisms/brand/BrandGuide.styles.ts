@@ -56,6 +56,8 @@ const styles = {
   "buttonList": "tw-BrandGuide-2802-buttonList [&_li]:grid [&_li]:[grid-template-columns:170px_1fr] [&_li]:gap-[16px] [&_li]:items-center [&_li]:[padding:12px_18px] [&_li_+_li]:[border-top:1px_solid_var(--rule)] max-[860.02px]:[&_li]:[grid-template-columns:1fr] max-[860.02px]:[&_li]:gap-[8px]",
   "buttonSample": "tw-BrandGuide-2802-buttonSample pointer-events-none",
   "buttonName": "tw-BrandGuide-2802-buttonName flex flex-col [&_b]:font-semibold [&_b]:text-[13px] [&_b]:leading-[18px] [&_b]:font-mono [&_small]:text-ink-soft [&_small]:font-normal [&_small]:text-[13.5px] [&_small]:leading-[19px] [&_small]:font-sans",
+  "appButton": "tw-BrandGuide-2802-appButton inline-flex items-center justify-center gap-[8px] rounded-full whitespace-nowrap font-sans font-bold leading-[22px] select-none",
+  "shadowBox": "tw-BrandGuide-2802-shadowBox w-[64px] h-[64px] mb-[8px] rounded-[16px] [background:#fff]",
   "sizes": "tw-BrandGuide-2802-sizes flex flex-wrap items-center gap-[12px] mt-[16px] pointer-events-none",
   "toneGrid": "tw-BrandGuide-2802-toneGrid grid [grid-template-columns:repeat(auto-fill,_minmax(min(100%,_170px),_1fr))] gap-[12px]",
   "toneCard": "tw-BrandGuide-2802-toneCard flex flex-col gap-[12px] h-full",

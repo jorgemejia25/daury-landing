@@ -3,7 +3,7 @@ export const site = {
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://daury.app").replace(/\/$/, ""),
   email: "info@daury.cloud",
   /** Fondo de la página (debe coincidir con --bg en styles/tokens.css). */
-  themeColor: "#F4F3EF",
+  themeColor: "#F3F1EC",
   /** Azul de marca (--blue). */
   brandColor: "#2358E8",
 } as const;
