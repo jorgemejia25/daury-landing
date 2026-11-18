@@ -1,0 +1,579 @@
+{
+  "folders": [
+    {
+      "id": "doc-proyecto",
+      "name": "Proyecto y equipo",
+      "color": "violet"
+    },
+    {
+      "id": "doc-producto",
+      "name": "Producto y MVP",
+      "color": "blue"
+    },
+    {
+      "id": "doc-negocio",
+      "name": "Negocio y finanzas",
+      "color": "green"
+    },
+    {
+      "id": "doc-pitch",
+      "name": "Pitch y presentaciones",
+      "color": "amber"
+    },
+    {
+      "id": "doc-investigacion",
+      "name": "Investigación y validación",
+      "color": "coral"
+    },
+    {
+      "id": "doc-empresa",
+      "name": "Empresa y legal",
+      "color": "violet"
+    },
+    {
+      "id": "doc-tecnologia",
+      "name": "Tecnología",
+      "color": "blue"
+    },
+    {
+      "id": "doc-marca",
+      "name": "Marca y comunicación",
+      "color": "coral"
+    },
+    {
+      "id": "doc-ilan",
+      "name": "Programa ILAN",
+      "color": "amber"
+    }
+  ],
+  "pages": [
+    {
+      "id": "doc-cuaderno-de-daury",
+      "folderId": "doc-proyecto",
+      "title": "Cuaderno de Daury",
+      "description": "Todo el proyecto en un cuaderno: última reunión, problema, producto, negocio, finanzas, empresa, tecnología y pendientes.",
+      "tags": [
+        "equipo",
+        "resumen"
+      ],
+      "file": "doc-proyecto/cuaderno-de-daury.md"
+    },
+    {
+      "id": "doc-participantes",
+      "folderId": "doc-proyecto",
+      "title": "Participantes del proyecto",
+      "description": "Integrantes, carreras y roles del equipo de Daury.",
+      "tags": [
+        "equipo"
+      ],
+      "file": "doc-proyecto/participantes.md"
+    },
+    {
+      "id": "doc-roadmap-y-equipo",
+      "folderId": "doc-proyecto",
+      "title": "Roadmap y equipo",
+      "description": "Hoja de ruta del proyecto y organización del equipo.",
+      "tags": [
+        "roadmap",
+        "equipo"
+      ],
+      "file": "doc-proyecto/roadmap-y-equipo.md"
+    },
+    {
+      "id": "doc-prueba-de-concepto",
+      "folderId": "doc-producto",
+      "title": "Prueba de concepto (PoC)",
+      "description": "Alcance y resultados de la prueba de concepto de Daury.",
+      "tags": [
+        "poc",
+        "producto"
+      ],
+      "file": "doc-producto/prueba-de-concepto.md"
+    },
+    {
+      "id": "doc-mvp-funcionalidades",
+      "folderId": "doc-producto",
+      "title": "Funcionalidades del MVP",
+      "description": "Tabla de funcionalidades del MVP con prioridad y estado.",
+      "tags": [
+        "mvp",
+        "funcionalidades"
+      ],
+      "file": "doc-producto/mvp-funcionalidades.md"
+    },
+    {
+      "id": "doc-notas-mvp",
+      "folderId": "doc-producto",
+      "title": "Notas del MVP",
+      "description": "Apuntes de trabajo sobre el alcance del MVP.",
+      "tags": [
+        "mvp"
+      ],
+      "file": "doc-producto/notas-mvp.md"
+    },
+    {
+      "id": "doc-funcionalidades-y-ocr",
+      "folderId": "doc-producto",
+      "title": "Funcionalidades y OCR",
+      "description": "Notas sobre el lector de recetas y las funciones principales.",
+      "tags": [
+        "ocr",
+        "ia"
+      ],
+      "file": "doc-producto/funcionalidades-y-ocr.md"
+    },
+    {
+      "id": "doc-daury-para-clinicas",
+      "folderId": "doc-producto",
+      "title": "Daury para médicos y clínicas",
+      "description": "Planes Professional y Business, tres formas de cobrar a clínicas, precios de referencia, viabilidad y ruta.",
+      "tags": [
+        "clínicas",
+        "b2b",
+        "precios"
+      ],
+      "file": "doc-producto/daury-para-clinicas.md"
+    },
+    {
+      "id": "doc-requisitos-funcionales",
+      "folderId": "doc-producto",
+      "title": "Requisitos funcionales",
+      "description": "Requisitos funcionales del sistema.",
+      "tags": [
+        "requisitos"
+      ],
+      "file": "doc-producto/requisitos-funcionales.md"
+    },
+    {
+      "id": "doc-requisitos-no-funcionales",
+      "folderId": "doc-producto",
+      "title": "Requisitos no funcionales",
+      "description": "Rendimiento, seguridad, accesibilidad y otros requisitos no funcionales.",
+      "tags": [
+        "requisitos"
+      ],
+      "file": "doc-producto/requisitos-no-funcionales.md"
+    },
+    {
+      "id": "doc-historias-de-usuario",
+      "folderId": "doc-producto",
+      "title": "Historias de usuario",
+      "description": "Historias de usuario del MVP.",
+      "tags": [
+        "historias"
+      ],
+      "file": "doc-producto/historias-de-usuario.md"
+    },
+    {
+      "id": "doc-modelo-economico",
+      "folderId": "doc-negocio",
+      "title": "Modelo económico",
+      "description": "Supuestos, ingresos y proyecciones del modelo económico.",
+      "tags": [
+        "finanzas"
+      ],
+      "file": "doc-negocio/modelo-economico.md"
+    },
+    {
+      "id": "doc-modelo-de-costos",
+      "folderId": "doc-negocio",
+      "title": "Modelo de costos",
+      "description": "Costos de infraestructura, IA, mensajería y operación por usuario.",
+      "tags": [
+        "finanzas",
+        "costos"
+      ],
+      "file": "doc-negocio/modelo-de-costos.md"
+    },
+    {
+      "id": "doc-costo-de-escalar",
+      "folderId": "doc-negocio",
+      "title": "Costo de escalar",
+      "description": "Cuánto cuesta operar Daury por etapas de crecimiento.",
+      "tags": [
+        "finanzas",
+        "escala"
+      ],
+      "file": "doc-negocio/costo-de-escalar.md"
+    },
+    {
+      "id": "doc-costos-presentacion",
+      "folderId": "doc-negocio",
+      "title": "Costos (presentación)",
+      "description": "Resumen de costos preparado para presentar.",
+      "tags": [
+        "finanzas"
+      ],
+      "file": "doc-negocio/costos-presentacion.md"
+    },
+    {
+      "id": "doc-monetizacion",
+      "folderId": "doc-negocio",
+      "title": "Monetización",
+      "description": "Notas sobre planes, precios y fuentes de ingreso.",
+      "tags": [
+        "precios"
+      ],
+      "file": "doc-negocio/monetizacion.md"
+    },
+    {
+      "id": "doc-planes-daury",
+      "folderId": "doc-negocio",
+      "title": "Planes de Daury (ILAN)",
+      "description": "Documento de planes y precios entregado en el programa ILAN.",
+      "tags": [
+        "precios",
+        "ilan"
+      ],
+      "file": "doc-negocio/planes-daury.md"
+    },
+    {
+      "id": "doc-transcripcion-financiera",
+      "folderId": "doc-negocio",
+      "title": "Transcripción de la sesión financiera",
+      "description": "Transcripción de la sesión de finanzas del programa ILAN.",
+      "tags": [
+        "finanzas",
+        "ilan"
+      ],
+      "file": "doc-negocio/transcripcion-financiera.md"
+    },
+    {
+      "id": "doc-propuestas-daury",
+      "folderId": "doc-negocio",
+      "title": "Propuestas de Daury",
+      "description": "Propuestas de planes y modelo de negocio con clínicas.",
+      "tags": [
+        "propuestas",
+        "clínicas"
+      ],
+      "file": "doc-negocio/propuestas-daury.md"
+    },
+    {
+      "id": "doc-pitch-v12",
+      "folderId": "doc-pitch",
+      "title": "Pitch v12",
+      "description": "La versión más reciente del pitch de Daury, en español.",
+      "tags": [
+        "pitch"
+      ],
+      "file": "doc-pitch/pitch-v12.md"
+    },
+    {
+      "id": "doc-pitch-compacto",
+      "folderId": "doc-pitch",
+      "title": "Pitch compacto",
+      "description": "Versión corta del pitch para presentaciones de pocos minutos.",
+      "tags": [
+        "pitch"
+      ],
+      "file": "doc-pitch/pitch-compacto.md"
+    },
+    {
+      "id": "doc-pitch-y-estrategia",
+      "folderId": "doc-pitch",
+      "title": "Pitch y estrategia",
+      "description": "Notas sobre el mensaje del pitch y la estrategia.",
+      "tags": [
+        "pitch",
+        "estrategia"
+      ],
+      "file": "doc-pitch/pitch-y-estrategia.md"
+    },
+    {
+      "id": "doc-foda",
+      "folderId": "doc-investigacion",
+      "title": "Análisis FODA",
+      "description": "Fortalezas, oportunidades, debilidades y amenazas con datos de la encuesta y del modelo de costos. Es el FODA presentado en el segundo taller de ILAN.",
+      "tags": [
+        "foda",
+        "estrategia"
+      ],
+      "file": "doc-investigacion/foda.md"
+    },
+    {
+      "id": "doc-reporte-daury",
+      "folderId": "doc-investigacion",
+      "title": "Reporte de Daury",
+      "description": "Reporte con los resultados de la investigación y la encuesta.",
+      "tags": [
+        "investigación",
+        "encuesta"
+      ],
+      "file": "doc-investigacion/reporte-daury.md"
+    },
+    {
+      "id": "doc-postulacion",
+      "folderId": "doc-investigacion",
+      "title": "Postulación del proyecto",
+      "description": "Respuestas del formulario de postulación: objetivo, funciones, impacto social y modelo de negocio.",
+      "tags": [
+        "postulación"
+      ],
+      "file": "doc-investigacion/postulacion.md"
+    },
+    {
+      "id": "doc-informacion-adicional",
+      "folderId": "doc-investigacion",
+      "title": "Información adicional",
+      "description": "Datos complementarios para postulaciones y presentaciones.",
+      "tags": [
+        "investigación"
+      ],
+      "file": "doc-investigacion/informacion-adicional.md"
+    },
+    {
+      "id": "doc-fuentes-adicionales",
+      "folderId": "doc-investigacion",
+      "title": "Fuentes adicionales",
+      "description": "Fuentes y referencias que sustentan las cifras del proyecto.",
+      "tags": [
+        "fuentes"
+      ],
+      "file": "doc-investigacion/fuentes-adicionales.md"
+    },
+    {
+      "id": "doc-investigacion-y-estadisticas",
+      "folderId": "doc-investigacion",
+      "title": "Investigación y estadísticas",
+      "description": "Datos del problema: adherencia, cuidado en Guatemala y población objetivo.",
+      "tags": [
+        "investigación",
+        "estadísticas"
+      ],
+      "file": "doc-investigacion/investigacion-y-estadisticas.md"
+    },
+    {
+      "id": "doc-paper-daury",
+      "folderId": "doc-investigacion",
+      "title": "Paper de Daury",
+      "description": "Informe académico del proyecto (ILAN).",
+      "tags": [
+        "paper",
+        "ilan"
+      ],
+      "file": "doc-investigacion/paper-daury.md"
+    },
+    {
+      "id": "doc-guia-entrevista-enfermeria",
+      "folderId": "doc-investigacion",
+      "title": "Guía de entrevista con enfermería",
+      "description": "Guía para que una profesional de enfermería revise el modelo y fije la ejecución correcta de las tareas.",
+      "tags": [
+        "entrevista",
+        "enfermería",
+        "tesis"
+      ],
+      "file": "doc-investigacion/guia-entrevista-enfermeria.md"
+    },
+    {
+      "id": "doc-guion-entrevista-enfermeria",
+      "folderId": "doc-investigacion",
+      "title": "Guion de entrevista con enfermería",
+      "description": "Guion minuto a minuto de la sesión de 60 minutos con enfermería: apertura, demo, revisión, rúbricas y cierre.",
+      "tags": [
+        "entrevista",
+        "enfermería",
+        "tesis"
+      ],
+      "file": "doc-investigacion/guion-entrevista-enfermeria.md"
+    },
+    {
+      "id": "doc-revision-modelo-enfermeria",
+      "folderId": "doc-investigacion",
+      "title": "Revisión del modelo con enfermería",
+      "description": "Presentación para revisar con enfermería el modelo de instrucción, registro y escalamiento.",
+      "tags": [
+        "enfermería",
+        "presentación",
+        "tesis"
+      ],
+      "file": "doc-investigacion/revision-modelo-enfermeria.md"
+    },
+    {
+      "id": "doc-el-siguiente-paso",
+      "folderId": "doc-empresa",
+      "title": "El siguiente paso de Daury",
+      "description": "Plan de acción para pasar de proyecto reconocido a empresa: fundadores, marca, S.A. e inversión.",
+      "tags": [
+        "empresa",
+        "marca",
+        "inversión"
+      ],
+      "file": "doc-empresa/el-siguiente-paso.md"
+    },
+    {
+      "id": "doc-propiedad-intelectual",
+      "folderId": "doc-empresa",
+      "title": "Propiedad intelectual (borrador)",
+      "description": "Borrador sobre la protección de la propiedad intelectual de Daury.",
+      "tags": [
+        "legal",
+        "propiedad intelectual"
+      ],
+      "file": "doc-empresa/propiedad-intelectual.md"
+    },
+    {
+      "id": "doc-seguridad-y-legal",
+      "folderId": "doc-empresa",
+      "title": "Seguridad y legal",
+      "description": "Notas sobre privacidad, datos de salud y requisitos legales.",
+      "tags": [
+        "legal",
+        "seguridad"
+      ],
+      "file": "doc-empresa/seguridad-y-legal.md"
+    },
+    {
+      "id": "doc-backend-de-daury",
+      "folderId": "doc-tecnologia",
+      "title": "Arquitectura del backend",
+      "description": "Arquitectura sin conexión, modelo de datos, permisos, librerías, fases y escala del backend.",
+      "tags": [
+        "backend",
+        "arquitectura"
+      ],
+      "file": "doc-tecnologia/backend-de-daury.md"
+    },
+    {
+      "id": "doc-stack",
+      "folderId": "doc-tecnologia",
+      "title": "Stack tecnológico",
+      "description": "Tecnologías de la app móvil, el backend y la infraestructura.",
+      "tags": [
+        "stack"
+      ],
+      "file": "doc-tecnologia/stack.md"
+    },
+    {
+      "id": "doc-protocolo-de-sincronizacion",
+      "folderId": "doc-tecnologia",
+      "title": "Protocolo de sincronización",
+      "description": "Cómo se sincronizan los datos del teléfono con el servidor.",
+      "tags": [
+        "sync",
+        "backend"
+      ],
+      "file": "doc-tecnologia/protocolo-de-sincronizacion.md"
+    },
+    {
+      "id": "doc-fases-del-backend",
+      "folderId": "doc-tecnologia",
+      "title": "Fases del backend",
+      "description": "Las seis fases del backend y sus decisiones.",
+      "tags": [
+        "backend",
+        "roadmap"
+      ],
+      "file": "doc-tecnologia/fases-del-backend.md"
+    },
+    {
+      "id": "doc-plan-de-desarrollo-backend",
+      "folderId": "doc-tecnologia",
+      "title": "Plan de desarrollo del backend",
+      "description": "Plan detallado de desarrollo del backend.",
+      "tags": [
+        "backend"
+      ],
+      "file": "doc-tecnologia/plan-de-desarrollo-backend.md"
+    },
+    {
+      "id": "doc-cuentas",
+      "folderId": "doc-tecnologia",
+      "title": "Cuentas y autenticación",
+      "description": "Diseño de cuentas, invitados y acceso.",
+      "tags": [
+        "backend",
+        "cuentas"
+      ],
+      "file": "doc-tecnologia/cuentas.md"
+    },
+    {
+      "id": "doc-recordatorios",
+      "folderId": "doc-tecnologia",
+      "title": "Recordatorios",
+      "description": "Diseño de recordatorios locales y escalamiento.",
+      "tags": [
+        "backend",
+        "recordatorios"
+      ],
+      "file": "doc-tecnologia/recordatorios.md"
+    },
+    {
+      "id": "doc-arquitectura-frontend",
+      "folderId": "doc-tecnologia",
+      "title": "Arquitectura del frontend",
+      "description": "Organización de la app móvil.",
+      "tags": [
+        "frontend",
+        "arquitectura"
+      ],
+      "file": "doc-tecnologia/arquitectura-frontend.md"
+    },
+    {
+      "id": "doc-brechas-frontend",
+      "folderId": "doc-tecnologia",
+      "title": "Brechas del frontend",
+      "description": "Lo que falta en el frontend respecto al diseño.",
+      "tags": [
+        "frontend"
+      ],
+      "file": "doc-tecnologia/brechas-frontend.md"
+    },
+    {
+      "id": "doc-informe-implementacion-app",
+      "folderId": "doc-tecnologia",
+      "title": "Informe de implementación de la app",
+      "description": "Informe de la implementación de la app móvil (versión 6).",
+      "tags": [
+        "app",
+        "informe"
+      ],
+      "file": "doc-tecnologia/informe-implementacion-app.md"
+    },
+    {
+      "id": "doc-guia-de-marca-redes",
+      "folderId": "doc-marca",
+      "title": "Guía de marca para redes",
+      "description": "Logo, color, tipografía, formatos, plantillas, mascota y tono para publicar en redes.",
+      "tags": [
+        "marca",
+        "redes"
+      ],
+      "file": "doc-marca/guia-de-marca-redes.md"
+    },
+    {
+      "id": "doc-identidad-visual-ilan",
+      "folderId": "doc-marca",
+      "title": "Identidad visual (propuesta original)",
+      "description": "Primera propuesta de identidad: estilo, paleta emocional, tipografía, logo, slogans, iconos y caras.",
+      "tags": [
+        "marca",
+        "ilan"
+      ],
+      "file": "doc-marca/identidad-visual-ilan.md"
+    },
+    {
+      "id": "doc-taller-1-canvas",
+      "folderId": "doc-ilan",
+      "title": "Taller 1 · Modelo Canvas",
+      "description": "Modelo Canvas trabajado en el primer taller de ILAN.",
+      "tags": [
+        "ilan",
+        "canvas"
+      ],
+      "file": "doc-ilan/taller-1-canvas.md"
+    },
+    {
+      "id": "doc-taller-3-presentacion",
+      "folderId": "doc-ilan",
+      "title": "Taller 3 · Presentación",
+      "description": "Borrador de presentación del tercer taller de ILAN.",
+      "tags": [
+        "ilan",
+        "pitch"
+      ],
+      "file": "doc-ilan/taller-3-presentacion.md"
+    }
+  ]
+}

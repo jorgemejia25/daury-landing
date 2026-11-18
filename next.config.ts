@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 85],
   },
+  async redirects() {
+    // Daury Wiki pasó a llamarse Daury Admin.
+    return [
+      { source: "/wiki", destination: "/admin", permanent: true },
+      { source: "/wiki/:path*", destination: "/admin/:path*", permanent: true },
+    ];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

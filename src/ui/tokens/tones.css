@@ -1,0 +1,11 @@
+/*
+ * Tonos: fondo suave + tinta + color sólido por rol (TONES en icon-tile.tsx de la app).
+ * Lo reutilizan chips, tiles, puntos de estado e insignias mediante data-tone.
+ */
+[data-tone="blue"] { --tone-soft: var(--blue-soft); --tone-color: var(--blue); --tone-solid: var(--blue); }
+[data-tone="coral"] { --tone-soft: var(--coral-soft); --tone-color: var(--coral); --tone-solid: var(--coral); }
+[data-tone="green"] { --tone-soft: var(--green-soft); --tone-color: var(--green-deep); --tone-solid: var(--green); }
+[data-tone="violet"] { --tone-soft: var(--violet-soft); --tone-color: var(--violet); --tone-solid: var(--violet); }
+[data-tone="amber"] { --tone-soft: var(--amber-soft); --tone-color: var(--amber-deep); --tone-solid: var(--amber); }
+[data-tone="neutral"] { --tone-soft: var(--bg-2); --tone-color: var(--ink-2); --tone-solid: var(--ink-2); }
+[data-tone="ink"] { --tone-soft: var(--ink); --tone-color: var(--bg); --tone-solid: var(--ink); }

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { CtaBand } from "@/components/sections/cta";
-import { Faq, PricingHero } from "@/components/sections/pricing";
-import { FaqJsonLd } from "@/components/seo/JsonLd";
+import { CtaBand } from "@/features/landing/components/organisms/sections/cta";
+import { Faq, PricingHero } from "@/features/landing/components/organisms/sections/pricing";
+import { FaqJsonLd } from "@/ui/atoms/JsonLd";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { pageMetadata } from "@/lib/page-meta";

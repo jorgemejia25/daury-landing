@@ -2,6 +2,26 @@
 
 Landing de [Daury](https://daury.app): cuidado familiar organizado. Hecho en Guatemala.
 
+## Daury Wiki
+
+La wiki está disponible en **`/wiki`**, con login Google limitado a las seis cuentas
+autorizadas y protección del servidor y de Firestore. Conserva el sistema visual
+de Daury, sidebar de escritorio y navegación móvil.
+
+Desde la web se pueden crear y editar artículos Markdown en carpetas, tableros
+con columnas personalizadas, tareas con responsables/subtareas/comentarios y
+calendarios con eventos. Cada elemento conserva su creador y última edición.
+Incluye actualizaciones en tiempo real, control de versiones y archivado recuperable.
+
+La [guía de Firebase](docs/firebase-setup.md) documenta la configuración; los
+[espacios de trabajo](docs/wiki-workspace.md) explican los datos, permisos y
+migración. Los documentos iniciales ya están importados en Firebase; sus archivos
+originales se conservan como referencia.
+
+Verifica con `npm run check`, `npm test`, `npm run test:rules` y `npm run build`.
+Las pruebas de reglas requieren Firebase CLI y Java 21. UI SDK tiene versiones
+exactas; consulta `AGENTS.md` antes de implementar componentes.
+
 ## Stack
 
 - **Next.js 16** (App Router, Turbopack) + React 19 + TypeScript
@@ -15,23 +35,20 @@ Landing de [Daury](https://daury.app): cuidado familiar organizado. Hecho en Gua
 ```
 src/
 ├── app/                    Solo rutas y archivos especiales de Next
-│   ├── [lang]/             Páginas por idioma: inicio, about, pricing, contact, 404, imagen OG
-│   ├── fonts/              Subset de Material Symbols (next/font/local)
-│   └── sitemap, robots, manifest, icon, apple-icon
-├── actions/                Server Actions ("use server")
-├── components/
-│   ├── layout/             Esqueleto común: Header, Footer, selector de idioma, Motion
-│   ├── sections/           Secciones de cada página (home, about, pricing, contact, cta) + types.ts
-│   ├── ui/                 Piezas reutilizables: Icon, AppIcon, Arrow, Logo, StackCard, SectionHead, Journey…
-│   ├── mockups/            Réplicas en HTML/CSS de pantallas de la app móvil
-│   ├── forms/              Formularios (cliente)
-│   └── seo/                Datos estructurados JSON-LD
-├── i18n/
-│   ├── config.ts           Idiomas, nombres, detección por navegador/país
-│   └── dictionaries/       Textos por idioma (es.ts define la estructura y el tipo)
-├── lib/                    Constantes del sitio (site.ts) y helpers de metadatos
-├── styles/                 CSS global dividido por responsabilidad (ver abajo)
-└── proxy.ts                Redirección de / al idioma del visitante
+│   ├── [lang]/             Landing por idioma, metadata e imágenes OG
+│   ├── admin/              Panel privado, sesión y rutas de trabajo
+│   └── fonts/              Subset de Material Symbols (next/font/local)
+├── features/
+│   ├── landing/            Secciones, maquetas, formulario y acciones de la landing
+│   └── admin/              Kanban, calendarios, artículos, gastos, Firebase y autenticación
+├── ui/                     Átomos, moléculas y organismos compartidos
+│   ├── tokens/             Tokens y reset del Admin
+│   ├── tailwind.css        Configuración y tema semántico de Tailwind
+│   └── animations.css      Keyframes usados por utilidades Tailwind
+├── i18n/                   Idiomas y diccionarios de la landing
+├── lib/                    Constantes del sitio y helpers de metadatos
+├── styles/                 Entrypoint, tokens y reset de la landing
+└── proxy.ts                Redirección de idioma y protección de rutas
 public/
 ├── images/                 Fotos y logos (nombres en kebab-case)
 └── logo.svg
@@ -50,10 +67,12 @@ public/
 
 ### Estilos
 
-`src/styles/globals.css` importa los demás archivos; **el orden de los `@import` es la cascada** (primero tokens y
-base, luego componentes, layout y secciones), así que revísalo antes de reordenar. Cada archivo lleva sus propias
-media queries al final
-(breakpoints: 1080, 960 y 760 px). Usa siempre las variables de `tokens.css` para colores, sombras y tipografías.
+Landing y Admin usan Tailwind CSS 4. Las clases están en JSX y en mapas
+`*.styles.ts` junto a sus componentes; las variantes de tono/idioma de la
+landing se resuelven en `src/features/landing/landing-styles.ts`.
+`src/ui/tailwind.css` concentra el tema y la compilación. Solo quedan CSS
+globales para tokens, reset y keyframes. No se usan CSS Modules, `@apply` ni
+`@reference`. Conserva los tokens de color, sombras y tipografías al editar.
 
 ## Idiomas
 
@@ -101,3 +120,22 @@ Requiere Node 20.9 o superior.
 ## Deploy
 
 Importa el repo en Vercel y activa **Analytics** y **Speed Insights** en el proyecto.
+
+
+### Tailwind CSS
+
+Tailwind CSS 4 se compila con PostCSS para la landing y el Admin. El entrypoint
+compartido es `src/ui/tailwind.css`: contiene el tema semántico, los fuentes a
+analizar y la variante oscura que respeta Sistema/Claro/Oscuro. El reset del
+proyecto se conserva en las hojas base, por lo que no se importa Preflight.
+
+Todos los componentes, formularios, vistas y secciones usan utilidades
+Tailwind, incluidos el editor Markdown y las animaciones de la landing.
+Los mapas de clases contienen cadenas literales para que el compilador pueda
+detectar todas las variantes. Las clases `tw-*` y `l-*` solo funcionan como
+marcadores para estados y selectores de descendientes.
+
+Los estilos inline quedan reservados a valores derivados de datos (gráficas,
+tamaños, muestras de marca) y al renderer de imágenes Open Graph de Next.js,
+que no consume las hojas CSS de la aplicación. No hace falta
+`tailwind.config.js` ni utilizar el CDN.

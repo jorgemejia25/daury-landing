@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ContactSection } from "@/components/sections/contact";
+import { ContactSection } from "@/features/landing/components/organisms/sections/contact";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { pageMetadata } from "@/lib/page-meta";

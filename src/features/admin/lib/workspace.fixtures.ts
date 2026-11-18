@@ -1,0 +1,8 @@
+import { defaultColumns, type Entity } from "./workspace";
+export const meta = { revision: 1, archived: false, createdAt: "2026-11-17T12:00:00.000Z", updatedAt: "2026-11-17T12:00:00.000Z", createdBy: "devjorgemejia@gmail.com", updatedBy: "devjorgemejia@gmail.com" };
+export const sampleBoard: Entity<"boards"> = { id: "campaign", name: "Campaña redes", description: "Calendario editorial", color: "violet", ...structuredClone(defaultColumns), ...meta };
+export const sampleCalendar: Entity<"calendars"> = { id: "social", name: "Redes sociales", description: "Publicaciones", color: "coral", ...meta };
+export const sampleFolder: Entity<"folders"> = { id: "marketing", name: "Marketing", parentId: "", color: "blue", ...meta };
+export const samplePage: Entity<"wikiPages"> = { id: "strategy", title: "Estrategia de campaña", description: "Guía del equipo", folderId: "marketing", tags: ["redes"], ...meta };
+export const sampleTask: Entity<"tasks"> = { id: "first-task", title: "Diseñar publicación", description: "Preparar la pieza", boardId: "campaign", status: "todo", priority: "medium", type: "task", assignee: "", dueDate: "2026-11-20", tags: ["redes"], points: 3, articleId: "", checklist: [], comments: [], ...meta };
+export const sampleEvent: Entity<"events"> = { id: "launch", title: "Publicar campaña", description: "Primera publicación", calendarId: "social", allDay: true, start: "2026-11-20", end: "2026-11-21", location: "Instagram", articleId: "", ...meta };

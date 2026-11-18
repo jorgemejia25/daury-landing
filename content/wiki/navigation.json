@@ -1,0 +1,68 @@
+[
+  {
+    "label": "Espacio de trabajo",
+    "items": [
+      {
+        "slug": "",
+        "title": "Inicio",
+        "icon": "home",
+        "description": "Documentación y organización del proyecto.",
+        "status": "ready"
+      },
+      {
+        "slug": "documentacion",
+        "title": "Documentación",
+        "icon": "book",
+        "description": "Guías de producto, diseño y tecnología.",
+        "status": "ready"
+      },
+      {
+        "slug": "kanban",
+        "title": "Kanban",
+        "icon": "board",
+        "description": "Tareas por estado, área y prioridad.",
+        "status": "ready"
+      },
+      {
+        "slug": "calendarios",
+        "title": "Calendarios",
+        "icon": "calendar",
+        "description": "Fechas de producto, reuniones y contenido.",
+        "status": "ready"
+      },
+      {
+        "slug": "gastos",
+        "title": "Gastos",
+        "icon": "wallet",
+        "description": "Costos, ingresos y previsiones en dólares y quetzales.",
+        "status": "ready"
+      }
+    ]
+  },
+  {
+    "label": "Conocimiento",
+    "items": [
+      {
+        "slug": "producto",
+        "title": "Sobre Daury",
+        "icon": "heart",
+        "description": "Propósito, funciones, planes y modelo con clínicas.",
+        "status": "ready"
+      },
+      {
+        "slug": "diseno",
+        "title": "Identidad y diseño",
+        "icon": "design",
+        "description": "Colores, tipografía y componentes de Daury.",
+        "status": "ready"
+      },
+      {
+        "slug": "tecnologia",
+        "title": "Tecnología",
+        "icon": "code",
+        "description": "Arquitectura del backend, la app y el admin.",
+        "status": "ready"
+      }
+    ]
+  }
+]

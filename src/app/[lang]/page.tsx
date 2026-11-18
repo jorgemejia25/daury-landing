@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { SiteJsonLd } from "@/components/seo/JsonLd";
-import { Award, Features, Hero, HowItWorks, PlansTeaser, Stat } from "@/components/sections/home";
-import { CtaBand } from "@/components/sections/cta";
+import { SiteJsonLd } from "@/ui/atoms/JsonLd";
+import { Award, Features, Hero, HowItWorks, PlansTeaser, Stat } from "@/features/landing/components/organisms/sections/home";
+import { CtaBand } from "@/features/landing/components/organisms/sections/cta";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 

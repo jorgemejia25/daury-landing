@@ -1,0 +1,5 @@
+[
+  { "id": "producto", "name": "Producto", "color": "blue" },
+  { "id": "reuniones", "name": "Reuniones", "color": "green" },
+  { "id": "contenido", "name": "Contenido", "color": "amber" }
+]

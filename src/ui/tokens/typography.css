@@ -1,0 +1,2 @@
+/* Bricolage Grotesque does not include Cyrillic. */
+html[lang="ru"] { --f-display: var(--font-geist), "Geist", system-ui, sans-serif; }
