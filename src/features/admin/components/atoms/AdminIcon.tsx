@@ -6,6 +6,7 @@ import {
   Code,
   ExternalLink,
   Heart,
+  Lightbulb,
   House,
   Menu,
   Palette,
@@ -20,6 +21,7 @@ import {
 const icons: Record<string, LucideIcon> = {
   home: House,
   wallet: Wallet,
+  idea: Lightbulb,
   book: BookOpen,
   board: SquareKanban,
   calendar: CalendarDays,

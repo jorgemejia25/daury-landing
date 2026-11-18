@@ -1,5 +1,5 @@
 /** Acciones masivas sobre tareas y eventos (ver actions/bulk.ts). */
-export type BulkKind = "tasks" | "events";
+export type BulkKind = "tasks" | "events" | "stickyNotes";
 export type BulkAction =
   | { type: "archive" }
   | { type: "restore" }

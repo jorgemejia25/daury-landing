@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { initializeTestEnvironment, type RulesTestEnvironment } from "@firebase/rules-unit-testing";
 import { doc, getDoc } from "firebase/firestore";
-import { sampleBoard, sampleCalendar, sampleTask, sampleEvent, samplePage, sampleFolder } from "../src/features/admin/lib/workspace.fixtures";
+import { sampleBoard, sampleCalendar, sampleTask, sampleEvent, samplePage, sampleFolder, sampleWhiteboard, sampleSticky } from "../src/features/admin/lib/workspace.fixtures";
 import type { ActionResult } from "../src/features/admin/lib/workspace";
 
 const session = vi.hoisted(() => ({ email: "devjorgemejia@gmail.com", token: "" }));
@@ -41,6 +41,19 @@ beforeAll(async () => {
 afterAll(async () => { await env?.cleanup(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("acciones reales contra Firestore", () => {
+  test("pizarras de brainstorm: crear, mover, editar y eliminar post-its", async () => {
+    actAs("devjorgemejia@gmail.com");
+    const board = succeeded(await saveWorkspaceItem({ collection: "whiteboards", data: sampleWhiteboard }));
+    const note = succeeded(await saveWorkspaceItem({ collection: "stickyNotes", data: { ...sampleSticky, whiteboardId: board.id, text: "" } }));
+    actAs("valeryalarconra@gmail.com");
+    const moved = succeeded(await saveWorkspaceItem({ collection: "stickyNotes", id: note.id, revision: note.revision, data: { ...sampleSticky, whiteboardId: board.id, text: "Tauri", x: 900, y: 640 } }));
+    const saved = await read("stickyNotes", note.id);
+    expect([saved.text, saved.x, saved.y, saved.revision, saved.createdBy, saved.updatedBy]).toEqual(["Tauri", 900, 640, moved.revision, "devjorgemejia@gmail.com", "valeryalarconra@gmail.com"]);
+    expect((await saveWorkspaceItem({ collection: "stickyNotes", data: { ...sampleSticky, whiteboardId: "no-existe" } })).ok).toBe(false);
+    expect((await saveWorkspaceItem({ collection: "stickyNotes", data: { ...sampleSticky, whiteboardId: board.id, x: 5000 } })).ok).toBe(false);
+    expect(await bulkWorkspaceAction("stickyNotes", [note.id], { type: "archive" })).toMatchObject({ ok: false });
+    expect(await bulkWorkspaceAction("stickyNotes", [note.id], { type: "delete" })).toEqual({ ok: true, count: 1 });
+  });
   test("las acciones masivas mueven, archivan, restauran y eliminan tareas y eventos en un solo commit", async () => {
     actAs("devjorgemejia@gmail.com");
     const board = succeeded(await saveWorkspaceItem({ collection: "boards", data: sampleBoard }));

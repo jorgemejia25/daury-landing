@@ -5,4 +5,6 @@ export const sampleCalendar: Entity<"calendars"> = { id: "social", name: "Redes 
 export const sampleFolder: Entity<"folders"> = { id: "marketing", name: "Marketing", parentId: "", color: "blue", ...meta };
 export const samplePage: Entity<"wikiPages"> = { id: "strategy", title: "Estrategia de campaña", description: "Guía del equipo", folderId: "marketing", tags: ["redes"], ...meta };
 export const sampleTask: Entity<"tasks"> = { id: "first-task", title: "Diseñar publicación", description: "Preparar la pieza", boardId: "campaign", status: "todo", priority: "medium", type: "task", assignee: "", dueDate: "2026-11-20", tags: ["redes"], points: 3, articleId: "", checklist: [], comments: [], ...meta };
+export const sampleWhiteboard: Entity<"whiteboards"> = { id: "ideas", name: "Ideas de nombre", description: "Mascota", color: "amber", ...meta };
+export const sampleSticky: Entity<"stickyNotes"> = { id: "nota-1", whiteboardId: "ideas", text: "Daurisito", color: "yellow", x: 120, y: 80, ...meta };
 export const sampleEvent: Entity<"events"> = { id: "launch", title: "Publicar campaña", description: "Primera publicación", calendarId: "social", allDay: true, start: "2026-11-20", end: "2026-11-21", location: "Instagram", articleId: "", ...meta };

@@ -2,19 +2,26 @@ import { normalizeMeetUrl } from "./meet";
 import { isDateOnly } from "./dates";
 import { adminAllowedEmails } from "./access";
 
-export const workspaceCollections = ["boards", "tasks", "calendars", "events", "folders", "wikiPages"] as const;
+export const workspaceCollections = ["boards", "tasks", "calendars", "events", "folders", "wikiPages", "whiteboards", "stickyNotes"] as const;
 export type WorkspaceCollection = typeof workspaceCollections[number];
 export const colors = [{ value: "blue", label: "Azul" }, { value: "violet", label: "Violeta" }, { value: "green", label: "Verde" }, { value: "amber", label: "Ámbar" }, { value: "coral", label: "Coral" }] as const;
 export type WorkspaceColor = typeof colors[number]["value"];
 export type Column = { name: string; done: boolean };
 export type Board = { name: string; description: string; color: WorkspaceColor; columns: Record<string, Column>; columnOrder: string[]; /** Lugar en las pestañas del kanban (1 = primero); sin valor, va después por fecha de creación. */ position?: number };
 export type Calendar = { name: string; description: string; color: WorkspaceColor };
+/** Pizarra de brainstorm. */
+export type Whiteboard = { name: string; description: string; color: WorkspaceColor };
+export const stickyColors = [{ value: "yellow", label: "Amarillo" }, { value: "pink", label: "Rosa" }, { value: "blue", label: "Azul" }, { value: "green", label: "Verde" }, { value: "violet", label: "Violeta" }] as const;
+export type StickyColor = typeof stickyColors[number]["value"];
+/** Post-it sobre una pizarra; x e y en píxeles del lienzo (0–4000). */
+export type StickyNote = { whiteboardId: string; text: string; color: StickyColor; x: number; y: number };
+export const canvasSize = 4000;
 export type Folder = { name: string; parentId: string; color: WorkspaceColor };
 export type Page = { title: string; description: string; folderId: string; tags: string[] };
 export type Comment = { id: string; body: string; author: string; createdAt: string };
 export type WorkTask = { title: string; description: string; boardId: string; status: string; priority: "high" | "medium" | "low"; type: "task" | "bug" | "story" | "epic"; assignee: string; dueDate: string; tags: string[]; points: number; articleId: string; checklist: { id: string; title: string; done: boolean; createdBy?: string; createdAt?: string }[]; comments: Comment[] };
 export type WorkEvent = { title: string; description: string; calendarId: string; allDay: boolean; start: string; end: string; location: string; articleId: string; meetUrl?: string };
-export type WorkspaceData = { boards: Board; tasks: WorkTask; calendars: Calendar; events: WorkEvent; folders: Folder; wikiPages: Page; wikiContent: { body: string }; financeEntries: import("./finance").FinanceData };
+export type WorkspaceData = { boards: Board; tasks: WorkTask; calendars: Calendar; events: WorkEvent; folders: Folder; wikiPages: Page; wikiContent: { body: string }; whiteboards: Whiteboard; stickyNotes: StickyNote; financeEntries: import("./finance").FinanceData };
 export type Metadata = { revision: number; archived: boolean; createdAt: string; updatedAt: string; createdBy: string; updatedBy: string };
 export type Entity<C extends keyof WorkspaceData> = WorkspaceData[C] & Metadata & { id: string };
 export type AnyEntity = { [C in WorkspaceCollection]: Entity<C> }[WorkspaceCollection];
@@ -61,6 +68,12 @@ export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C,
     for (const id of order) { validId(id); const column = object(columns[id]); if (typeof column.done !== "boolean") throw new Error("Revisa las columnas completadas."); normalized[id] = { name: text(column, "name", 60, true), done: column.done }; }
     if (data.position !== undefined && (!Number.isInteger(data.position) || Number(data.position) < 1 || Number(data.position) > 99)) throw new Error("La posición del tablero debe ser de 1 a 99.");
     result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color(), columns: normalized, columnOrder: order, ...(data.position === undefined ? {} : { position: Number(data.position) }) };
+  } else if (collection === "whiteboards") {
+    result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color() };
+  } else if (collection === "stickyNotes") {
+    const point = (key: string) => { const value = data[key]; if (!Number.isInteger(value) || Number(value) < 0 || Number(value) > canvasSize) throw new Error("La posición del post-it no es válida."); return Number(value); };
+    if (typeof data.text !== "string") throw new Error("El texto del post-it no es válido.");
+    result = { whiteboardId: reference(data, "whiteboardId", true), text: text(data, "text", 500), color: choice(data.color, stickyColors.map((item) => item.value)), x: point("x"), y: point("y") };
   } else if (collection === "calendars") {
     result = { name: text(data, "name", 120, true), description: text(data, "description", 3000), color: color() };
   } else if (collection === "folders") {
