@@ -92,6 +92,18 @@ describe("acciones reales contra Firestore", () => {
     expect([rebound.x, rebound.points, rebound.from, rebound.to]).toEqual([10, [0, 30, 50, 0], "", shape.id]);
     expect((await bulkWorkspaceAction("stickyNotes", [shape.id], { type: "stickyArrow", x: 0, y: 0, w: 1, h: 1, points: [0, 0, 1, 1], from: "", to: "" })).ok).toBe(false);
     expect((await bulkWorkspaceAction("stickyNotes", [arrow.id], { type: "stickyArrow", x: 0, y: 0, w: 1, h: 1, points: [0, 0, 1], from: "", to: "" })).ok).toBe(false);
+    const styled = succeeded(await saveWorkspaceItem({ collection: "stickyNotes", data: { whiteboardId: board.id, text: "Hola", color: "ink", x: 5, y: 5, kind: "text", w: 200, h: 40, points: [], size: "xl", from: "", to: "", style: { font: "mono", align: "center", z: 3 } } }));
+    expect((await read("stickyNotes", styled.id)).style).toEqual({ font: "mono", align: "center", z: 3 });
+    expect((await saveWorkspaceItem({ collection: "stickyNotes", data: { whiteboardId: board.id, text: "", color: "ink", x: 5, y: 5, kind: "text", w: 200, h: 40, points: [], size: "md", style: { font: "comic" } } })).ok).toBe(false);
+    expect(await bulkWorkspaceAction("stickyNotes", [styled.id, arrow.id], { type: "stickyPatch", items: [{ id: styled.id, changes: { x: 300, style: { font: "serif", z: 9 } } }, { id: arrow.id, changes: { style: { arrowType: "elbow", head: "both", stroke: "dashed", weight: 4 } } }] })).toEqual({ ok: true, count: 2 });
+    expect([(await read("stickyNotes", styled.id)).x, (await read("stickyNotes", styled.id)).style, (await read("stickyNotes", arrow.id)).style.arrowType]).toEqual([300, { font: "serif", z: 9 }, "elbow"]);
+    expect((await bulkWorkspaceAction("stickyNotes", [styled.id], { type: "stickyPatch", items: [{ id: styled.id, changes: { whiteboardId: "otra" } }] })).ok).toBe(false);
+    expect((await bulkWorkspaceAction("stickyNotes", [styled.id], { type: "stickyPatch", items: [{ id: styled.id, changes: { x: 99999 } }] })).ok).toBe(false);
+    expect((await bulkWorkspaceAction("stickyNotes", [styled.id], { type: "stickyPatch", items: [{ id: styled.id, changes: { createdBy: "otro@gmail.com" } }] })).ok).toBe(false);
+    const legacy = succeeded(await saveWorkspaceItem({ collection: "stickyNotes", data: { ...sampleSticky, whiteboardId: board.id } }));
+    expect(await bulkWorkspaceAction("stickyNotes", [legacy.id], { type: "stickyPatch", items: [{ id: legacy.id, changes: { kind: "note", w: 200, h: 176, points: [], size: "md", from: "", to: "", style: { z: 5 } } }] })).toEqual({ ok: true, count: 1 });
+    expect((await read("stickyNotes", legacy.id)).style).toEqual({ z: 5 });
+    expect(await bulkWorkspaceAction("stickyNotes", [styled.id, legacy.id], { type: "delete" })).toEqual({ ok: true, count: 2 });
     expect(await bulkWorkspaceAction("stickyNotes", [arrow.id, clientId], { type: "delete" })).toEqual({ ok: true, count: 2 });
     expect(await bulkWorkspaceAction("stickyNotes", [shape.id, pen.id], { type: "delete" })).toEqual({ ok: true, count: 2 });
     expect(await bulkWorkspaceAction("stickyNotes", [note.id, second.id], { type: "delete" })).toEqual({ ok: true, count: 2 });

@@ -69,9 +69,12 @@ describe("acceso a los espacios compartidos", () => {
     await assertFails(setDoc(doc(db, "stickyNotes", "tipo-raro"), { ...shape, kind: "star" }));
     await assertFails(setDoc(doc(db, "stickyNotes", "sin-tamano"), Object.fromEntries(Object.entries(shape).filter(([key]) => key !== "w"))));
     await assertFails(setDoc(doc(db, "stickyNotes", "trazo-largo"), { ...shape, kind: "pen", points: Array(1001).fill(1) }));
-    await assertFails(setDoc(doc(db, "stickyNotes", "talla"), { ...shape, size: "xl" }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "talla"), { ...shape, size: "xxl" }));
     await assertSucceeds(setDoc(doc(db, "stickyNotes", "flecha"), { ...shape, kind: "arrow", points: [0, 0, 10, 10], from: "figura", to: "" }));
     await assertFails(setDoc(doc(db, "stickyNotes", "flecha-mala"), { ...shape, kind: "arrow", points: [0, 0, 10, 10], from: 3, to: "" }));
+    await assertSucceeds(setDoc(doc(db, "stickyNotes", "con-estilo"), { ...shape, from: "", to: "", size: "xl", style: { stroke: "dotted", weight: 4, fill: "solid", z: -2 } }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "estilo-raro"), { ...shape, from: "", to: "", style: { glow: true } }));
+    await assertFails(setDoc(doc(db, "stickyNotes", "grosor-raro"), { ...shape, from: "", to: "", style: { weight: 3 } }));
   });
   test("las tareas admiten un orden manual numérico opcional", async () => {
     const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();
