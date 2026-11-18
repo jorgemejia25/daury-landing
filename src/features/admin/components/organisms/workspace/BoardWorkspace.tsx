@@ -24,7 +24,7 @@ import { localDate } from "@/features/admin/lib/dates";
 import { memberOptions, personName } from "@/features/admin/lib/people";
 import { normalizeText } from "@/features/admin/lib/text";
 import type { Entity } from "@/features/admin/lib/workspace";
-import { KanbanColumns } from "./KanbanColumns";
+import { effectiveRank, KanbanColumns } from "./KanbanColumns";
 import { BulkBar, SelectBox } from "../../molecules/BulkBar";
 import { useSelection } from "@/features/admin/hooks/useSelection";
 import { bulkWorkspaceAction } from "@/features/admin/actions/bulk";
@@ -47,15 +47,15 @@ export function BoardWorkspace() {
   const board = options.find((item) => item.id === params.get("board")) ?? options[0];
   const tasks = useWorkspace("tasks", "boardId", board?.id);
   /** Movimientos de arrastrar y soltar que aún no confirma Firestore. */
-  const [moves, setMoves] = useState<Record<string, { status: string; revision: number }>>({});
+  const [moves, setMoves] = useState<Record<string, { status: string; rank?: number; revision: number }>>({});
   const [actionError, setActionError] = useState("");
-  const query = params.get("q") ?? "", priority = params.get("priority") ?? "all", assignee = params.get("assignee") ?? "all", sort = params.get("sort") ?? "newest";
+  const query = params.get("q") ?? "", priority = params.get("priority") ?? "all", assignee = params.get("assignee") ?? "all", sort = params.get("sort") ?? "manual";
   const view = params.get("view") === "list" ? "list" : "board";
   const needle = normalizeText(query);
   // Un movimiento optimista vale hasta que Firestore entrega una versión posterior a la que se guardó.
   const liveTasks = tasks.items.map((task) => {
     const pending = moves[task.id];
-    return pending && task.revision <= pending.revision && pending.status !== task.status ? { ...task, status: pending.status } : task;
+    return pending && task.revision <= pending.revision && (pending.status !== task.status || pending.rank !== task.rank) ? { ...task, status: pending.status, rank: pending.rank ?? task.rank } : task;
   });
   const boardTasks = liveTasks.filter((task) => task.archived === archived);
   const filtered = boardTasks.filter(
@@ -69,7 +69,9 @@ export function BoardWorkspace() {
       ? (a.dueDate || "9999").localeCompare(b.dueDate || "9999")
       : sort === "priority"
         ? priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority)
-        : b.createdAt.localeCompare(a.createdAt),
+        : sort === "newest"
+          ? b.createdAt.localeCompare(a.createdAt)
+          : effectiveRank(a) - effectiveRank(b),
   );
   const selection = useSelection(ordered.map((task) => task.id));
   const [bulkBusy, setBulkBusy] = useState(false), [bulkError, setBulkError] = useState("");
@@ -97,19 +99,19 @@ export function BoardWorkspace() {
   /** Movimientos en curso por tarea: cada uno espera al anterior para usar la versión correcta. */
   const queues = useRef<Record<string, Promise<void>>>({});
 
-  function move(task: Entity<"tasks">, status: string) {
+  function move(task: Entity<"tasks">, status: string, rank?: number) {
     const known = Math.max(task.revision, revisions.current[task.id] ?? 0);
-    setMoves((current) => ({ ...current, [task.id]: { status, revision: known + 1 } }));
+    setMoves((current) => ({ ...current, [task.id]: { status, rank, revision: known + 1 } }));
     setActionError("");
     const previous = queues.current[task.id] ?? Promise.resolve();
     queues.current[task.id] = previous.then(async () => {
       const live = tasks.items.find((item) => item.id === task.id) ?? task;
       const revision = Math.max(live.revision, revisions.current[task.id] ?? 0);
       try {
-        const result = await saveWorkspaceItem({ collection: "tasks", id: task.id, revision, data: taskPayload(live, status) });
+        const result = await saveWorkspaceItem({ collection: "tasks", id: task.id, revision, data: taskPayload(live, status, rank ?? live.rank) });
         if (!result.ok) throw new Error(result.error);
         revisions.current[task.id] = result.revision;
-        setMoves((current) => (current[task.id]?.status === status ? { ...current, [task.id]: { status, revision: result.revision - 1 } } : current));
+        setMoves((current) => (current[task.id]?.status === status && current[task.id]?.rank === rank ? { ...current, [task.id]: { status, rank, revision: result.revision - 1 } } : current));
       } catch {
         setMoves((current) => { const next = { ...current }; delete next[task.id]; return next; });
         setActionError(`No se pudo mover “${task.title}”. Puede que alguien la haya cambiado al mismo tiempo; vuelve a intentarlo.`);
@@ -255,8 +257,8 @@ export function BoardWorkspace() {
                 hideLabel
                 size="compact"
                 value={sort}
-                options={[{ value: "newest", label: "Más recientes" }, { value: "priority", label: "Por prioridad" }, { value: "due", label: "Por fecha límite" }]}
-                onChange={(value) => update({ sort: value === "newest" ? null : value })}
+                options={[{ value: "manual", label: "Orden manual" }, { value: "newest", label: "Más recientes" }, { value: "priority", label: "Por prioridad" }, { value: "due", label: "Por fecha límite" }]}
+                onChange={(value) => update({ sort: value === "manual" ? null : value })}
               />
               {filtersActive ? (
                 <Button variant="text" size="sm" onClick={() => update({ q: null, priority: null, assignee: null })}>
@@ -287,6 +289,7 @@ export function BoardWorkspace() {
                   onOpen={openTask}
                   onCreate={createTask}
                   onMove={move}
+                  reorderable={sort === "manual"}
                   extra={restore}
                   selection={{ has: selection.has, toggle: selection.toggle, active: selection.count > 0 }}
                 />

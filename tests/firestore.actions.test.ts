@@ -41,6 +41,16 @@ beforeAll(async () => {
 afterAll(async () => { await env?.cleanup(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe("acciones reales contra Firestore", () => {
+  test("el orden manual de una tarea se conserva al editarla desde el formulario", async () => {
+    actAs("devjorgemejia@gmail.com");
+    const board = succeeded(await saveWorkspaceItem({ collection: "boards", data: sampleBoard }));
+    const task = succeeded(await saveWorkspaceItem({ collection: "tasks", data: { ...sampleTask, boardId: board.id, rank: 512 } }));
+    const edited = succeeded(await saveWorkspaceItem({ collection: "tasks", id: task.id, revision: task.revision, data: { ...sampleTask, boardId: board.id, title: "Editada" } }));
+    expect([(await read("tasks", task.id)).rank, (await read("tasks", task.id)).title]).toEqual([512, "Editada"]);
+    succeeded(await saveWorkspaceItem({ collection: "tasks", id: task.id, revision: edited.revision, data: { ...sampleTask, boardId: board.id, status: "done", rank: 2.5 } }));
+    expect((await read("tasks", task.id)).rank).toBe(2.5);
+    expect((await saveWorkspaceItem({ collection: "tasks", data: { ...sampleTask, boardId: board.id, rank: Number.NaN } })).ok).toBe(false);
+  });
   test("pizarras de brainstorm: crear, mover, editar y eliminar post-its", async () => {
     actAs("devjorgemejia@gmail.com");
     const board = succeeded(await saveWorkspaceItem({ collection: "whiteboards", data: sampleWhiteboard }));

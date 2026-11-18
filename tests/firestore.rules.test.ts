@@ -64,6 +64,12 @@ describe("acceso a los espacios compartidos", () => {
     await assertFails(setDoc(doc(db, "stickyNotes", "largo"), { ...note, text: "x".repeat(501) }));
     await assertFails(deleteDoc(doc(db, "whiteboards", sampleWhiteboard.id)));
   });
+  test("las tareas admiten un orden manual numérico opcional", async () => {
+    const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();
+    const task = { ...data(sampleTask), createdBy: email, updatedBy: email };
+    await assertSucceeds(setDoc(doc(db, "tasks", "con-orden"), { ...task, rank: -1024.5 }));
+    await assertFails(setDoc(doc(db, "tasks", "orden-texto"), { ...task, rank: "1" }));
+  });
   test("los tableros admiten una posición opcional de 1 a 99 en las pestañas", async () => {
     const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();
     const board = { ...data(sampleBoard), createdBy: email, updatedBy: email };
