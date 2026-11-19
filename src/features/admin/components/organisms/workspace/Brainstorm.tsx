@@ -10,7 +10,7 @@ import {
   AlignCenter, AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignHorizontalSpaceAround, AlignLeft, AlignRight,
   AlignStartHorizontal, AlignStartVertical, AlignVerticalSpaceAround, Archive, ArchiveRestore, ArrowDown, ArrowDownToLine, ArrowUp, ArrowUpToLine,
   ChevronRight, Circle, ClipboardPaste, Copy, Eraser, Hand, Keyboard, LayoutGrid, Lightbulb, Maximize, Minus, MousePointer2, MousePointerClick,
-  MoveUpRight, Palette, Pencil, PenLine, Plus, Redo2, Scissors, Square, SquarePlus, StickyNote as StickyIcon, Trash2, Type, Undo2, X,
+  MoveUpRight, Palette, Pencil, PenLine, Plus, Redo2, Scissors, Spline, Square, SquarePlus, StickyNote as StickyIcon, Trash2, Type, Undo2, X,
 } from "lucide-react";
 import { Avatar } from "@/ui/atoms/Avatar";
 import { Button } from "@/ui/atoms/Button";
@@ -97,22 +97,48 @@ const smoothPath = (points: number[]) => {
   for (let i = 2; i < points.length - 2; i += 2) path += ` Q${points[i]} ${points[i + 1]} ${(points[i] + points[i + 2]) / 2} ${(points[i + 1] + points[i + 3]) / 2}`;
   return `${path} L${points.at(-2)} ${points.at(-1)}`;
 };
-/** Trazado de una flecha según su tipo, con el ángulo de llegada a cada extremo para las puntas. */
-const arrowGeometry = (s: Point, e: Point, type: Style["arrowType"]) => {
-  const dx = e.x - s.x, dy = e.y - s.y;
-  if (type === "curved") {
-    const length = Math.hypot(dx, dy) || 1, c = { x: (s.x + e.x) / 2 - (dy / length) * length * 0.22, y: (s.y + e.y) / 2 + (dx / length) * length * 0.22 };
+/** Trazado de una flecha por sus puntos (extremos y vértices), con el ángulo de llegada a cada extremo para las puntas. */
+const arrowGeometry = (pts: Point[], type: Style["arrowType"]) => {
+  const s = pts[0], e = pts[pts.length - 1];
+  if (pts.length === 2 && type === "curved") {
+    const dx = e.x - s.x, dy = e.y - s.y, length = Math.hypot(dx, dy) || 1, c = { x: (s.x + e.x) / 2 - (dy / length) * length * 0.22, y: (s.y + e.y) / 2 + (dx / length) * length * 0.22 };
     return { d: `M${s.x} ${s.y} Q${c.x} ${c.y} ${e.x} ${e.y}`, endAngle: Math.atan2(e.y - c.y, e.x - c.x), startAngle: Math.atan2(s.y - c.y, s.x - c.x) };
   }
-  if (type === "elbow") {
-    if (Math.abs(dx) >= Math.abs(dy)) {
-      const mid = (s.x + e.x) / 2, sign = Math.sign(dx) || 1;
-      return { d: `M${s.x} ${s.y} H${mid} V${e.y} H${e.x}`, endAngle: sign > 0 ? 0 : Math.PI, startAngle: sign > 0 ? Math.PI : 0 };
+  if (type === "curved") {
+    // Catmull-Rom: la curva pasa por cada vértice.
+    let d = `M${s.x} ${s.y}`, c1 = s, c2 = e;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] ?? pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] ?? p2;
+      const a = { x: p1.x + (p2.x - p0.x) / 6, y: p1.y + (p2.y - p0.y) / 6 }, b = { x: p2.x - (p3.x - p1.x) / 6, y: p2.y - (p3.y - p1.y) / 6 };
+      if (i === 0) c1 = a;
+      if (i === pts.length - 2) c2 = b;
+      d += ` C${a.x} ${a.y} ${b.x} ${b.y} ${p2.x} ${p2.y}`;
     }
-    const mid = (s.y + e.y) / 2, sign = Math.sign(dy) || 1;
-    return { d: `M${s.x} ${s.y} V${mid} H${e.x} V${e.y}`, endAngle: sign > 0 ? Math.PI / 2 : -Math.PI / 2, startAngle: sign > 0 ? -Math.PI / 2 : Math.PI / 2 };
+    return { d, endAngle: Math.atan2(e.y - c2.y, e.x - c2.x), startAngle: Math.atan2(s.y - c1.y, s.x - c1.x) };
   }
-  return { d: `M${s.x} ${s.y} L${e.x} ${e.y}`, endAngle: Math.atan2(dy, dx), startAngle: Math.atan2(-dy, -dx) };
+  if (type === "elbow") {
+    // Cada tramo va en ángulo recto: primero por el eje dominante y luego por el otro.
+    let d = `M${s.x} ${s.y}`, startAngle = 0, endAngle = 0;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i + 1], dx = b.x - a.x, dy = b.y - a.y, across = Math.abs(dx) >= Math.abs(dy);
+      if (pts.length === 2) {
+        if (across) { const mid = (a.x + b.x) / 2; d += ` H${mid} V${b.y} H${b.x}`; } else { const mid = (a.y + b.y) / 2; d += ` V${mid} H${b.x} V${b.y}`; }
+      } else d += across ? ` H${b.x} V${b.y}` : ` V${b.y} H${b.x}`;
+      const firstLeg = across ? (dx ? Math.atan2(0, dx) : Math.atan2(dy, 0)) : (dy ? Math.atan2(dy, 0) : Math.atan2(0, dx));
+      const lastLeg = pts.length === 2 ? firstLeg : across ? (dy ? Math.atan2(dy, 0) : Math.atan2(0, dx)) : (dx ? Math.atan2(0, dx) : Math.atan2(dy, 0));
+      if (i === 0) startAngle = firstLeg + Math.PI;
+      if (i === pts.length - 2) endAngle = lastLeg;
+    }
+    return { d, endAngle, startAngle };
+  }
+  const prev = pts[pts.length - 2], next = pts[1];
+  return { d: `M${s.x} ${s.y}${pts.slice(1).map((pt) => ` L${pt.x} ${pt.y}`).join("")}`, endAngle: Math.atan2(e.y - prev.y, e.x - prev.x), startAngle: Math.atan2(s.y - next.y, s.x - next.x) };
+};
+/** Vértices intermedios de una flecha guardada (sus puntos, sin los extremos), en coordenadas del lienzo. */
+const arrowVertices = (arrow: Pick<StickyNote, "x" | "y" | "points">): Point[] => {
+  const pts = arrow.points ?? [], out: Point[] = [];
+  for (let i = 2; i < pts.length - 2; i += 2) out.push({ x: arrow.x + pts[i], y: arrow.y + pts[i + 1] });
+  return out;
 };
 const tilt = (id: string) => ((Array.from(id).reduce((sum, char) => sum + char.charCodeAt(0), 0) % 7) - 3) * 0.45;
 const isMac = () => typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
@@ -166,6 +192,7 @@ type Gesture =
   | { type: "draw"; points: number[] }
   | { type: "shape"; kind: "rect" | "ellipse" | "arrow"; x0: number; y0: number; x1: number; y1: number; free: boolean; from: string; to: string }
   | { type: "arrowEnd"; id: string; end: "start" | "end"; x: number; y: number; target: string }
+  | { type: "vertex"; id: string; index: number; insert: boolean; x: number; y: number; moved: boolean }
   | { type: "erase"; ids: string[] }
   | { type: "resize"; id: string; box: Box; sx: number; sy: number; dx: number; dy: number };
 const CLIP = "daury/whiteboard";
@@ -231,7 +258,13 @@ export function BrainstormWorkspace() {
   const height = Math.max(1500, ...live.map((note) => { const box = boxOf(note); return box.y + box.h + 320; }));
   const activeTool: Tool = spacePan ? "hand" : tool;
   /** Al elegir una herramienta de dibujo se suelta la selección (el panel muestra sus opciones). */
-  const setTool = (next: Tool) => { setToolState(next); if (next !== "select" && next !== "hand") { setSelected(new Set()); setEditingId(null); } };
+  /** Cierra la edición guardando el borrador: desenfocar dispara su `onBlur` antes de desmontar el campo. */
+  const stopEditing = () => {
+    const field = document.activeElement;
+    if (field instanceof HTMLTextAreaElement && field.closest("[data-note]")) field.blur();
+    setEditingId(null);
+  };
+  const setTool = (next: Tool) => { setToolState(next); if (next !== "select" && next !== "hand") { setSelected(new Set()); stopEditing(); } };
   const topZ = live.reduce((max, note) => Math.max(max, styleOf(note).z), 0);
   useEffect(() => { zoomRef.current = zoom; }, [zoom]);
   useEffect(() => {
@@ -518,8 +551,9 @@ export function BrainstormWorkspace() {
   };
   /** Extremos de una flecha: unida a elementos, sale y llega a sus bordes y los sigue. */
   const arrowEnds = (arrow: Element) => {
-    const pts = arrow.points?.length === 4 ? arrow.points : [0, 0, arrow.w ?? 0, arrow.h ?? 0];
-    let start: Point = { x: arrow.x + pts[0], y: arrow.y + pts[1] }, end: Point = { x: arrow.x + pts[2], y: arrow.y + pts[3] };
+    const pts = (arrow.points?.length ?? 0) >= 4 ? arrow.points! : [0, 0, arrow.w ?? 0, arrow.h ?? 0];
+    let start: Point = { x: arrow.x + pts[0], y: arrow.y + pts[1] }, end: Point = { x: arrow.x + pts[pts.length - 2], y: arrow.y + pts[pts.length - 1] };
+    let mids = arrowVertices(arrow);
     let fromEl = arrow.from ? byId.get(arrow.from) : undefined, toEl = arrow.to ? byId.get(arrow.to) : undefined;
     if (!bindable(fromEl)) fromEl = undefined;
     if (!bindable(toEl)) toEl = undefined;
@@ -528,22 +562,38 @@ export function BrainstormWorkspace() {
       if (toEl && !gesture.ids.includes(toEl.id)) toEl = undefined;
       if (!fromEl) start = { x: start.x + shiftX, y: start.y + shiftY };
       if (!toEl) end = { x: end.x + shiftX, y: end.y + shiftY };
+      mids = mids.map((pt) => ({ x: pt.x + shiftX, y: pt.y + shiftY }));
+    }
+    if (gesture?.type === "vertex" && gesture.id === arrow.id && (gesture.moved || !gesture.insert)) {
+      mids = [...mids];
+      if (gesture.insert) mids.splice(gesture.index, 0, { x: gesture.x, y: gesture.y }); else mids[gesture.index] = { x: gesture.x, y: gesture.y };
     }
     if (gesture?.type === "arrowEnd" && gesture.id === arrow.id) {
       const target = gesture.target ? byId.get(gesture.target) : undefined;
       if (gesture.end === "start") { fromEl = target; start = { x: gesture.x, y: gesture.y }; } else { toEl = target; end = { x: gesture.x, y: gesture.y }; }
     }
     const fromBox = fromEl ? boxNow(fromEl) : undefined, toBox = toEl ? boxNow(toEl) : undefined;
-    const ref0 = fromBox ? centerOf(fromBox) : start, ref1 = toBox ? centerOf(toBox) : end;
-    return { start: fromEl && fromBox ? edgeToward(fromEl, fromBox, ref1) : start, end: toEl && toBox ? edgeToward(toEl, toBox, ref0) : end, from: fromEl?.id ?? "", to: toEl?.id ?? "" };
+    const ref0 = mids.at(-1) ?? (fromBox ? centerOf(fromBox) : start), ref1 = mids[0] ?? (toBox ? centerOf(toBox) : end);
+    return { start: fromEl && fromBox ? edgeToward(fromEl, fromBox, ref1) : start, end: toEl && toBox ? edgeToward(toEl, toBox, ref0) : end, mids, from: fromEl?.id ?? "", to: toEl?.id ?? "" };
   };
-  const arrowData = (ends: { start: Point; end: Point; from: string; to: string }): Data => {
+  const arrowData = (ends: { start: Point; end: Point; mids?: Point[]; from: string; to: string }): Data => {
     const clamp = (value: number) => Math.min(Math.max(Math.round(value), 0), canvasSize);
-    const x = clamp(Math.min(ends.start.x, ends.end.x)), y = clamp(Math.min(ends.start.y, ends.end.y));
-    const points = [ends.start.x - x, ends.start.y - y, ends.end.x - x, ends.end.y - y].map((value) => Math.max(-canvasSize, Math.min(canvasSize, Math.round(value))));
-    return { x, y, w: Math.min(Math.max(1, Math.abs(points[2] - points[0])), canvasSize), h: Math.min(Math.max(1, Math.abs(points[3] - points[1])), canvasSize), points, from: ends.from, to: ends.to };
+    const all = [ends.start, ...(ends.mids ?? []), ends.end];
+    const x = clamp(Math.min(...all.map((pt) => pt.x))), y = clamp(Math.min(...all.map((pt) => pt.y)));
+    const points = all.flatMap((pt) => [pt.x - x, pt.y - y]).map((value) => Math.max(-canvasSize, Math.min(canvasSize, Math.round(value))));
+    const xs = points.filter((_, i) => i % 2 === 0), ys = points.filter((_, i) => i % 2 === 1);
+    return { x, y, w: Math.min(Math.max(1, Math.max(...xs) - Math.min(...xs)), canvasSize), h: Math.min(Math.max(1, Math.max(...ys) - Math.min(...ys)), canvasSize), points, from: ends.from, to: ends.to };
   };
-  const hitBox = (note: Element): Box => { if (note.kind !== "arrow") return boxOf(note); const { start, end } = arrowEnds(note); return { x: Math.min(start.x, end.x), y: Math.min(start.y, end.y), w: Math.abs(end.x - start.x), h: Math.abs(end.y - start.y) }; };
+  const hitBox = (note: Element): Box => {
+    if (note.kind !== "arrow") return boxOf(note);
+    const { start, end, mids } = arrowEnds(note), all = [start, ...mids, end], xs = all.map((pt) => pt.x), ys = all.map((pt) => pt.y);
+    return { x: Math.min(...xs), y: Math.min(...ys), w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+  };
+  /** Quita uno o todos los vértices de una flecha. */
+  const removeVertex = (arrow: Element, index?: number) => {
+    const ends = arrowEnds(arrow);
+    change([arrow.id], () => arrowData({ ...ends, mids: index === undefined ? [] : ends.mids.filter((_, i) => i !== index) }));
+  };
 
   // ——— Zoom ———
   function zoomTo(next: number, anchor?: { clientX: number; clientY: number }) {
@@ -628,14 +678,20 @@ export function BrainstormWorkspace() {
     const handle = target.closest("[data-handle]")?.getAttribute("data-handle");
     if (handle && editable) {
       const note = selection[0];
-      if (note && (handle === "start" || handle === "end")) {
+      if (note && /^[vm]:\d+$/.test(handle)) {
+        const index = Number(handle.slice(2)), ends = arrowEnds(note), all = [ends.start, ...ends.mids, ends.end];
+        const at = handle[0] === "v" ? ends.mids[index] : { x: (all[index].x + all[index + 1].x) / 2, y: (all[index].y + all[index + 1].y) / 2 };
+        if (!at) return;
+        capture();
+        setGesture({ type: "vertex", id: note.id, index, insert: handle[0] === "m", x: at.x, y: at.y, moved: false });
+      } else if (note && (handle === "start" || handle === "end")) {
         const ends = arrowEnds(note), at = handle === "start" ? ends.start : ends.end;
         capture();
         setGesture({ type: "arrowEnd", id: note.id, end: handle, x: at.x, y: at.y, target: handle === "start" ? ends.from : ends.to });
       } else if (note) { capture(); setGesture({ type: "resize", id: note.id, box: boxOf(note), sx: x, sy: y, dx: 0, dy: 0 }); }
       return;
     }
-    if (editingId) setEditingId(null);
+    if (editingId) stopEditing();
     if (!editable && activeTool !== "select") return;
     if (activeTool === "note") { addNote(x, y); setTool("select"); return; }
     if (activeTool === "text") { addText(x, y); setTool("select"); return; }
@@ -690,6 +746,9 @@ export function BrainstormWorkspace() {
     } else if (gesture.type === "shape") {
       const over = gesture.kind === "arrow" ? elementUnder(event) : undefined;
       setGesture({ ...gesture, x1: x, y1: y, free: event.altKey, to: over && over !== gesture.from && bindable(byId.get(over)) ? over : "" });
+    } else if (gesture.type === "vertex") {
+      if (!gesture.moved && Math.hypot(x - gesture.x, y - gesture.y) < 3 / zoom) return;
+      setGesture({ ...gesture, x: snap(x, event.altKey), y: snap(y, event.altKey), moved: true });
     } else if (gesture.type === "arrowEnd") {
       const over = elementUnder(event);
       setGesture({ ...gesture, x, y, target: over && over !== gesture.id && bindable(byId.get(over)) ? over : "" });
@@ -710,6 +769,7 @@ export function BrainstormWorkspace() {
         return { id: note.id, before, after: { ...before, x: box.x, y: box.y } };
       }));
     }
+    if (done.type === "vertex" && done.moved) { const arrow = byId.get(done.id); if (arrow) change([arrow.id], () => arrowData(arrowEnds(arrow))); }
     if (done.type === "arrowEnd") { const arrow = byId.get(done.id); if (arrow) change([arrow.id], () => arrowData(arrowEnds(arrow))); }
     if (done.type === "resize") { const note = byId.get(done.id); if (note) change([note.id], () => boxNow(note)); }
     if (done.type === "erase") deleteIds(done.ids);
@@ -736,6 +796,8 @@ export function BrainstormWorkspace() {
   }
   function onDoubleClick(event: React.MouseEvent<HTMLDivElement>) {
     if (!editable || activeTool !== "select") return;
+    const vertex = (event.target as HTMLElement).closest?.("[data-handle]")?.getAttribute("data-handle");
+    if (vertex?.startsWith("v:") && single?.kind === "arrow") { removeVertex(single, Number(vertex.slice(2))); return; }
     const id = elementAt(event.target);
     if (id) { const note = byId.get(id); if (note && canHoldText(note)) { setSelected(new Set([id])); setEditingId(id); } return; }
     const { x, y } = point(event);
@@ -747,7 +809,7 @@ export function BrainstormWorkspace() {
     lastPointer.current = menuPoint.current;
     const id = elementAt(event.target);
     if (id) { if (!selected.has(id)) setSelected(new Set([id])); setMenuTarget("notes"); }
-    else { setSelected(new Set()); setEditingId(null); setMenuTarget("canvas"); }
+    else { setSelected(new Set()); stopEditing(); setMenuTarget("canvas"); }
   }
   function onMenu(value: string) {
     const ids = selection.map((note) => note.id);
@@ -992,6 +1054,7 @@ export function BrainstormWorkspace() {
                   <section className="flex flex-col gap-[6px]">
                     <h3 className={sectionTitle}>Acciones</h3>
                     <div className="flex gap-[4px]">
+                      {single?.kind === "arrow" && editable && arrowVertices(single).length ? <ActionButton args={["Quitar vértices", <Spline key="icon" size={16} aria-hidden="true" />, () => removeVertex(single)]} /> : null}
                       {single && canHoldText(single) ? <ActionButton args={["Editar texto", <Pencil key="icon" size={16} aria-hidden="true" />, () => setEditingId(single.id), "enter"]} /> : null}
                       {<ActionButton args={["Copiar", <Copy key="icon" size={16} aria-hidden="true" />, () => copy(), "mod+c"]} />}
                       {<ActionButton args={["Duplicar", <SquarePlus key="icon" size={16} aria-hidden="true" />, () => duplicate(selection.map((note) => note.id)), "mod+d"]} />}
@@ -1042,13 +1105,28 @@ export function BrainstormWorkspace() {
                         const z = 10 + (order.get(note.id) ?? 0) + (gesture?.type === "move" && gesture.moved && gesture.ids.includes(note.id) ? 5000 : 0) + (editingId === note.id ? 6000 : 0);
                         const erasing = gesture?.type === "erase" && gesture.ids.includes(note.id);
                         if (note.kind === "arrow") {
-                          const { start, end } = arrowEnds(note), style = styleOf(note), isSelected = selected.has(note.id);
+                          const { start, end, mids } = arrowEnds(note), style = styleOf(note), isSelected = selected.has(note.id), all = [start, ...mids, end];
+                          const handles = isSelected && single?.id === note.id && editable && activeTool === "select";
                           return (
                             <svg key={note.id} className="absolute left-0 top-0 overflow-visible pointer-events-none" width={width} height={height} style={{ zIndex: z, opacity: erasing ? 0.25 : 1 }}>
                               <g data-note={note.id} role="group" aria-label={`Flecha${isSelected ? " (seleccionada)" : ""}`}>
-                                {isSelected ? <path d={arrowGeometry(start, end, style.arrowType).d} fill="none" stroke="var(--blue)" strokeOpacity={0.22} strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" /> : null}
-                                <ArrowShape start={start} end={end} style={style} color={note.color} hit />
-                                {isSelected && single?.id === note.id && editable && activeTool === "select"
+                                {isSelected ? <path d={arrowGeometry(all, style.arrowType).d} fill="none" stroke="var(--blue)" strokeOpacity={0.22} strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" /> : null}
+                                <ArrowShape points={all} style={style} color={note.color} hit />
+                                {handles
+                                  ? all.slice(0, -1).map((at, i) => gesture?.type === "vertex" ? null : (
+                                      <circle key={`m:${i}`} data-handle={`m:${i}`} cx={(at.x + all[i + 1].x) / 2} cy={(at.y + all[i + 1].y) / 2} r={4.5 / zoom} fill="var(--blue)" fillOpacity={0.35} stroke="var(--surface)" strokeWidth={1.5 / zoom} pointerEvents="all" style={{ cursor: "copy" }}>
+                                        <title>Arrastra para añadir un vértice</title>
+                                      </circle>
+                                    ))
+                                  : null}
+                                {handles
+                                  ? mids.map((at, i) => (
+                                      <circle key={`v:${i}`} data-handle={`v:${i}`} cx={at.x} cy={at.y} r={5.5 / zoom} fill="var(--blue)" stroke="var(--surface)" strokeWidth={2 / zoom} pointerEvents="all" style={{ cursor: "move" }}>
+                                        <title>Arrastra para mover · doble clic para quitar</title>
+                                      </circle>
+                                    ))
+                                  : null}
+                                {handles
                                   ? ([["start", start], ["end", end]] as const).map(([key, at]) => <circle key={key} data-handle={key} cx={at.x} cy={at.y} r={6 / zoom} fill="var(--surface)" stroke="var(--blue)" strokeWidth={2 / zoom} pointerEvents="all" style={{ cursor: "move" }} />)
                                   : null}
                               </g>
@@ -1225,7 +1303,7 @@ function DraftLayer({ gesture, color, style, arrow, zoom }: { gesture: Gesture |
       <svg aria-hidden="true" className="absolute inset-0 z-[9000] pointer-events-none overflow-visible" width="100%" height="100%">
         {gesture.kind === "rect" ? <rect x={x} y={y} width={w} height={h} rx={10} fill="none" stroke={strokeOf(color)} strokeWidth={width} strokeDasharray="6 5" /> : null}
         {gesture.kind === "ellipse" ? <ellipse cx={x + w / 2} cy={y + h / 2} rx={w / 2} ry={h / 2} fill="none" stroke={strokeOf(color)} strokeWidth={width} strokeDasharray="6 5" /> : null}
-        {gesture.kind === "arrow" && arrow ? <ArrowShape start={arrow.start} end={arrow.end} style={style} color={color} /> : null}
+        {gesture.kind === "arrow" && arrow ? <ArrowShape points={[arrow.start, arrow.end]} style={style} color={color} /> : null}
       </svg>
     );
   }
@@ -1233,9 +1311,11 @@ function DraftLayer({ gesture, color, style, arrow, zoom }: { gesture: Gesture |
 }
 
 /** Flecha recta, en codo o curva, con puntas abiertas en uno, otro o ambos extremos. */
-function ArrowShape({ start, end, style, color, hit = false }: { start: Point; end: Point; style: Style; color: string; hit?: boolean }) {
-  const { d, endAngle, startAngle } = arrowGeometry(start, end, style.arrowType);
-  const width = weightPx[style.weight], size = Math.min(18, Math.max(9, Math.hypot(end.x - start.x, end.y - start.y) / 3)) + width;
+function ArrowShape({ points, style, color, hit = false }: { points: Point[]; style: Style; color: string; hit?: boolean }) {
+  const { d, endAngle, startAngle } = arrowGeometry(points, style.arrowType);
+  const start = points[0], end = points[points.length - 1];
+  const length = points.slice(1).reduce((sum, pt, i) => sum + Math.hypot(pt.x - points[i].x, pt.y - points[i].y), 0);
+  const width = weightPx[style.weight], size = Math.min(18, Math.max(9, length / 3)) + width;
   const head = (tip: Point, angle: number) => `M${tip.x - size * Math.cos(angle - 0.5)} ${tip.y - size * Math.sin(angle - 0.5)} L${tip.x} ${tip.y} L${tip.x - size * Math.cos(angle + 0.5)} ${tip.y - size * Math.sin(angle + 0.5)}`;
   const heads = [style.head === "end" || style.head === "both" ? head(end, endAngle) : "", style.head === "start" || style.head === "both" ? head(start, startAngle) : ""].join(" ").trim();
   return (
