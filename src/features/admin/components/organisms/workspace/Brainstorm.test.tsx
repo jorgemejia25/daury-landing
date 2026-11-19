@@ -102,3 +102,19 @@ test("una flecha que sale de un post-it queda unida a él", async () => {
   fireEvent.pointerUp(stage, { pointerId: 3 });
   await waitFor(() => expect(save).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ kind: "arrow", from: sampleSticky.id, to: "", style: expect.objectContaining({ arrowType: "straight", head: "end" }) }) })));
 });
+
+test("un texto nuevo se guarda al hacer clic en el lienzo para salir", async () => {
+  const user = userEvent.setup();
+  render(<BrainstormWorkspace />);
+  const stage = document.querySelector(`[data-note="${sampleSticky.id}"]`)!.parentElement as HTMLElement;
+  fireEvent.keyDown(document.body, { key: "t" });
+  fireEvent.pointerDown(stage, { button: 0, clientX: 400, clientY: 300, pointerId: 1 });
+  await waitFor(() => expect(save).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ kind: "text" }) })));
+  const id = save.mock.calls.at(-1)![0].id as string;
+  const field = await screen.findByRole("textbox", { name: "Texto" });
+  await waitFor(() => expect(document.activeElement).toBe(field));
+  await user.type(field, "Idea suelta");
+  fireEvent.pointerDown(stage, { button: 0, clientX: 900, clientY: 700, pointerId: 2 });
+  await waitFor(() => expect(bulk).toHaveBeenCalledWith("stickyNotes", [id], expect.objectContaining({ type: "stickyPatch", items: [expect.objectContaining({ id, changes: expect.objectContaining({ text: "Idea suelta" }) })] })));
+  expect(screen.getByText("Idea suelta")).toBeTruthy();
+});

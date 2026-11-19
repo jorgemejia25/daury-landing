@@ -231,7 +231,13 @@ export function BrainstormWorkspace() {
   const height = Math.max(1500, ...live.map((note) => { const box = boxOf(note); return box.y + box.h + 320; }));
   const activeTool: Tool = spacePan ? "hand" : tool;
   /** Al elegir una herramienta de dibujo se suelta la selección (el panel muestra sus opciones). */
-  const setTool = (next: Tool) => { setToolState(next); if (next !== "select" && next !== "hand") { setSelected(new Set()); setEditingId(null); } };
+  /** Cierra la edición guardando el borrador: desenfocar dispara su `onBlur` antes de desmontar el campo. */
+  const stopEditing = () => {
+    const field = document.activeElement;
+    if (field instanceof HTMLTextAreaElement && field.closest("[data-note]")) field.blur();
+    setEditingId(null);
+  };
+  const setTool = (next: Tool) => { setToolState(next); if (next !== "select" && next !== "hand") { setSelected(new Set()); stopEditing(); } };
   const topZ = live.reduce((max, note) => Math.max(max, styleOf(note).z), 0);
   useEffect(() => { zoomRef.current = zoom; }, [zoom]);
   useEffect(() => {
@@ -635,7 +641,7 @@ export function BrainstormWorkspace() {
       } else if (note) { capture(); setGesture({ type: "resize", id: note.id, box: boxOf(note), sx: x, sy: y, dx: 0, dy: 0 }); }
       return;
     }
-    if (editingId) setEditingId(null);
+    if (editingId) stopEditing();
     if (!editable && activeTool !== "select") return;
     if (activeTool === "note") { addNote(x, y); setTool("select"); return; }
     if (activeTool === "text") { addText(x, y); setTool("select"); return; }
@@ -747,7 +753,7 @@ export function BrainstormWorkspace() {
     lastPointer.current = menuPoint.current;
     const id = elementAt(event.target);
     if (id) { if (!selected.has(id)) setSelected(new Set([id])); setMenuTarget("notes"); }
-    else { setSelected(new Set()); setEditingId(null); setMenuTarget("canvas"); }
+    else { setSelected(new Set()); stopEditing(); setMenuTarget("canvas"); }
   }
   function onMenu(value: string) {
     const ids = selection.map((note) => note.id);
