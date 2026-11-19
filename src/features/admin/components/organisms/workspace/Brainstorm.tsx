@@ -134,6 +134,24 @@ const arrowGeometry = (pts: Point[], type: Style["arrowType"]) => {
   const prev = pts[pts.length - 2], next = pts[1];
   return { d: `M${s.x} ${s.y}${pts.slice(1).map((pt) => ` L${pt.x} ${pt.y}`).join("")}`, endAngle: Math.atan2(e.y - prev.y, e.x - prev.x), startAngle: Math.atan2(s.y - next.y, s.x - next.x) };
 };
+/** Punto medio de cada tramo sobre el trazado real (curva o codo), donde se arrastra para añadir un vértice. */
+const segmentMidpoints = (pts: Point[], type: Style["arrowType"]): Point[] => pts.slice(0, -1).map((a, i) => {
+  const b = pts[i + 1];
+  if (type === "curved" && pts.length === 2) {
+    const dx = b.x - a.x, dy = b.y - a.y, length = Math.hypot(dx, dy) || 1, c = { x: (a.x + b.x) / 2 - (dy / length) * length * 0.22, y: (a.y + b.y) / 2 + (dx / length) * length * 0.22 };
+    return { x: 0.25 * a.x + 0.5 * c.x + 0.25 * b.x, y: 0.25 * a.y + 0.5 * c.y + 0.25 * b.y };
+  }
+  if (type === "curved") {
+    const p0 = pts[i - 1] ?? a, p3 = pts[i + 2] ?? b;
+    const c1 = { x: a.x + (b.x - p0.x) / 6, y: a.y + (b.y - p0.y) / 6 }, c2 = { x: b.x - (p3.x - a.x) / 6, y: b.y - (p3.y - a.y) / 6 };
+    return { x: (a.x + 3 * c1.x + 3 * c2.x + b.x) / 8, y: (a.y + 3 * c1.y + 3 * c2.y + b.y) / 8 };
+  }
+  if (type === "elbow" && pts.length > 2) {
+    // Sobre el tramo largo del codo: primero por el eje dominante.
+    return Math.abs(b.x - a.x) >= Math.abs(b.y - a.y) ? { x: (a.x + b.x) / 2, y: a.y } : { x: a.x, y: (a.y + b.y) / 2 };
+  }
+  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+});
 /** Vértices intermedios de una flecha guardada (sus puntos, sin los extremos), en coordenadas del lienzo. */
 const arrowVertices = (arrow: Pick<StickyNote, "x" | "y" | "points">): Point[] => {
   const pts = arrow.points ?? [], out: Point[] = [];
@@ -680,7 +698,7 @@ export function BrainstormWorkspace() {
       const note = selection[0];
       if (note && /^[vm]:\d+$/.test(handle)) {
         const index = Number(handle.slice(2)), ends = arrowEnds(note), all = [ends.start, ...ends.mids, ends.end];
-        const at = handle[0] === "v" ? ends.mids[index] : { x: (all[index].x + all[index + 1].x) / 2, y: (all[index].y + all[index + 1].y) / 2 };
+        const at = handle[0] === "v" ? ends.mids[index] : segmentMidpoints(all, styleOf(note).arrowType)[index];
         if (!at) return;
         capture();
         setGesture({ type: "vertex", id: note.id, index, insert: handle[0] === "m", x: at.x, y: at.y, moved: false });
@@ -1113,8 +1131,8 @@ export function BrainstormWorkspace() {
                                 {isSelected ? <path d={arrowGeometry(all, style.arrowType).d} fill="none" stroke="var(--blue)" strokeOpacity={0.22} strokeWidth={12} strokeLinecap="round" strokeLinejoin="round" /> : null}
                                 <ArrowShape points={all} style={style} color={note.color} hit />
                                 {handles
-                                  ? all.slice(0, -1).map((at, i) => gesture?.type === "vertex" ? null : (
-                                      <circle key={`m:${i}`} data-handle={`m:${i}`} cx={(at.x + all[i + 1].x) / 2} cy={(at.y + all[i + 1].y) / 2} r={4.5 / zoom} fill="var(--blue)" fillOpacity={0.35} stroke="var(--surface)" strokeWidth={1.5 / zoom} pointerEvents="all" style={{ cursor: "copy" }}>
+                                  ? segmentMidpoints(all, style.arrowType).map((at, i) => gesture?.type === "vertex" ? null : (
+                                      <circle key={`m:${i}`} data-handle={`m:${i}`} cx={at.x} cy={at.y} r={4.5 / zoom} fill="var(--blue)" fillOpacity={0.35} stroke="var(--surface)" strokeWidth={1.5 / zoom} pointerEvents="all" style={{ cursor: "copy" }}>
                                         <title>Arrastra para añadir un vértice</title>
                                       </circle>
                                     ))
