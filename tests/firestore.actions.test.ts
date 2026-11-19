@@ -9,7 +9,7 @@ const session = vi.hoisted(() => ({ email: "devjorgemejia@gmail.com", token: "" 
 vi.mock("server-only", () => ({}));
 vi.mock("next/headers", () => ({ cookies: async () => ({ get: () => ({ value: session.token }) }) }));
 vi.mock("@/features/admin/server/session", () => ({ adminSessionCookie: "test-cookie", requireAdminSession: async () => ({ uid: session.email, email: session.email, name: session.email }) }));
-import { saveFinanceEntry, settleFinanceEntry, archiveFinanceEntry } from "../src/features/admin/actions/finance";
+import { saveFinanceEntry, settleFinanceEntry, archiveFinanceEntry, settleTeamShares } from "../src/features/admin/actions/finance";
 import { sampleFinance } from "../src/features/admin/lib/finance.fixtures";
 import { saveWorkspaceItem, archiveWorkspaceItem, addTaskComment } from "../src/features/admin/actions/workspace";
 import { bulkWorkspaceAction } from "../src/features/admin/actions/bulk";
@@ -203,6 +203,25 @@ describe("acciones reales contra Firestore", () => {
     succeeded(await saveFinanceEntry({ data: { ...sampleFinance, currency: "GTQ", kind: "income" } }));
     expect((await archiveFinanceEntry(cost.id, 2, true)).ok).toBe(true); expect((await read("financeEntries", cost.id)).archived).toBe(true);
     expect((await archiveFinanceEntry(cost.id, 3, false)).ok).toBe(true);
+  });
+
+  test("los gastos de equipo guardan quién pagó y quién devolvió su parte", async () => {
+    actAs("devjorgemejia@gmail.com");
+    const V = "valeryalarconra@gmail.com", J = "devjorgemejia@gmail.com", D = "estebantrampej@gmail.com";
+    const cost = succeeded(await saveFinanceEntry({ data: { ...sampleFinance, frequency: "once", date: "2026-03-01", amount: 1000, members: [J, V, D] } }));
+    expect((await read("financeEntries", cost.id)).members).toEqual([V, J, D]);
+    expect((await settleFinanceEntry(cost.id, 1, "2026-03-01", true, "outside@gmail.com")).ok).toBe(false);
+    expect((await settleFinanceEntry(cost.id, 1, "2026-03-01", true, V)).ok).toBe(true);
+    expect((await read("financeEntries", cost.id)).payers).toEqual({ "2026-03-01": V });
+    expect((await settleTeamShares([{ id: cost.id, revision: 2, date: "2026-03-01", member: V }], true)).ok).toBe(false);
+    expect((await settleTeamShares([{ id: cost.id, revision: 2, date: "2026-03-01", member: J }, { id: cost.id, revision: 2, date: "2026-03-01", member: D }], true)).ok).toBe(true);
+    expect((await read("financeEntries", cost.id)).settled).toEqual({ "2026-03-01": [J, D] });
+    // Editar el gasto conserva quién pagó; quitar a una persona limpia su devolución.
+    succeeded(await saveFinanceEntry({ id: cost.id, revision: 3, data: { ...sampleFinance, frequency: "once", date: "2026-03-01", amount: 1000, title: "Notaría", members: [V, J] } }));
+    const edited = await read("financeEntries", cost.id); expect(edited.payers).toEqual({ "2026-03-01": V }); expect(edited.settled).toEqual({ "2026-03-01": [J] });
+    expect((await settleFinanceEntry(cost.id, 4, "2026-03-01", false)).ok).toBe(true);
+    const undone = await read("financeEntries", cost.id); expect(undone.payers).toEqual({}); expect(undone.settled).toEqual({});
+    expect((await saveFinanceEntry({ data: { ...sampleFinance, members: [J] } })).ok).toBe(false);
   });
 
   test("los eventos guardan y actualizan enlaces Meet sin romper los eventos antiguos", async () => {

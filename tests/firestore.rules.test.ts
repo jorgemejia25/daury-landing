@@ -126,6 +126,11 @@ describe("acceso a los espacios compartidos", () => {
     await assertSucceeds(updateDoc(ref, { paidDates: ["2026-01-31"], revision: 2 }));
     await assertFails(updateDoc(ref, { amount: 999, revision: 3 }));
     await assertFails(deleteDoc(ref));
+    const team = doc(db, "financeEntries", "finance-team"), base = { ...data(sampleFinance), paidDates: [], payers: {}, settled: {} };
+    await assertSucceeds(setDoc(team, { ...base, members: ["devjorgemejia@gmail.com", "valeryalarconra@gmail.com"] }));
+    for (const members of [["devjorgemejia@gmail.com"], ["devjorgemejia@gmail.com", "outside@gmail.com"], ["devjorgemejia@gmail.com", "devjorgemejia@gmail.com"]]) await assertFails(setDoc(doc(db, "financeEntries", `team-bad-${members.length}-${members[1] ?? ""}`), { ...base, members }));
+    await assertFails(setDoc(doc(db, "financeEntries", "team-income"), { ...base, kind: "income", members: ["devjorgemejia@gmail.com", "valeryalarconra@gmail.com"] }));
+    await assertFails(setDoc(doc(db, "financeEntries", "team-payers"), { ...base, members: [], payers: "devjorgemejia@gmail.com" }));
   });
 
   test("los eventos admiten Meet opcional y rechazan enlaces externos", async () => {
