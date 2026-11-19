@@ -5,15 +5,18 @@ service cloud.firestore {
       return request.auth != null
         && request.auth.token.email_verified == true
         && request.auth.token.firebase.sign_in_provider == 'google.com'
-        && request.auth.token.email.lower() in [
-          'valeryalarconra@gmail.com',
-          'acariaaas.07@gmail.com',
-          'daniel1ajedrez@gmail.com',
-          'yury.alexander2005@gmail.com',
-          'fatimacerezo2411@gmail.com',
-          'devjorgemejia@gmail.com',
-          'estebantrampej@gmail.com'
-        ];
+        && request.auth.token.email.lower() in team();
+    }
+    function team() {
+      return [
+        'valeryalarconra@gmail.com',
+        'acariaaas.07@gmail.com',
+        'daniel1ajedrez@gmail.com',
+        'yury.alexander2005@gmail.com',
+        'fatimacerezo2411@gmail.com',
+        'devjorgemejia@gmail.com',
+        'estebantrampej@gmail.com'
+      ];
     }
 
     function reference(kind, id) {
@@ -63,7 +66,12 @@ service cloud.firestore {
     function shape(kind, id) {
       let d = request.resource.data;
       return metadata() && (
-        (kind == 'financeEntries' && fields(['title', 'kind', 'amount', 'currency', 'date', 'frequency', 'endDate', 'category', 'notes', 'paidDates'])
+        (kind == 'financeEntries' && (fields(['title', 'kind', 'amount', 'currency', 'date', 'frequency', 'endDate', 'category', 'notes', 'paidDates'])
+            // Gastos de equipo: entre quiénes se reparte, quién pagó cada fecha y quiénes ya devolvieron su parte.
+            || (fields(['title', 'kind', 'amount', 'currency', 'date', 'frequency', 'endDate', 'category', 'notes', 'paidDates', 'members', 'payers', 'settled'])
+              && d.members is list && d.members.size() <= 7 && d.members.toSet().size() == d.members.size() && d.members.hasOnly(team())
+              && (d.members.size() == 0 || (d.kind == 'expense' && d.members.size() >= 2))
+              && d.payers is map && d.payers.size() <= 1200 && d.settled is map && d.settled.size() <= 1200))
           && label(d.title, 200) && d.kind in ['expense', 'income'] && d.amount is int && d.amount > 0 && d.amount <= 100000000000
           && d.currency in ['USD', 'GTQ'] && label(d.date, 10) && d.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
           && d.date >= '1900-01-01' && d.date <= '2200-12-31'

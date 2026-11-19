@@ -2,7 +2,7 @@ import type { Tone } from "@/ui/lib/tones";
 import styles from "./Avatar.styles";
 
 function initials(name: string) {
-  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+  return name.split(/\s+/).map((part) => part.replace(/^[^\p{L}\p{N}]+/u, "")).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
 }
 
 /** Círculo con iniciales en el tono indicado. */

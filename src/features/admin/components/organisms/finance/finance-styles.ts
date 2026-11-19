@@ -9,7 +9,7 @@ export const financeStyles = {
   schedule: "m-0 overflow-hidden",
   sectionHead: "flex justify-between items-center gap-[12px] py-[20px] px-[24px] [&_h3]:m-0 [&_h3]:font-display [&_h3]:text-[18px] [&_h3]:font-semibold [&_h3]:leading-[1.4] [&_a]:flex [&_a]:items-center [&_a]:gap-[6px] [&_a]:text-brand [&_a]:text-[13px] [&_a]:no-underline [&>span]:text-ink-soft [&>span]:text-[13px] max-[760px]:px-[18px] max-[760px]:flex-wrap",
   scroll: "overflow-x-auto [&_table]:border-collapse [&_table]:w-full [&_table]:text-[13px] [&_table]:whitespace-nowrap [&_th]:py-[10px] [&_th]:px-[20px] [&_th]:border-t [&_th]:border-rule [&_th]:text-right [&_th]:tabular-nums [&_th]:text-[var(--ink-2)] [&_td]:py-[10px] [&_td]:px-[20px] [&_td]:border-t [&_td]:border-rule [&_td]:text-right [&_td]:tabular-nums [&_td]:text-[var(--ink-2)] [&_th:first-child]:text-left [&_thead_th]:text-ink-soft [&_thead_th]:text-[11px] [&_thead_th]:font-semibold [&_th_button]:capitalize",
-  filters: "grid grid-cols-[2fr_repeat(4,minmax(140px,1fr))] gap-[12px] mb-[18px] max-[1300px]:grid-cols-3 max-[1300px]:[&>:first-child]:col-span-2 max-[760px]:grid-cols-2",
+  filters: "grid grid-cols-[2fr_repeat(5,minmax(130px,1fr))] gap-[12px] mb-[18px] max-[1300px]:grid-cols-3 max-[1300px]:[&>:first-child]:col-span-2 max-[760px]:grid-cols-2",
   movements: "m-0 p-0 list-none",
   movement: "flex items-center gap-[16px] py-[20px] px-[24px] border-t border-rule max-[760px]:flex-wrap max-[760px]:gap-[12px] max-[760px]:p-[18px]",
   kind: "grid place-items-center w-[42px] h-[42px] flex-none rounded-[14px] bg-[var(--coral-soft)] text-[var(--coral)] data-[kind=income]:bg-[var(--green-soft)] data-[kind=income]:text-[var(--green-deep)]",
