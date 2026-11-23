@@ -28,6 +28,7 @@ function detectLocale(request: NextRequest): Locale {
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (pathname === "/unirme") return NextResponse.next();
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     const response = NextResponse.next();
     response.headers.set("Cache-Control", "private, no-store");

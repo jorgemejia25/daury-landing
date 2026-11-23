@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/ui/atoms/Button";
 import { normalizeMeetUrl, safeMeetUrl } from "@/features/admin/lib/meet";
 import { useMemo, useState } from "react";
-import { CalendarDays, ChevronRight, Sun, Video } from "lucide-react";
+import { CalendarDays, ChevronRight, MessagesSquare, Sun, Video } from "lucide-react";
 import { Chip } from "@/ui/atoms/Chip";
 import { StatusDot } from "@/ui/atoms/StatusDot";
 import { ChoiceList } from "@/ui/molecules/ChoiceList";
@@ -14,8 +14,11 @@ import { TimeField } from "@/ui/molecules/TimeField";
 import { ToggleRow } from "@/ui/molecules/ToggleRow";
 import { addDays, formatDate, localDate } from "@/features/admin/lib/dates";
 import { calendarTone } from "@/features/admin/lib/presentation";
+import { isMeetingEvent } from "@/features/admin/lib/meetings";
+import { meetingHref } from "@/features/admin/lib/routes";
 import type { Entity } from "@/features/admin/lib/workspace";
 import { Attribution } from "../workspace/Attribution";
+import { GoogleCalendarPanel } from "../meetings/GoogleCalendarPanel";
 import { EditorPage, type EditorNav } from "./EditorPage";
 import { EditorSection } from "./EditorSection";
 import { useDraft } from "./useDraft";
@@ -25,7 +28,7 @@ import styles from "./EventForm.styles";
 type EventFormProps = {
   initial?: Entity<"events">;
   calendars: Entity<"calendars">[];
-  defaults?: { date?: string; calendarId?: string };
+  defaults?: { date?: string; calendarId?: string; meeting?: boolean };
   onClose: () => void;
   onSaved: (id: string, data: Record<string, unknown>) => void;
   nav?: EditorNav;
@@ -45,7 +48,8 @@ export function EventForm({ initial, calendars, defaults, nav, actions, onClose,
     meetUrl: initial?.meetUrl ?? safeMeetUrl(initial?.location),
     calendarId: initial?.calendarId ?? defaults?.calendarId ?? active[0]?.id ?? "",
     date: initial ? (initial.allDay ? initial.start : startLocal.slice(0, 10)) : defaults?.date ?? localDate(new Date()),
-    allDay: initial?.allDay ?? true,
+    allDay: initial?.allDay ?? !defaults?.meeting,
+    meeting: initial ? isMeetingEvent(initial) : Boolean(defaults?.meeting),
     startTime: startLocal.slice(11, 16) || "09:00",
     endTime: endLocal.slice(11, 16) || "10:00",
   }));
@@ -55,7 +59,7 @@ export function EventForm({ initial, calendars, defaults, nav, actions, onClose,
   const calendar = active.find((item) => item.id === draft.calendarId);
 
   function save() {
-    const { title, calendarId, date, allDay, startTime, endTime, meetUrl } = latest.current;
+    const { title, calendarId, date, allDay, startTime, endTime, meetUrl, meeting: isMeeting } = latest.current;
     let meeting;
     try { meeting = normalizeMeetUrl(meetUrl); } catch (error) { editor.setError(error instanceof Error ? error.message : "Revisa el enlace de Meet."); return; }
     if (!allDay && endTime <= startTime) {
@@ -65,6 +69,7 @@ export function EventForm({ initial, calendars, defaults, nav, actions, onClose,
     const data = {
       title,
       meetUrl: meeting,
+      meeting: isMeeting,
       calendarId,
       allDay,
       start: allDay ? date : `${date}T${startTime}:00-06:00`,
@@ -123,6 +128,7 @@ export function EventForm({ initial, calendars, defaults, nav, actions, onClose,
             </p>
             <Chip tone={tone} icon={<StatusDot tone={tone} size={8} />}>{calendar?.name ?? "Sin calendario"}</Chip>
           </EditorSection>
+          {initial ? <GoogleCalendarPanel event={initial} dirty={dirty} /> : null}
           {initial ? <div className={styles.meta}><Attribution item={initial} detailed /></div> : null}
         </>
       }
@@ -147,6 +153,17 @@ export function EventForm({ initial, calendars, defaults, nav, actions, onClose,
             <TimeField label="Hora de fin" value={draft.endTime} onChange={(value) => set("endTime", value)} />
           </div>
         )}
+      </EditorSection>
+
+      <EditorSection label="Reunión">
+        <ToggleRow
+          icon={<MessagesSquare size={22} strokeWidth={2.2} />}
+          title="Es una reunión"
+          subtitle="Aparece en Reuniones con agenda, preguntas y transcripción."
+          checked={draft.meeting}
+          onChange={(value) => set("meeting", value)}
+        />
+        {initial && isMeetingEvent(initial) ? <Button variant="soft" icon={<MessagesSquare size={17} aria-hidden="true" />} render={<Link href={meetingHref(initial.id)} />}>Abrir la reunión</Button> : null}
       </EditorSection>
 
       <EditorSection label="Videollamada">

@@ -44,7 +44,11 @@ async function saveAttempt(input: SaveRequest): Promise<MutationResult> {
       });
       await requireReference("wikiPages", data.articleId);
     }
-    if (kind === "events") { await requireReference("calendars", data.calendarId); await requireReference("wikiPages", data.articleId); }
+    if (kind === "events") {
+      await requireReference("calendars", data.calendarId); await requireReference("wikiPages", data.articleId);
+      // El formulario no envía el vínculo con Google Calendar: se conserva.
+      if (previous?.data.google) data.google = previous.data.google;
+    }
     if (kind === "wikiPages") await requireReference("folders", data.folderId);
     if (kind === "stickyNotes" && !(await requireReference("whiteboards", data.whiteboardId))) throw new Error("La pizarra no existe o está archivada.");
     if (kind === "folders") {

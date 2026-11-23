@@ -14,10 +14,10 @@ import { EventForm } from "../editors/EventForm";
 import { toggleArchive, WorkspaceStatus } from "./WorkspaceParts";
 
 
-type EventPageProps = { id?: string; date?: string };
+type EventPageProps = { id?: string; date?: string; meeting?: boolean };
 
 /** Página de un evento (o de uno nuevo) dentro del shell, con anterior y siguiente por fecha. */
-export function EventPage({ id, date }: EventPageProps) {
+export function EventPage({ id, date, meeting }: EventPageProps) {
   const router = useRouter();
   const calendars = useWorkspace("calendars"), events = useWorkspace("events");
   const current = useWorkspaceDocument("events", id ?? null);
@@ -59,7 +59,7 @@ export function EventPage({ id, date }: EventPageProps) {
       key={event?.id ?? "new"}
       initial={event ?? undefined}
       calendars={calendars.items}
-      defaults={{ date }}
+      defaults={{ date, meeting }}
       nav={
         event && index >= 0
           ? {

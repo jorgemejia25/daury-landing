@@ -72,3 +72,40 @@ a valores calculados por datos y a imágenes generadas por Next.js.
 acciones normalizan y validan el dominio `meet.google.com` y HTTPS. Las reglas
 aceptan registros anteriores sin el campo y validan los enlaces nuevos. El
 formulario permite añadir, modificar, borrar y abrir el enlace.
+
+
+## Reuniones
+
+`/admin/reuniones` lista los eventos marcados como reunión (`events.meeting`; los
+eventos anteriores sin el campo cuentan como reunión si tienen `meetUrl`). El
+formulario de eventos tiene el interruptor «Es una reunión».
+
+`meetings/{eventId}` guarda la ficha con el mismo ID del evento: agenda (hasta 40
+puntos con tema, minutos y responsable del equipo), notas (20 000 caracteres),
+transcripción (200 000 caracteres; se importa desde .txt, .vtt o .srt) y enlace
+HTTPS de la grabación. Se crea al guardar por primera vez con precondición
+`exists: false`. `meetingQuestions` guarda el foro previo, enlazado por `eventId`:
+respuestas firmadas que solo se añaden al final, votos en los que cada persona solo
+añade o quita su correo, y texto editable solo por quien preguntó. Ambos se
+archivan; no se borran. El enlace de Meet sigue viviendo en el evento.
+
+Las acciones `saveMeeting`, `askMeetingQuestion` y `updateMeetingQuestion`
+(`actions/meetings.ts`) usan la sesión verificada, el REST con el token del usuario
+y control de revisión. Las reglas comprueban que el evento exista y no esté archivado.
+
+### Google Calendar
+
+El evento y la reunión tienen el panel «Google Calendar». El navegador pide el
+permiso `calendar.events` con la misma cuenta de la sesión (`reauthenticateWithPopup`)
+y conserva el token de acceso solo en memoria (unos 50 minutos). Las acciones
+`pushToGoogleCalendar` y `removeFromGoogleCalendar` reciben ese token, comprueban
+con `tokeninfo` que pertenece a la sesión y tiene el permiso, y llaman a la API en el
+calendario principal de esa persona. No se guardan tokens ni credenciales.
+
+El ID del evento de Google se deriva del ID de Daury, así que repetir la operación
+no duplica. Opcionalmente invita al resto del equipo y crea una sala de Meet, que se
+guarda en `meetUrl`. `events.google` guarda el ID, el enlace, quién lo creó y la
+revisión enviada; si el evento cambia después, el panel ofrece «Actualizar». Solo
+quien lo creó puede actualizarlo o quitarlo. El formulario no puede escribir ese
+campo y `saveWorkspaceItem` lo conserva. Archivar un evento no lo borra de Google.
+Requiere la API de Google Calendar activada en `daury-wiki-jorgemejia`.

@@ -14,6 +14,7 @@ import {
   SquareKanban,
   X,
   Wallet,
+  Video,
   type LucideIcon,
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ const icons: Record<string, LucideIcon> = {
   book: BookOpen,
   board: SquareKanban,
   calendar: CalendarDays,
+  meeting: Video,
   heart: Heart,
   design: Palette,
   code: Code,

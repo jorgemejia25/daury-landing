@@ -28,7 +28,7 @@ export function decodeValue(value: Value): unknown {
 }
 const decodeFields = (fields: Record<string, Value>) => Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, decodeValue(value)]));
 export type RestDocument = { name: string; data: Record<string, unknown>; updateTime: string };
-const allowedCollections = new Set(["boards", "tasks", "calendars", "events", "folders", "wikiPages", "whiteboards", "stickyNotes", "wikiContent", "workspaceGuards", "financeEntries"]);
+const allowedCollections = new Set(["boards", "tasks", "calendars", "events", "folders", "wikiPages", "whiteboards", "stickyNotes", "wikiContent", "workspaceGuards", "financeEntries", "meetings", "meetingQuestions"]);
 export async function workspaceStore() {
   const user = await requireAdminSession();
   const token = (await cookies()).get(adminSessionCookie)?.value;

@@ -31,6 +31,13 @@
         "status": "ready"
       },
       {
+        "slug": "reuniones",
+        "title": "Reuniones",
+        "icon": "meeting",
+        "description": "Agenda, preguntas previas, Meet y transcripción de cada reunión.",
+        "status": "ready"
+      },
+      {
         "slug": "brainstorm",
         "title": "Brainstorm",
         "icon": "idea",

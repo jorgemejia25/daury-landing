@@ -6,6 +6,7 @@ const tones: Record<string, Tone> = {
   documentacion: "blue",
   kanban: "violet",
   calendarios: "amber",
+  reuniones: "green",
   brainstorm: "amber",
   producto: "coral",
   diseno: "violet",

@@ -7,6 +7,6 @@ export const metadata: Metadata = { title: "Nuevo evento" };
 
 export default async function NewEventPage({ searchParams }: PageProps<"/admin/calendarios/eventos/nuevo">) {
   await requireAdminSession();
-  const { fecha } = await searchParams;
-  return <EventPage date={typeof fecha === "string" && isDateOnly(fecha) ? fecha : undefined} />;
+  const { fecha, reunion } = await searchParams;
+  return <EventPage date={typeof fecha === "string" && isDateOnly(fecha) ? fecha : undefined} meeting={reunion === "1"} />;
 }

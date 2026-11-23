@@ -4,7 +4,7 @@ import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestE
 import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { adminAllowedEmails } from "../src/features/admin/lib/access";
 import { sampleFinance } from "../src/features/admin/lib/finance.fixtures";
-import { sampleBoard, sampleTask, sampleCalendar, sampleEvent, sampleFolder, samplePage, sampleWhiteboard, sampleSticky } from "../src/features/admin/lib/workspace.fixtures";
+import { sampleBoard, sampleTask, sampleCalendar, sampleEvent, sampleFolder, samplePage, sampleWhiteboard, sampleSticky, sampleMeetingEvent, sampleMeeting, sampleQuestion } from "../src/features/admin/lib/workspace.fixtures";
 import { workspaceCollections } from "../src/features/admin/lib/workspace";
 
 let env: RulesTestEnvironment;
@@ -39,7 +39,7 @@ describe("acceso a los espacios compartidos", () => {
   test("las cuentas externas, anónimas y de otro proveedor no pueden leer ni escribir", async () => {
     for (const context of [env.unauthenticatedContext(), env.authenticatedContext("outside", { ...claims, email: "outside@gmail.com" }), env.authenticatedContext("not-verified", { ...claims, email: adminAllowedEmails[0], email_verified: false }), env.authenticatedContext("password", { ...claims, email: adminAllowedEmails[0], firebase: { sign_in_provider: "password", identities: {} } })]) {
       const db = context.firestore();
-      for (const name of [...workspaceCollections, "wikiContent", "workspaceGuards", "financeEntries"]) { await assertFails(getDocs(collection(db, name))); await assertFails(setDoc(doc(db, name, "outside"), data(sampleBoard))); }
+      for (const name of [...workspaceCollections, "wikiContent", "workspaceGuards", "financeEntries", "meetings", "meetingQuestions"]) { await assertFails(getDocs(collection(db, name))); await assertFails(setDoc(doc(db, name, "outside"), data(sampleBoard))); }
       await assertFails(deleteDoc(doc(db, "tasks", sampleTask.id))); await assertFails(deleteDoc(doc(db, "events", sampleEvent.id)));
     }
   });
@@ -140,6 +140,50 @@ describe("acceso a los espacios compartidos", () => {
     await assertFails(updateDoc(ref, { revision: 2, meetUrl: "https://example.com" }));
     await assertFails(updateDoc(ref, { revision: 2, meetUrl: "javascript:alert(1)" }));
     await assertSucceeds(updateDoc(ref, { revision: 2, meetUrl: "" }));
+    await assertSucceeds(updateDoc(ref, { revision: 3, meeting: true }));
+    await assertFails(updateDoc(ref, { revision: 4, meeting: "sí" }));
+    const google = { id: "d0a1b2c3d4e5", url: "https://www.google.com/calendar/event?eid=abc", owner: adminAllowedEmails[0], revision: 4 };
+    await assertSucceeds(updateDoc(ref, { revision: 4, google }));
+    await assertFails(updateDoc(ref, { revision: 5, google: { ...google, url: "https://evil.example/calendar/" } }));
+    await assertFails(updateDoc(ref, { revision: 5, google: { ...google, owner: "outside@gmail.com" } }));
+    await assertFails(updateDoc(ref, { revision: 5, google: { ...google, id: "XYZ!" } }));
+    await assertFails(updateDoc(ref, { revision: 5, google: { ...google, extra: 1 } }));
+  });
+
+  test("las reuniones comparten ID con su evento y validan tamaños y grabación", async () => {
+    const email = adminAllowedEmails[0], db = env.authenticatedContext(email, { ...claims, email }).firestore();
+    await env.withSecurityRulesDisabled(async (context) => { await setDoc(doc(context.firestore(), "events", sampleMeetingEvent.id), data(sampleMeetingEvent)); });
+    const base = { ...data(sampleMeeting), createdBy: email, updatedBy: email }, ref = doc(db, "meetings", sampleMeeting.id);
+    await assertFails(setDoc(doc(db, "meetings", "otro-id"), base));
+    await assertFails(setDoc(doc(db, "meetings", "missing"), { ...base, eventId: "missing" }));
+    await assertFails(setDoc(ref, { ...base, recordingUrl: "javascript:alert(1)" }));
+    await assertFails(setDoc(ref, { ...base, notes: "x".repeat(20001) }));
+    await assertFails(setDoc(ref, { ...base, extra: true }));
+    await assertSucceeds(setDoc(ref, { ...base, recordingUrl: "https://drive.google.com/file/d/abc" }));
+    await assertSucceeds(updateDoc(ref, { revision: 2, notes: "Acuerdos", transcript: "Ana: hola" }));
+    await assertFails(updateDoc(ref, { revision: 2, notes: "Versión obsoleta" }));
+    await assertFails(deleteDoc(ref));
+  });
+
+  test("el foro de preguntas: respuestas firmadas, votos propios y texto solo del autor", async () => {
+    const [author, other] = adminAllowedEmails, a = env.authenticatedContext(author, { ...claims, email: author }).firestore(), b = env.authenticatedContext(other, { ...claims, email: other }).firestore();
+    await env.withSecurityRulesDisabled(async (context) => { await setDoc(doc(context.firestore(), "events", sampleMeetingEvent.id), data(sampleMeetingEvent)); });
+    const question = { ...data(sampleQuestion), createdBy: author, updatedBy: author }, ref = doc(a, "meetingQuestions", "foro");
+    await assertFails(setDoc(doc(a, "meetingQuestions", "huerfana"), { ...question, eventId: "missing" }));
+    await assertFails(setDoc(doc(a, "meetingQuestions", "con-votos"), { ...question, votes: [author] }));
+    await assertSucceeds(setDoc(ref, question));
+    const asOther = doc(b, "meetingQuestions", "foro"), answer = { id: "r1", body: "Falta el backend", author: other, createdAt: "2026-11-20T00:00:00Z" };
+    await assertFails(updateDoc(asOther, { revision: 2, updatedBy: other, answers: [{ ...answer, author }] }));
+    await assertSucceeds(updateDoc(asOther, { revision: 2, updatedBy: other, answers: [answer] }));
+    await assertFails(updateDoc(asOther, { revision: 3, updatedBy: other, answers: [] }));
+    await assertFails(updateDoc(asOther, { revision: 3, updatedBy: other, votes: [author] }));
+    await assertSucceeds(updateDoc(asOther, { revision: 3, updatedBy: other, votes: [other] }));
+    await assertFails(updateDoc(asOther, { revision: 4, updatedBy: other, body: "Cambiada por otra persona" }));
+    await assertSucceeds(updateDoc(asOther, { revision: 4, updatedBy: other, resolved: true }));
+    await assertSucceeds(updateDoc(ref, { revision: 5, updatedBy: author, body: "¿Qué falta para el MVP de enero?" }));
+    await assertSucceeds(updateDoc(asOther, { revision: 6, updatedBy: other, votes: [] }));
+    await assertFails(updateDoc(ref, { revision: 7, updatedBy: author, eventId: "launch" }));
+    await assertFails(deleteDoc(ref));
   });
 
 });

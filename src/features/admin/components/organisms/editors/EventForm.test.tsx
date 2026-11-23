@@ -5,6 +5,7 @@ import { beforeEach, expect, test, vi } from "vitest";
 import { sampleCalendar, sampleEvent } from "@/features/admin/lib/workspace.fixtures";
 const { save } = vi.hoisted(() => ({ save: vi.fn() }));
 vi.mock("@/features/admin/actions/workspace", () => ({ saveWorkspaceItem: save }));
+vi.mock("@/features/admin/actions/google-calendar", () => ({ pushToGoogleCalendar: vi.fn(), removeFromGoogleCalendar: vi.fn() }));
 import { EventForm } from "./EventForm";
 beforeEach(() => { vi.clearAllMocks(); save.mockResolvedValue({ ok: true, id: "meeting", revision: 1 }); });
 test("permite guardar y abrir el enlace de Meet con controles operables por agentes", async () => {

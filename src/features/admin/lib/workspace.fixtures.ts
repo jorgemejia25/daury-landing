@@ -8,3 +8,6 @@ export const sampleTask: Entity<"tasks"> = { id: "first-task", title: "Diseñar 
 export const sampleWhiteboard: Entity<"whiteboards"> = { id: "ideas", name: "Ideas de nombre", description: "Mascota", color: "amber", ...meta };
 export const sampleSticky: Entity<"stickyNotes"> = { id: "nota-1", whiteboardId: "ideas", text: "Daurisito", color: "yellow", x: 120, y: 80, ...meta };
 export const sampleEvent: Entity<"events"> = { id: "launch", title: "Publicar campaña", description: "Primera publicación", calendarId: "social", allDay: true, start: "2026-11-20", end: "2026-11-21", location: "Instagram", articleId: "", ...meta };
+export const sampleMeetingEvent: Entity<"events"> = { id: "weekly", title: "Reunión semanal", description: "", calendarId: "social", allDay: false, start: "2026-11-20T15:00:00.000Z", end: "2026-11-20T16:00:00.000Z", location: "", articleId: "", meetUrl: "https://meet.google.com/abc-defg-hij", meeting: true, ...meta };
+export const sampleMeeting: Entity<"meetings"> = { id: "weekly", eventId: "weekly", agenda: [{ id: "a1", title: "Avances", minutes: 15, owner: "", done: false }], notes: "", transcript: "", recordingUrl: "", ...meta };
+export const sampleQuestion: Entity<"meetingQuestions"> = { id: "q1", eventId: "weekly", body: "¿Qué falta para el MVP?", answers: [], votes: [], resolved: false, ...meta };

@@ -50,6 +50,28 @@ service cloud.firestore {
           && list.removeAll([list[list.size() - 1]]) == resource.data.comments)
       );
     }
+    // Lista de respuestas: solo se añade una al final, firmada por quien escribe.
+    function appendedBy(next, previous, maxBody) {
+      return request.method == 'create' ? next.size() == 0 : (
+        next == previous || (next.size() == previous.size() + 1
+          && next[next.size() - 1].keys().hasAll(['id', 'body', 'author', 'createdAt'])
+          && next[next.size() - 1].keys().hasOnly(['id', 'body', 'author', 'createdAt'])
+          && label(next[next.size() - 1].id, 80)
+          && label(next[next.size() - 1].body, maxBody)
+          && next[next.size() - 1].author == request.auth.token.email.lower()
+          && next[next.size() - 1].createdAt is string
+          && next.removeAll([next[next.size() - 1]]) == previous)
+      );
+    }
+    // Votos: cada persona solo añade o quita su propio correo.
+    function ownVote(next, previous) {
+      let me = request.auth.token.email.lower();
+      return request.method == 'create' ? next.size() == 0 : (
+        next == previous
+        || (!(me in previous) && next == previous.concat([me]))
+        || (me in previous && next == previous.removeAll([me]))
+      );
+    }
     function financePayments() {
       let next = request.resource.data.paidDates;
       return request.method == 'create' ? next.size() == 0 : (
@@ -78,6 +100,19 @@ service cloud.firestore {
           && d.frequency in ['once', 'monthly', 'yearly'] && d.endDate is string && (d.endDate == '' || (d.endDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') && d.endDate >= d.date && d.endDate <= '2200-12-31'))
           && label(d.category, 60) && d.notes is string && d.notes.size() <= 3000 && d.paidDates is list && d.paidDates.size() <= 1200 && d.paidDates.toSet().size() == d.paidDates.size() && financePayments()
           && (request.method == 'create' ? d.paidDates.size() == 0 : (resource.data.paidDates.size() == 0 || !d.diff(resource.data).affectedKeys().hasAny(['amount', 'currency', 'kind', 'date', 'frequency']))))
+        || (kind == 'meetings' && fields(['eventId', 'agenda', 'notes', 'transcript', 'recordingUrl'])
+          && d.eventId == id && d.agenda is list && d.agenda.size() <= 40
+          && d.notes is string && d.notes.size() <= 20000 && d.transcript is string && d.transcript.size() <= 200000
+          && d.recordingUrl is string && d.recordingUrl.size() <= 500 && (d.recordingUrl == '' || d.recordingUrl.matches('^https://[^ ]+$'))
+          && (d.archived || parentAvailable('events', d.eventId)))
+        || (kind == 'meetingQuestions' && fields(['eventId', 'body', 'answers', 'votes', 'resolved'])
+          && label(d.eventId, 80) && label(d.body, 2000) && d.resolved is bool
+          && d.answers is list && d.answers.size() <= 100 && d.votes is list && d.votes.size() <= 7 && d.votes.hasOnly(team())
+          && appendedBy(d.answers, request.method == 'create' ? [] : resource.data.answers, 3000)
+          && ownVote(d.votes, request.method == 'create' ? [] : resource.data.votes)
+          // Solo quien preguntó cambia el texto; la reunión no cambia.
+          && (request.method == 'create' || ((d.body == resource.data.body || resource.data.createdBy == request.auth.token.email.lower()) && d.eventId == resource.data.eventId))
+          && (d.archived || parentAvailable('events', d.eventId)))
         || (kind == 'workspaceGuards' && fields(['parentKind', 'parentId'])
           && d.parentKind in ['boards', 'calendars', 'folders', 'whiteboards'] && label(d.parentId, 80))
         || (kind == 'boards' && (fields(['name', 'description', 'color', 'columns', 'columnOrder']) || fields(['name', 'description', 'color', 'columns', 'columnOrder', 'position']))
@@ -125,7 +160,14 @@ service cloud.firestore {
           && (d.archived || (parentAvailable('boards', d.boardId)
             && d.status in getAfter(reference('boards', d.boardId)).data.columnOrder
             && parentAvailable('wikiPages', d.articleId))))
-        || (kind == 'events' && (fields(['title', 'description', 'calendarId', 'allDay', 'start', 'end', 'location', 'articleId']) || fields(['title', 'description', 'calendarId', 'allDay', 'start', 'end', 'location', 'articleId', 'meetUrl']))
+        || (kind == 'events' && (fields(['title', 'description', 'calendarId', 'allDay', 'start', 'end', 'location', 'articleId']) || fields(['title', 'description', 'calendarId', 'allDay', 'start', 'end', 'location', 'articleId', 'meetUrl'])
+            || (fields(['title', 'description', 'calendarId', 'allDay', 'start', 'end', 'location', 'articleId', 'meetUrl', 'meeting']) && d.meeting is bool)
+            // Copia en Google Calendar: ID del evento de Google, su enlace, quién lo creó y la revisión enviada.
+            || (fields(['title', 'description', 'calendarId', 'allDay', 'start', 'end', 'location', 'articleId', 'meetUrl', 'meeting', 'google']) && d.meeting is bool
+              && d.google is map && d.google.keys().hasAll(['id', 'url', 'owner', 'revision']) && d.google.keys().hasOnly(['id', 'url', 'owner', 'revision'])
+              && d.google.id is string && d.google.id.size() >= 5 && d.google.id.size() <= 1024 && d.google.id.matches('^[a-v0-9]+$')
+              && d.google.url is string && d.google.url.size() <= 2000 && d.google.url.matches('^https://www[.]google[.]com/calendar/[^ ]*$')
+              && d.google.owner in team() && d.google.revision is int))
           && (!('meetUrl' in d) || (d.meetUrl is string && d.meetUrl.size() <= 500 && (d.meetUrl == '' || d.meetUrl.matches('^https://meet[.]google[.]com/([a-zA-Z0-9-]+|lookup/[a-zA-Z0-9_-]+)/?([?][^# ]*)?(#[^ ]*)?$'))))
           && label(d.title, 200) && d.description is string && d.description.size() <= 12000
           && d.calendarId is string && d.calendarId != '' && d.allDay is bool
@@ -135,7 +177,7 @@ service cloud.firestore {
       );
     }
     match /{collection}/{document} {
-      allow read: if collection in ['boards', 'tasks', 'calendars', 'events', 'folders', 'wikiPages', 'whiteboards', 'stickyNotes', 'wikiContent', 'workspaceGuards', 'financeEntries'] && authorized();
+      allow read: if collection in ['boards', 'tasks', 'calendars', 'events', 'folders', 'wikiPages', 'whiteboards', 'stickyNotes', 'wikiContent', 'workspaceGuards', 'financeEntries', 'meetings', 'meetingQuestions'] && authorized();
       allow create: if authorized() && shape(collection, document)
         && request.resource.data.revision == 1 && request.resource.data.archived == false
         && request.resource.data.createdBy == request.auth.token.email.lower()

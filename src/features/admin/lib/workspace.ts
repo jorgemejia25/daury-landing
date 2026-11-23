@@ -39,8 +39,9 @@ export type Folder = { name: string; parentId: string; color: WorkspaceColor };
 export type Page = { title: string; description: string; folderId: string; tags: string[] };
 export type Comment = { id: string; body: string; author: string; createdAt: string };
 export type WorkTask = { title: string; description: string; boardId: string; status: string; priority: "high" | "medium" | "low"; type: "task" | "bug" | "story" | "epic"; assignee: string; dueDate: string; tags: string[]; points: number; articleId: string; checklist: { id: string; title: string; done: boolean; createdBy?: string; createdAt?: string }[]; comments: Comment[] ; /** Orden manual dentro de la columna (menor = arriba); sin valor, por fecha de creación. */ rank?: number };
-export type WorkEvent = { title: string; description: string; calendarId: string; allDay: boolean; start: string; end: string; location: string; articleId: string; meetUrl?: string };
-export type WorkspaceData = { boards: Board; tasks: WorkTask; calendars: Calendar; events: WorkEvent; folders: Folder; wikiPages: Page; wikiContent: { body: string }; whiteboards: Whiteboard; stickyNotes: StickyNote; financeEntries: import("./finance").FinanceData };
+export type WorkEvent = { title: string; description: string; calendarId: string; allDay: boolean; start: string; end: string; location: string; articleId: string; meetUrl?: string; /** Aparece en el módulo de reuniones. Sin valor (datos anteriores): si tiene Meet. */ meeting?: boolean; /** Copia en el Google Calendar de `owner`; `revision` es la del evento cuando se envió. */ google?: GoogleLink };
+export type GoogleLink = { id: string; url: string; owner: string; revision: number };
+export type WorkspaceData = { boards: Board; tasks: WorkTask; calendars: Calendar; events: WorkEvent; folders: Folder; wikiPages: Page; wikiContent: { body: string }; whiteboards: Whiteboard; stickyNotes: StickyNote; financeEntries: import("./finance").FinanceData; meetings: import("./meetings").MeetingData; meetingQuestions: import("./meetings").MeetingQuestion };
 export type Metadata = { revision: number; archived: boolean; createdAt: string; updatedAt: string; createdBy: string; updatedBy: string };
 export type Entity<C extends keyof WorkspaceData> = WorkspaceData[C] & Metadata & { id: string };
 export type AnyEntity = { [C in WorkspaceCollection]: Entity<C> }[WorkspaceCollection];
@@ -137,6 +138,8 @@ export function parseWorkspaceData<C extends WorkspaceCollection>(collection: C,
     const validTimestamp = (value: string) => isDateOnly(value.slice(0, 10)) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})$/.test(value) && Number.isFinite(Date.parse(value));
     if (data.allDay ? !isDateOnly(start) || !isDateOnly(end) || end <= start : !validTimestamp(start) || !validTimestamp(end) || Date.parse(end) <= Date.parse(start)) throw new Error("El fin debe ser posterior al inicio. En eventos de día completo, el fin es exclusivo.");
     result = { title: text(data, "title", 200, true), description: text(data, "description", 12000), calendarId: reference(data, "calendarId", true), allDay: data.allDay, start, end, location: text(data, "location", 500), articleId: reference(data, "articleId"), meetUrl: normalizeMeetUrl(data.meetUrl) };
+    if (data.meeting !== undefined && typeof data.meeting !== "boolean") throw new Error("Indica si el evento es una reunión.");
+    result = { ...result, meeting: data.meeting ?? Boolean((result as WorkEvent).meetUrl) };
   }
   return result as WorkspaceData[C] & { body?: string };
 }
